@@ -1,7 +1,12 @@
 
 from vrep_env import vrep_env
 
-vrep_scenes_path = 'C:\Program Files\V-REP3\V-REP_PRO\scenes'
+import os
+if os.name == 'nt':
+	#print('If you are running this code on windows you need to manually define the vrep scene path in each respective environment.')
+	vrep_scenes_path = 'C:\Program Files\V-REP3\V-REP_PRO\scenes'
+else:
+	vrep_scenes_path = os.environ['VREP_SCENES_PATH']
 
 import gym
 from gym import spaces
@@ -13,7 +18,7 @@ class HopperVrepEnv(vrep_env.VrepEnv):
 	def __init__(
 		self,
 		server_addr='127.0.0.1',
-		server_port=-19997,
+		server_port=19997,
 		scene_path=vrep_scenes_path+'/hopper.ttt',
 	):
 		vrep_env.VrepEnv.__init__(
