@@ -134,12 +134,12 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		# example: possible variables used in reward
 		head_pos_x = self.observation[0] # front/back
 		head_pos_y = self.observation[1] # left/right
-		nrm_action  = np.linalg.norm(action)
+		nrm_action  = np.linalg.norm(np.abs(action))
 		r_regul     = -(nrm_action)
 		r_alive = 1.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
-		reward = (1.0)*(r_alive) + (1.0)* gaussian_2d(head_pos_x, head_pos_y) - (1.0)*r_regul#+(-1.0)*(np.abs(head_pos_x)) +(-1.0)*(np.abs(head_pos_y))
+		reward = (1.0)*(r_alive) + (1.0)* gaussian_2d(head_pos_x, head_pos_y) + (1.0)*r_regul#+(-1.0)*(np.abs(head_pos_x)) +(-1.0)*(np.abs(head_pos_y))
 		
 		#Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
