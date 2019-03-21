@@ -18,6 +18,17 @@ from gym import spaces
 
 import numpy as np
 
+def sigmoid(x):
+	return 1.0 / (1.0 + np.exp(-x))
+
+def rads2complex(rads):
+	return [np.sin(rads), np.cos(rads)]
+
+def gaussian_2d(x,y, scale_x=0.5, scale_y=0.5):
+    r = np.abs(np.add(scale_x*np.power(x,2), scale_y*np.power(y,2)))
+    return 1.0 - np.tanh(1.0/(np.pi*2)*r)
+
+
 # #modify: the env class name
 class BalanceBotVrepEnv(vrep_env.VrepEnv):
 	metadata = {
@@ -128,7 +139,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		r_alive = 1.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
-		reward = (8.0)*(r_alive) +(-1.0)*(np.abs(head_pos_x)) +(-1.0)*(np.abs(head_pos_y))
+		reward = (1.0)*(r_alive) + (1.0)* gaussian_2d(head_pos_x, head_pos_y) - (1.0)*r_regul#+(-1.0)*(np.abs(head_pos_x)) +(-1.0)*(np.abs(head_pos_y))
 		
 		#Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
