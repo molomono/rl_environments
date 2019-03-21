@@ -1,7 +1,7 @@
 from setuptools import setup
 import sys, os.path
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'rl_environments'))
+#sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'rl_environments'))
 
 setup(name='rl_environments',
       packages=['rl_environments'],
