@@ -25,3 +25,8 @@ register(
     entry_point='rl_environments.vrep.hopper_vrep_env:HopperVrepEnv', 
     max_episode_steps=1000
 )
+register(
+    id='VrepDoubleCartPoleSwingup-v0', 
+    entry_point='gym.envs.vrep.double_cartpole_continuous_vrep_env:DoubleCartPoleSwingupVrepEnv', 
+    max_episode_steps=500
+)
