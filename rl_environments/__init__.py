@@ -39,3 +39,9 @@ register(
     max_episode_steps=10000,
     reward_threshold=100000.0
 )
+register(
+    id='PyBulletBalanceBotNoise-v0',
+    entry_point='rl_environments.pybullet.balancebot_noise_pybullet_env:BalanceBotNoisePyBulletEnv',
+    max_episode_steps=10000,
+    reward_threshold=100000.0
+)
