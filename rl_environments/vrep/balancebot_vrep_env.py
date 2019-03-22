@@ -93,18 +93,30 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#Definition of the observation vector:
 		# [x, y, theta, base_ang_vel x 3, wheel_encoder_l, wheel_encoder_r]
 		pos = self.obj_get_position(self.oh_shape[0])
-		ang_pos , ang_vel = self.obj_get_velocity(self.oh_shape[0])
+		ang_pos = self.obj_get_orientation(self.oh_shape[0])
+		lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
 		self.ang_vel = ang_vel
+
+		#calculate the relative velocity of the balance bot
+		#TODO: change the way i fixed this, but becase the balance bot is differential drive and only translates in x
+		#i'm acting like the relative velocity is the distance function between the two vectors, This does not hold true if the
+		#robot slips, so i should transform it with a transform matrix instead, this is a quick fix for now.
+		rel_lin_vel_x = np.sqrt(np.sum(np.power(lin_vel[0]), np.power(lin_vel[1])))
+
 		lst_o += pos[0:2]
 		#Theta is in Radians, make it a complex number
 		lst_o += [np.sin(ang_pos[2]), np.cos(ang_pos[2])]
 		lst_o += ang_vel
+
+		#add the lin velocity
+		lst_o += [rel_lin_vel_x]
 
 		l_angle = self.obj_get_joint_angle(self.oh_joint[0])
 		r_angle = self.obj_get_joint_angle(self.oh_joint[1])
 		
 		lst_o += [l_angle]
 		lst_o += [r_angle]
+
 		
 		self.observation = np.array(lst_o).astype('float32');
 	
