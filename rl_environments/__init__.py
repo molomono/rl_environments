@@ -30,3 +30,12 @@ register(
     entry_point='rl_environments.vrep.cartpole_continuous_swingup_vrep_env:DoubleCartPoleSwingupVrepEnv', 
     max_episode_steps=500
 )
+
+# PyBullet
+# ----------------------------------------
+register(
+    id='PyBulletBalanceBot-v0',
+    entry_point='rl_environments.pybullet.balancebot_pybullet_env:BalanceBotPyBulletEnv',
+    max_episode_steps=10000,
+    reward_threshold=100000.0
+)
