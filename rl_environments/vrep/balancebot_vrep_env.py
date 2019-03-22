@@ -141,7 +141,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		r_alive = 1.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
-		reward = (5.0)*(r_alive) + (1.0)* gaussian_2d(head_pos_x, head_pos_y) + (0.75)*r_regul + (0.5)*theta
+		reward = (5.0)*(r_alive) + (0.75)*r_regul #+ (1.0)* gaussian_2d(head_pos_x, head_pos_y) + (1.0)*theta
 		
 		#Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
