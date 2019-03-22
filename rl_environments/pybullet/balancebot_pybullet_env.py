@@ -1,3 +1,7 @@
+##################### Original code written by Yconst, https://github.com/yconst/balance-bot
+## Accompanying blogpost: https://backyardrobotics.eu/2017/11/27/build-a-balancing-bot-with-openai-gym-pt-i-setting-up/
+## 
+
 import os
 import math
 import numpy as np
@@ -54,8 +58,13 @@ class BalanceBotPyBulletEnv(gym.Env):
         self.maxV = 24.6 # 235RPM = 24,609142453 rad/sec
         self._envStepCounter = 0
 
+        #Reset simulation, randomize Domain and Dynamics
+        # Domain can be set in this file
+        # Dynamics must be altered in the robot.xml/robot.urdf script
         p.resetSimulation()
-        p.setGravity(0,0,-10) # m/s^2
+        g = 9.8
+
+        p.setGravity(0,0,-g) # m/s^2
         p.setTimeStep(0.01) # sec
         planeId = p.loadURDF("plane.urdf")
         cubeStartPos = [0,0,0.001]
