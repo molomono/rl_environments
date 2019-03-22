@@ -101,7 +101,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#TODO: change the way i fixed this, but becase the balance bot is differential drive and only translates in x
 		#i'm acting like the relative velocity is the distance function between the two vectors, This does not hold true if the
 		#robot slips, so i should transform it with a transform matrix instead, this is a quick fix for now.
-		rel_lin_vel_x = np.sqrt(np.sum([np.power(lin_vel[0]), np.power(lin_vel[1]])))
+		rel_lin_vel_x = np.sqrt(np.sum([np.power(lin_vel[0]), np.power(lin_vel[1])]))
 
 		lst_o += pos[0:2]
 		#Theta is in Radians, make it a complex number
