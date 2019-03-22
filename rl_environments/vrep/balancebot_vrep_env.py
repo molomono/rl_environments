@@ -28,6 +28,8 @@ def gaussian_2d(x,y, scale_x=0.5, scale_y=0.5):
     r = np.abs(np.add(scale_x*np.power(x,2), scale_y*np.power(y,2)))
     return 1.0 - np.tanh(1.0/(np.pi*2)*r)
 
+def gaussian(x,sig=1.0):
+    return np.exp(-np.power(sig*np.abs(x),2))
 
 # #modify: the env class name
 class BalanceBotVrepEnv(vrep_env.VrepEnv):
@@ -134,12 +136,12 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		# example: possible variables used in reward
 		head_pos_x = self.observation[0] # front/back
 		head_pos_y = self.observation[1] # left/right
-		nrm_action  = np.linalg.norm(np.abs(action))
-		r_regul     = -(nrm_action)
+		#nrm_action  = np.linalg.norm(np.abs(action))
+		r_regul     = -(1.0-gaussian(action, sig=0.707))
 		r_alive = 1.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
-		reward = (1.0)*(r_alive) + (1.0)* gaussian_2d(head_pos_x, head_pos_y) + (1.0)*r_regul#+(-1.0)*(np.abs(head_pos_x)) +(-1.0)*(np.abs(head_pos_y))
+		reward = (1.0)*(r_alive) + (1.0)* gaussian_2d(head_pos_x, head_pos_y) + (1.0)*r_regul
 		
 		#Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
