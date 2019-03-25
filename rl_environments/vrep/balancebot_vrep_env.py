@@ -153,7 +153,15 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		r_alive = 1.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
-		reward = (5.0)*(r_alive) + (0.75)*r_regul #+ (1.0)* gaussian_2d(head_pos_x, head_pos_y) + (1.0)*theta
+		
+		#Reward is formulated as reward = a(f(x)) + b
+		#where f is the reward function and a and b are used to alter the
+		#starting point and magnitude of the reward function
+		#for certain types of RL such as DRL this can always be done
+		#and can improve convergence properties
+		a = 0.1
+		b = -100.0
+		reward = a*((5.0)*(r_alive) + (0.75)*r_regul) + b #+ (1.0)* gaussian_2d(head_pos_x, head_pos_y) + (1.0)*theta
 		
 		#Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
