@@ -1,10 +1,15 @@
-##################### Original code written by Yconst, https://github.com/yconst/balance-bot
+##################### Original code written by Yconst, https://github.com/yconst/balance-bot ###################################
 ## Accompanying blogpost: https://backyardrobotics.eu/2017/11/27/build-a-balancing-bot-with-openai-gym-pt-i-setting-up/
 ## 
+
+
+########################################################################################
+#TODO: Vrep
 
 import os
 import math
 import numpy as np
+
 
 import gym
 from gym import spaces
@@ -12,6 +17,26 @@ from gym.utils import seeding
 
 import pybullet as p
 import pybullet_data
+
+
+# I Think the best way to do this is declare the path to a SimulationParameters() class which 
+# can be inherrited and altered for each specific simulation environment
+# # 
+# In this file i should include generic parameters that can often/always be used for dynamics simulations:
+# list of sim.domain params [dt, g.f_mean, g.f_var, g.ang_mean, g.ang_var, seed]
+# list of env.domain params [start_orientation, start_position, ...]
+# list of dynamics params [weight, max_action.var, ... ]
+# list of feedback noise params [sensor[:]{noise mean, noise type, noise variance}, ... ]
+
+import yaml
+#Move this function to a seperate importable file.
+#Not sure this is the way to go, 
+def load_yaml(file_path, io_type='r'):
+    with open(file_path, io_type) as stream:
+        try:
+            return(yaml.load(stream))
+        except yaml.YAMLError as exc:
+            print(exc)
 
 class BalanceBotPyBulletEnv(gym.Env):
     metadata = {
@@ -58,14 +83,20 @@ class BalanceBotPyBulletEnv(gym.Env):
         self.maxV = 24.6 # 235RPM = 24,609142453 rad/sec
         self._envStepCounter = 0
 
+        #Load parameters for environment randomization from yaml
+        
         #Reset simulation, randomize Domain and Dynamics
+        #TODO: WIP WIP WIP
+        #simulation_params = yaml.load("simulation_parameters.yaml")
+
         # Domain can be set in this file
         # Dynamics must be altered in the robot.xml/robot.urdf script
         p.resetSimulation()
-        g = 9.8
+        g = 9.81
+        dt = 0.01
 
         p.setGravity(0,0,-g) # m/s^2
-        p.setTimeStep(0.01) # sec
+        p.setTimeStep(dt) # sec
         planeId = p.loadURDF("plane.urdf")
         cubeStartPos = [0,0,0.001]
         cubeStartOrientation = p.getQuaternionFromEuler([0,0,0])

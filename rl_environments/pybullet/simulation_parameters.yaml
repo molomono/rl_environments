@@ -1,0 +1,9 @@
+---
+# Simulation Parameters
+Domain:
+  gravity:
+    force: 9.81
+    high: 1.0
+    low: -1.0
+    degrees: 5.0 
+...
