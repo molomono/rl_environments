@@ -161,7 +161,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		a = 1
 		b = -0.5
 		#reward = a*(5.0*(r_alive) + 0.75*r_regul) + b 
-		reward = a*(gaussian_2d(head_pos_x, head_pos_y) * (0.5*r_regul + 0.5) + b
+		reward = a*(gaussian_2d(head_pos_x, head_pos_y) * (0.5*r_regul + 0.5)) + b
 		#+ (1.0)* gaussian_2d(head_pos_x, head_pos_y) + (1.0)*theta
 		
 		#Check if the balancebot fell over 
