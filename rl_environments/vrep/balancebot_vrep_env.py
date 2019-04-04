@@ -71,7 +71,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		# Example: 3 dimensions of linear and angular (2) velocities + 6 additional dimension
 		# 3 =  X, Y, Theta thus planar position (Might want to expand it to the velocities as well)
 		num_obs = 12 
-		
+		num_obs = 8 #TODO: this is used when no wheel angles are defined
 		# #modify: action_space and observation_space to suit your needs
 		self.joints_max_velocity = 3.0
 		act = np.array( [self.joints_max_velocity] * num_act )
@@ -114,8 +114,8 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#add wheel angles to the observation
 		l_angle = self.obj_get_joint_angle(self.oh_joint[0])
 		r_angle = self.obj_get_joint_angle(self.oh_joint[1])
-		lst_o += [np.sin(l_angle), np.cos(l_angle)]
-		lst_o += [np.sin(r_angle), np.cos(r_angle)]
+		#lst_o += [np.sin(l_angle), np.cos(l_angle)]
+		#lst_o += [np.sin(r_angle), np.cos(r_angle)]
 
 		self.observation = np.array(lst_o).astype('float32');
 	
