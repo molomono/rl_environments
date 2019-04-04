@@ -111,11 +111,12 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#add the lin velocity
 		lst_o += [rel_lin_vel_x]
 
+		#add wheel angles to the observation
 		l_angle = self.obj_get_joint_angle(self.oh_joint[0])
 		r_angle = self.obj_get_joint_angle(self.oh_joint[1])
-		
-		lst_o += [l_angle]
-		lst_o += [r_angle]
+		lst_o += [np.sin(l_angle[2]), np.cos(l_angle[2])]
+		lst_o += [np.sin(r_angle[2]), np.cos(r_angle[2])]
+
 		self.observation = np.array(lst_o).astype('float32');
 	
 	def _make_action(self, a):
