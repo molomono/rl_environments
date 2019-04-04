@@ -116,8 +116,6 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		
 		lst_o += [l_angle]
 		lst_o += [r_angle]
-
-		
 		self.observation = np.array(lst_o).astype('float32');
 	
 	def _make_action(self, a):
@@ -148,8 +146,8 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		# example: possible variables used in reward
 		head_pos_x = self.observation[0] # front/back
 		head_pos_y = self.observation[1] # left/right
-		theta  = gaussian( self.observation[2], sig=1.5 ) 
-		r_regul     = gaussian(action, sig=0.707)
+		theta  	= gaussian( self.observation[2], sig=1.5 ) 
+		r_regul = gaussian( action, sig=0.707)
 		r_alive = 1.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
@@ -160,8 +158,9 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#for certain types of RL such as DRL this can always be done
 		#and can improve convergence properties
 		a = 0.1
-		b = 0.0
-		reward = a*(5.0*(r_alive) + 0.75*r_regul) + b 
+		b = 10
+		#reward = a*(5.0*(r_alive) + 0.75*r_regul) + b 
+		reward = a*(5.0*gaussian_2d(head_pos_x, head_pos_y) + b
 		#+ (1.0)* gaussian_2d(head_pos_x, head_pos_y) + (1.0)*theta
 		
 		#Check if the balancebot fell over 
