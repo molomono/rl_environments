@@ -26,7 +26,7 @@ def rads2complex(rads):
 
 def gaussian_2d(x,y, scale_x=0.5, scale_y=0.5):
     r = np.abs(np.add(scale_x*np.power(x,2), scale_y*np.power(y,2)))
-    return 1.0 - np.tanh(1.0/(np.pi*2)*r)
+    return 1.0 - np.tanh(1.0/(np.pi*2.0)*r)
 
 def gaussian(x,sig=1.0):
     return np.exp(-np.power(sig*np.linalg.norm(x),2))
@@ -158,9 +158,9 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#for certain types of RL such as DRL this can always be done
 		#and can improve convergence properties
 		a = 1
-		b = 0
+		b = -0.5
 		#reward = a*(5.0*(r_alive) + 0.75*r_regul) + b 
-		reward = a*(5.0*gaussian_2d(head_pos_x, head_pos_y)) + b
+		reward = a*(gaussian_2d(head_pos_x, head_pos_y)) + b
 		#+ (1.0)* gaussian_2d(head_pos_x, head_pos_y) + (1.0)*theta
 		
 		#Check if the balancebot fell over 
