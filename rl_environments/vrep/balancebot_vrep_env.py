@@ -177,15 +177,15 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#starting point and magnitude of the reward function
 		#for certain types of RL such as DRL this can always be done
 		#and can improve convergence properties
-		a = 2.0
-		b = -5.0		
-		#reward = a*(5.0*(r_alive) + 0.75*r_regul) + b 
+		a = 0.1
+		b = -2.0		
+		reward = a*(5.0*(r_alive) + 0.75*r_regul) + b 
 		#reward = r_regul
 		#TODO: The reward function punishes high action, however action is torque, THIS IS FIXED NOW
 		# This seems to be bad because a change of velocity is what we want to control, 
 		# it is rather the continual accumilation of kinetic energy that we want to diminish.
 		# Therfore the accumilated VELOCITY of the weels should be punushed per time step. 
-		reward = a*( (r_alive + gaussian_2d(head_pos_x, head_pos_y)) * (0.3*r_regul + 0.7)) + b
+		#reward = a*( (r_alive + gaussian_2d(head_pos_x, head_pos_y)) - (r_regul)) + b
 		#+ (1.0)* gaussian_2d(head_pos_x, head_pos_y) + (1.0)*theta
 		
 		#Check if the balancebot fell over 
