@@ -165,7 +165,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 
 		#TODO: change the action to the deltaPos of the wheels:
 
-		r_regul = gaussian( action**2, sig=0.707)
+		r_regul = gaussian( action, sig=0.707)
 		r_alive = 2.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
@@ -176,7 +176,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#for certain types of RL such as DRL this can always be done
 		#and can improve convergence properties
 		a = 2
-		b = -2
+		b = -3
 		#reward = a*(5.0*(r_alive) + 0.75*r_regul) + b 
 		#TODO: The reward function punishes high action, however action is torque.
 		# This seems to be bad because a change of velocity is what we want to control, 
