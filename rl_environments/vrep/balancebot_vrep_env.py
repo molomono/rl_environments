@@ -118,17 +118,16 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#add the lin velocity
 		lst_o += [rel_lin_vel_x]
 
-		if "self.r_angle_old" in locals():
-			self.l_wheel_old = self.l_angle
-			self.r_wheel_old = self.r_angle
 		#add wheel angles to the observation
 		self.l_angle = self.obj_get_joint_angle(self.oh_joint[0])
 		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
 		
+		self.l_wheel_old = self.l_angle
+		self.r_wheel_old = self.r_angle
 		# I should calculate the wheel velocity in complex numbers
-		if self.r_angle in locals():
-			self.l_wheel_delta = self.l_wheel - self.l_angle_old
-			self.r_wheel_delta = self.r_wheel - self.r_angle_old
+		#if self.r_angle in locals():
+		self.l_wheel_delta = self.l_wheel - self.l_angle_old
+		self.r_wheel_delta = self.r_wheel - self.r_angle_old
 		#lst_o += [np.sin(l_angle), np.cos(l_angle)]
 		#lst_o += [np.sin(r_angle), np.cos(r_angle)]
 
