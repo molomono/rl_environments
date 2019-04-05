@@ -178,7 +178,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#starting point and magnitude of the reward function
 		#for certain types of RL such as DRL this can always be done
 		#and can improve convergence properties
-		a = 0.1
+		a = 0.5
 		b = -1.0		
 		reward = a*(5.0*(r_alive) + 0.75*r_regul) + b 
 		#reward = r_regul
