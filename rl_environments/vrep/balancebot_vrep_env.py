@@ -166,7 +166,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 
 		#TODO: change the action to the deltaPos of the wheels:
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
-		print(delta_pos)
+		#print(delta_pos)
 		r_regul = gaussian( 20* delta_pos, sig=0.707)
 		r_alive = 2.0
 		# example: different weights in reward 
@@ -177,8 +177,8 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#starting point and magnitude of the reward function
 		#for certain types of RL such as DRL this can always be done
 		#and can improve convergence properties
-		a = 2
-		b = 0		
+		a = 2.0
+		b = -5.0		
 		#reward = a*(5.0*(r_alive) + 0.75*r_regul) + b 
 		#reward = r_regul
 		#TODO: The reward function punishes high action, however action is torque, THIS IS FIXED NOW
