@@ -126,8 +126,8 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		self.r_wheel_old = self.r_angle
 		# I should calculate the wheel velocity in complex numbers
 		#if self.r_angle in locals():
-		self.l_wheel_delta = self.l_wheel - self.l_angle_old
-		self.r_wheel_delta = self.r_wheel - self.r_angle_old
+		self.l_wheel_delta = self.l_angle - self.l_wheel_old
+		self.r_wheel_delta = self.r_angle - self.r_wheel_old
 		#lst_o += [np.sin(l_angle), np.cos(l_angle)]
 		#lst_o += [np.sin(r_angle), np.cos(r_angle)]
 
