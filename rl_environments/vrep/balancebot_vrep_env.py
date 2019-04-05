@@ -178,9 +178,9 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#starting point and magnitude of the reward function
 		#for certain types of RL such as DRL this can always be done
 		#and can improve convergence properties
-		a = 0.5
+		a = 0.1
 		b = -1.0		
-		reward = a*(5.0*(r_alive) + 0.75*r_regul) + b 
+		reward = (a*(5.0*(r_alive) + 0.75*r_regul) + b) * 10
 		#reward = r_regul
 		#TODO: The reward function punishes high action, however action is torque, THIS IS FIXED NOW
 		# This seems to be bad because a change of velocity is what we want to control, 
