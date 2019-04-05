@@ -80,6 +80,13 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		self.action_space      = spaces.Box(-act,act)
 		self.observation_space = spaces.Box(-obs,obs)
 		
+		#the placeholders for the delta position of the wheel encoders
+		# i should instead instantiate them during the first step using if var in locals:
+		self.l_wheel_delta = 0.0
+		self.r_wheel_delta = 0.0
+		self.l_wheel_old = 0.0
+		self.r_wheel_old = 0.0
+
 		# #modify: optional message
 		print('BalanceBot Environment: initialized')
 	
@@ -88,7 +95,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		   The observation is stored in self.observation
 		"""
 		# start with empty list
-		lst_o = [];
+		lst_o = []
 
 		#Definition of the observation vector:
 		# [x, y, theta, base_ang_vel x 3, wheel_encoder_l, wheel_encoder_r]
@@ -111,9 +118,17 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#add the lin velocity
 		lst_o += [rel_lin_vel_x]
 
+		if self.r_angle in locals():
+			self.l_wheel_old = self.l_angle
+			self.r_wheel_old = self.r_angle
 		#add wheel angles to the observation
-		l_angle = self.obj_get_joint_angle(self.oh_joint[0])
-		r_angle = self.obj_get_joint_angle(self.oh_joint[1])
+		self.l_angle = self.obj_get_joint_angle(self.oh_joint[0])
+		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
+		
+		# I should calculate the wheel velocity in complex numbers
+		if self.r_angle in locals():
+			self.l_wheel_delta = self.l_wheel - self.l_angle_old
+			self.r_wheel_delta = self.r_wheel - self.r_angle_old
 		#lst_o += [np.sin(l_angle), np.cos(l_angle)]
 		#lst_o += [np.sin(r_angle), np.cos(r_angle)]
 
@@ -148,6 +163,9 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		head_pos_x = self.observation[0] # front/back
 		head_pos_y = self.observation[1] # left/right
 		theta  	= gaussian( self.observation[2], sig=1.5 ) 
+
+		#TODO: change the action to the deltaPos of the wheels:
+
 		r_regul = gaussian( action, sig=0.707)
 		r_alive = 2.0
 		# example: different weights in reward 
@@ -161,13 +179,16 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		a = 1
 		b = -0.5
 		#reward = a*(5.0*(r_alive) + 0.75*r_regul) + b 
+		#TODO: The reward function punishes high action, however action is torque.
+		# This seems to be bad because a change of velocity is what we want to control, 
+		# it is rather the continual accumilation of kinetic energy that we want to diminish.
+		# Therfore the accumilated VELOCITY of the weels should be punushed per time step. 
 		reward = a*(r_alive + gaussian_2d(head_pos_x, head_pos_y) * (0.5*r_regul + 0.5)) + b
 		#+ (1.0)* gaussian_2d(head_pos_x, head_pos_y) + (1.0)*theta
 		
 		#Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
 		# Early stop
-		# #modify if the episode should end earlier
 		tolerable_threshold = 0.5  #rads
 		done = (np.abs(angle_base[0]) > tolerable_threshold or np.abs(angle_base[1]) > tolerable_threshold)
 		#done = False
