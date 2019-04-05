@@ -164,8 +164,8 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		theta  	= gaussian( self.observation[2], sig=1.5 ) 
 
 		#TODO: change the action to the deltaPos of the wheels:
-
-		r_regul = gaussian( action, sig=0.707)
+		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
+		r_regul = gaussian( delta_pos, sig=0.707)
 		r_alive = 2.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
@@ -176,13 +176,13 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#for certain types of RL such as DRL this can always be done
 		#and can improve convergence properties
 		a = 2
-		b = -3
+		b = -8
 		#reward = a*(5.0*(r_alive) + 0.75*r_regul) + b 
 		#TODO: The reward function punishes high action, however action is torque.
 		# This seems to be bad because a change of velocity is what we want to control, 
 		# it is rather the continual accumilation of kinetic energy that we want to diminish.
 		# Therfore the accumilated VELOCITY of the weels should be punushed per time step. 
-		reward = a*( (r_alive + gaussian_2d(head_pos_x, head_pos_y)) * (0.3*r_regul + 0.7)) + b
+		reward = a*( (5*r_alive + gaussian_2d(head_pos_x, head_pos_y)) * (0.3*r_regul + 0.7)) + b
 		#+ (1.0)* gaussian_2d(head_pos_x, head_pos_y) + (1.0)*theta
 		
 		#Check if the balancebot fell over 
