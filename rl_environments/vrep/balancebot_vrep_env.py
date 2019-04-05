@@ -168,7 +168,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#TODO: change the action to the deltaPos of the wheels:
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
 		#print(delta_pos)
-		r_regul = gaussian( 20* delta_pos, sig=1.5)
+		r_regul = gaussian( 20* delta_pos, sig=1.0)
 		r_alive = 2.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
@@ -180,7 +180,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#and can improve convergence properties
 		a = 0.1
 		b = -1.0		
-		reward = (a*(5.0*(r_alive) + 0.75*r_regul) + b) * 10
+		reward = (a*(5.0*(r_alive) + 0.1*r_regul) + b) * 10
 		#reward = r_regul
 		#TODO: The reward function punishes high action, however action is torque, THIS IS FIXED NOW
 		# This seems to be bad because a change of velocity is what we want to control, 
