@@ -165,7 +165,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 
 		#TODO: change the action to the deltaPos of the wheels:
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
-		print(delta_pos)
+		#print(delta_pos)
 		r_regul = gaussian( delta_pos, sig=0.001)
 		r_alive = 2.0
 		# example: different weights in reward 
