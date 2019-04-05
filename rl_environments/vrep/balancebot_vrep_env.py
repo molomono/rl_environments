@@ -182,7 +182,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		# This seems to be bad because a change of velocity is what we want to control, 
 		# it is rather the continual accumilation of kinetic energy that we want to diminish.
 		# Therfore the accumilated VELOCITY of the weels should be punushed per time step. 
-		reward = a*( (5*r_alive + gaussian_2d(head_pos_x, head_pos_y)) * (0.3*r_regul + 0.7)) + b
+		reward = a*( (r_alive + gaussian_2d(head_pos_x, head_pos_y)) * (0.3*r_regul + 0.7)) + b
 		#+ (1.0)* gaussian_2d(head_pos_x, head_pos_y) + (1.0)*theta
 		
 		#Check if the balancebot fell over 
