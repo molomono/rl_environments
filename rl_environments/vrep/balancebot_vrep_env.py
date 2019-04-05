@@ -70,8 +70,8 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		# #modify: if size of observation space is different than number of joints
 		# Example: 3 dimensions of linear and angular (2) velocities + 6 additional dimension
 		# 3 =  X, Y, Theta thus planar position (Might want to expand it to the velocities as well)
-		num_obs = 12 
-		num_obs = 8 #TODO: this is used when no wheel angles are defined
+		#num_obs = 12 
+		num_obs = 10
 		# #modify: action_space and observation_space to suit your needs
 		self.joints_max_velocity = 3.0
 		act = np.array( [self.joints_max_velocity] * num_act )
@@ -129,6 +129,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#if self.r_angle in locals():
 		self.l_wheel_delta = self.l_angle - self.l_wheel_old
 		self.r_wheel_delta = self.r_angle - self.r_wheel_old
+		lst_0 += [self.l_wheel_delta, self.r_wheel_delta]
 		#lst_o += [np.sin(l_angle), np.cos(l_angle)]
 		#lst_o += [np.sin(r_angle), np.cos(r_angle)]
 
