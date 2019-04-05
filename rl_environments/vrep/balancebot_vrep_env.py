@@ -117,8 +117,11 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 
 		#add the lin velocity
 		lst_o += [rel_lin_vel_x]
-		self.l_wheel_old = self.l_angle
-		self.r_wheel_old = self.r_angle
+		try:
+			self.l_wheel_old = self.l_angle
+			self.r_wheel_old = self.r_angle
+		except:
+			pass
 		#add wheel angles to the observation
 		self.l_angle = self.obj_get_joint_angle(self.oh_joint[0])
 		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
