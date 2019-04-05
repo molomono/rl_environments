@@ -176,7 +176,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#for certain types of RL such as DRL this can always be done
 		#and can improve convergence properties
 		a = 2
-		b = -8
+		b = -6.5
 		#reward = a*(5.0*(r_alive) + 0.75*r_regul) + b 
 		#TODO: The reward function punishes high action, however action is torque.
 		# This seems to be bad because a change of velocity is what we want to control, 
