@@ -29,7 +29,7 @@ def gaussian_2d(x,y, scale_x=0.5, scale_y=0.5):
     return 1.0 - np.tanh(1.0/(np.pi*2.0)*r)
 
 def gaussian(x,sig=1.0):
-    return np.exp(-np.power(sig*np.linalg.norm(x),2))
+    return np.exp(-np.power(sig*np.linalg.norm(x),2.0))
 
 # #modify: the env class name
 class BalanceBotVrepEnv(vrep_env.VrepEnv):
@@ -165,7 +165,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 
 		#TODO: change the action to the deltaPos of the wheels:
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
-		r_regul = gaussian( delta_pos, sig=0.707)
+		r_regul = gaussian( delta_pos, sig=0.01)
 		r_alive = 2.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
