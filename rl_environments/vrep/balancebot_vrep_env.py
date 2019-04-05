@@ -129,7 +129,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#if self.r_angle in locals():
 		self.l_wheel_delta = self.l_angle - self.l_wheel_old
 		self.r_wheel_delta = self.r_angle - self.r_wheel_old
-		lst_0 += [self.l_wheel_delta, self.r_wheel_delta]
+		lst_o += [self.l_wheel_delta, self.r_wheel_delta]
 		#lst_o += [np.sin(l_angle), np.cos(l_angle)]
 		#lst_o += [np.sin(r_angle), np.cos(r_angle)]
 
