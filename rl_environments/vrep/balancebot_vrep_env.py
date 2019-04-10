@@ -72,6 +72,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		# 3 =  X, Y, Theta thus planar position (Might want to expand it to the velocities as well)
 		#num_obs = 12 
 		num_obs = 10
+
 		# #modify: action_space and observation_space to suit your needs
 		self.joints_max_velocity = 3.0
 		act = np.array( [self.joints_max_velocity] * num_act )
@@ -181,7 +182,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		a = 1.0
 		b = -1.0		
 		#reward = 1.0
-		reward = (a*(8.0*(r_alive) + 0.1*r_regul) + b) - 120
+		reward = (a*(8.0*(r_alive) + 0.1*r_regul) + b) - 8
 		#reward = r_regul
 		#TODO: The reward function punishes high action, however action is torque, THIS IS FIXED NOW
 		# This seems to be bad because a change of velocity is what we want to control, 
