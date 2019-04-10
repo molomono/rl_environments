@@ -180,7 +180,8 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#and can improve convergence properties
 		a = 0.1
 		b = -1.0		
-		reward = (a*(5.0*(r_alive) + 0.1*r_regul) + b) * 10
+		reward = 1.0
+		#reward = (a*(5.0*(r_alive) + 0.1*r_regul) + b) * 10
 		#reward = r_regul
 		#TODO: The reward function punishes high action, however action is torque, THIS IS FIXED NOW
 		# This seems to be bad because a change of velocity is what we want to control, 
