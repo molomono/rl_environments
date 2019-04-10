@@ -71,7 +71,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		# Example: 3 dimensions of linear and angular (2) velocities + 6 additional dimension
 		# 3 =  X, Y, Theta thus planar position (Might want to expand it to the velocities as well)
 		#num_obs = 12 
-		num_obs = 10
+		num_obs = 8
 
 		# #modify: action_space and observation_space to suit your needs
 		self.joints_max_velocity = 3.0
@@ -111,7 +111,8 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#robot slips, so i should transform it with a transform matrix instead, this is a quick fix for now.
 		rel_lin_vel_x = np.sqrt( np.power(lin_vel[0], 2) + np.power(lin_vel[1], 2) )
 
-		lst_o += pos[0:2]
+        #TODO: Parameterize the position to be relative to the goal. I.E. (xy_goal-xy_odom)
+		#lst_o += pos[0:2]
 		#Theta is in Radians, make it a complex number
 		lst_o += [np.sin(ang_pos[2]), np.cos(ang_pos[2])]
 		lst_o += ang_vel
