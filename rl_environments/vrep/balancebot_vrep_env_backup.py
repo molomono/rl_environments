@@ -171,6 +171,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
 		#print(delta_pos)
 		r_regul = gaussian( 20* delta_pos, sig=1.0)
+        r_pos = gaussian_2d(head_pos_x, head_pos_y)
 		r_alive = 1.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
@@ -183,9 +184,9 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#NOTE: NEW METHOD: The reward function is formulated to have a range of 0 to 1 for each time step.
 		#thus if the reward can be max 9 points than a = 0.11 for:
 		# r := a*R(x,a,x',g); whereby R(x,a,x',g) := sum(rewards) at each time step
-		a = 1.0/9.0		
+		a = 1.0/10.0		
 		#reward = 1.0
-		reward = ((8.0*(r_alive) + r_regul)) * a 
+		reward = (7.0*r_alive + r_regul + 2.0*r_pos) * a 
 		
 		#reward = (a*(8.0*(r_alive) + 0.1*r_regul) + b) - 7.0
 		#reward = r_regul
