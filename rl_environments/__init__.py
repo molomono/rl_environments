@@ -21,6 +21,12 @@ register(
     reward_threshold=100000.0
 )
 register(
+    id='VrepBalanceBot2-v0', 
+    entry_point='rl_environments.vrep.balancebot_vrep_env_2:BalanceBotVrepEnv2', 
+    max_episode_steps=10000, 
+    reward_threshold=100000.0
+)
+register(
     id='VrepHopper-v0', 
     entry_point='rl_environments.vrep.hopper_vrep_env:HopperVrepEnv', 
     max_episode_steps=1000
@@ -30,6 +36,7 @@ register(
     entry_point='rl_environments.vrep.cartpole_continuous_swingup_vrep_env:DoubleCartPoleSwingupVrepEnv', 
     max_episode_steps=500
 )
+
 
 # PyBullet
 # ----------------------------------------

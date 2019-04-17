@@ -32,7 +32,7 @@ def gaussian(x,sig=1.0):
     return np.exp(-np.power(sig*np.linalg.norm(x),2.0))
 
 # #modify: the env class name
-class BalanceBotVrepEnv(vrep_env.VrepEnv):
+class BalanceBotVrepEnv2(vrep_env.VrepEnv):
 	metadata = {
 		'render.modes': [],
 	}
@@ -48,7 +48,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		# #modify: the name of the joints to be used in action space
 		joint_names = ['l_wheel_joint','r_wheel_joint']
 		# #modify: the name of the shapes to be used in observation space
-		shape_names = ['base', 'l_wheel', 'r_wheel']
+		shape_names = ['body', 'l_wheel', 'r_wheel']
 		
 		## Getting object handles
 		# we will store V-rep object handles (oh = object handle)
@@ -71,7 +71,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		# Example: 3 dimensions of linear and angular (2) velocities + 6 additional dimension
 		# 3 =  X, Y, Theta thus planar position (Might want to expand it to the velocities as well)
 		#num_obs = 12 
-		num_obs = 10
+		num_obs = 12
 		
 		# #modify: action_space and observation_space to suit your needs
 		self.joints_max_velocity = 3.0
@@ -102,6 +102,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		pos = self.obj_get_position(self.oh_shape[0])
 		ang_pos = self.obj_get_orientation(self.oh_shape[0])
 		lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
+		lst_o2 = pos + ang_pos + lin_vel + ang_vel
 		self.ang_vel = ang_vel
 
 		#calculate the relative velocity of the balance bot
@@ -110,7 +111,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#robot slips, so i should transform it with a transform matrix instead, this is a quick fix for now.
 		rel_lin_vel_x = np.sqrt( np.power(lin_vel[0], 2) + np.power(lin_vel[1], 2) )
 
-		lst_o += pos[0:2]
+		lst_o += pos
 		#Theta is in Radians, make it a complex number
 		lst_o += [np.sin(ang_pos[2]), np.cos(ang_pos[2])]
 		lst_o += ang_vel
@@ -134,9 +135,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#lst_o += [np.sin(l_angle), np.cos(l_angle)]
 		#lst_o += [np.sin(r_angle), np.cos(r_angle)]
 
-		
-
-		self.observation = np.array(lst_o).astype('float32');
+		self.observation = np.array(lst_o2).astype('float32');
 	
 	def _make_action(self, a):
 		"""Query V-rep to make action.
@@ -171,9 +170,9 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#TODO: change the action to the deltaPos of the wheels:
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
 		#print(delta_pos)
-		r_regul = gaussian( 20* delta_pos, sig=1.0)
-		r_ang_eng = gaussian(30* np.abs(1/2 * self.ang_vel**2), sig=1.0)  #kinetic energy
-		r_alive = 1.0
+		##r_regul = gaussian( 20* delta_pos, sig=1.0)
+		##r_ang_eng = gaussian(30* np.abs(1/2 * self.ang_vel**2), sig=1.0)  #kinetic energy
+		##r_alive = 1.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
 		
@@ -185,9 +184,9 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#NOTE: NEW METHOD: The reward function is formulated to have a range of 0 to 1 for each time step.
 		#thus if the reward can be max 9 points than a = 0.11 for:
 		# r := a*R(x,a,x',g); whereby R(x,a,x',g) := sum(rewards) at each time step
-		a = 1.0/10.0		
-		reward = ((8.0*(r_alive) + r_regul + r_ang_eng)) * a 
-		
+		##a = 1.0/10.0		
+		##reward = ((8.0*(r_alive) + r_regul + r_ang_eng)) * a 
+		reward = 1.0
 		#reward = (a*(8.0*(r_alive) + 0.1*r_regul) + b) - 7.0
 		#reward = r_regul
 		#TODO: The reward function punishes high action, however action is torque, THIS IS FIXED NOW
