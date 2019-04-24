@@ -19,7 +19,7 @@ class BalanceBotNoisePyBulletEnvContinuous(BalanceBotPyBulletEnvContinuous):
                 observation[1] + np.random.normal(0,0.05),
                 observation[2] + np.random.normal(0,0.05), 
                 observation[3] + np.random.normal(0,0.05), 
-                observation[4] + np.random.normal(0,0.05))
+                observation[4] + np.random.normal(0,0.05)])
 
 
     def reset(self):
@@ -29,4 +29,4 @@ class BalanceBotNoisePyBulletEnvContinuous(BalanceBotPyBulletEnvContinuous):
                 observation[1] + np.random.normal(0,0.05),
                 observation[2] + np.random.normal(0,0.05), 
                 observation[3] + np.random.normal(0,0.05), 
-                observation[4] + np.random.normal(0,0.05))
+                observation[4] + np.random.normal(0,0.05)])
