@@ -63,7 +63,7 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         
         # paramId = p.addUserDebugParameter("My Param", 0, 100, 50)
 
-    def seed(self, seed=None):
+    def _seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
