@@ -49,8 +49,8 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         self.min_action = -5.0
         self.max_action =  5.0
         self.action_space = spaces.Box(low=self.min_action, high=self.max_action, shape=(2,))
-        self.observation_space = spaces.Box(np.array([-math.pi, -math.pi, -math.pi, -inf, -inf]), 
-                                            np.array([math.pi, math.pi, math.pi, inf, inf])) # pitch, gyro, com.sp.
+        self.observation_space = spaces.Box(np.array([-math.pi, -math.pi, -math.pi, -np.inf, -np.inf]), 
+                                            np.array([math.pi, math.pi, math.pi, np.inf, np.inf])) # pitch, gyro, com.sp.
 
         if (render):
             self.physicsClient = p.connect(p.GUI)
