@@ -1,10 +1,15 @@
 ##################### Original code written by Yconst, https://github.com/yconst/balance-bot ###################################
 ## Accompanying blogpost: https://backyardrobotics.eu/2017/11/27/build-a-balancing-bot-with-openai-gym-pt-i-setting-up/
 ## 
-
-
-########################################################################################
-#TODO: Vrep
+## Original code modified by Brian Armstrong
+## Changes:
+##      - Randomizing the Domain and Dynamics
+##      - Making the action space continuous
+##      - TODO: Changes to observation space
+##      - TODO: Gaussian noise now models a real robot sensor noise (Loomo)
+##      - TODO: Changes to the reward function
+##      - TODO: New definition for completing the environment
+##      - TODO: New Robot Model (Resembling the Loomo)
 
 import os
 import math
@@ -18,15 +23,7 @@ from gym.utils import seeding
 import pybullet as p
 import pybullet_data
 
-
-# I Think the best way to do this is declare the path to a SimulationParameters() class which 
-# can be inherrited and altered for each specific simulation environment
-# # 
-# In this file i should include generic parameters that can often/always be used for dynamics simulations:
-# list of sim.domain params [dt, g.f_mean, g.f_var, g.ang_mean, g.ang_var, seed]
-# list of env.domain params [start_orientation, start_position, ...]
-# list of dynamics params [weight, max_action.var, ... ]
-# list of feedback noise params [sensor[:]{noise mean, noise type, noise variance}, ... ]
+#TODO: Conenct to the 
 
 import yaml
 #Move this function to a seperate importable file.
@@ -59,9 +56,7 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
 
         p.setAdditionalSearchPath(pybullet_data.getDataPath())  # used by loadURDF
 
-        self.seed()
-        
-        # paramId = p.addUserDebugParameter("My Param", 0, 100, 50)
+        self._seed()
 
     def _seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
