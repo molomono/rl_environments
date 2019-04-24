@@ -137,7 +137,6 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         cubeEuler = p.getEulerFromQuaternion(cubeOrn)
         linear, angular = p.getBaseVelocity(self.botId)
         obs = list(cubeEuler + angular[0:2])
-        print(obs)
         return obs
 
     def _compute_reward(self):
