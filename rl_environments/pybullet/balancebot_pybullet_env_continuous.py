@@ -59,15 +59,15 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
 
         p.setAdditionalSearchPath(pybullet_data.getDataPath())  # used by loadURDF
 
-        self._seed()
+        self.seed()
         
         # paramId = p.addUserDebugParameter("My Param", 0, 100, 50)
 
-    def _seed(self, seed=None):
+    def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
-    def _step(self, action):
+    def step(self, action):
         self._assign_throttle(action)
         p.stepSimulation()
         self._observation = self._compute_observation()
@@ -78,7 +78,7 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
 
         return np.array(self._observation), reward, done, {}
 
-    def _reset(self):
+    def reset(self):
         # reset is called once at initialization of simulation
         self.vt = 0
         self.vd = 0
@@ -147,7 +147,7 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         cubePos, _ = p.getBasePositionAndOrientation(self.botId)
         return cubePos[2] < 0.15 or self._envStepCounter >= 1500
 
-    def _render(self, mode='human', close=False):
+    def render(self, mode='human', close=False):
         pass
 
 #def clamp(n, minn, maxn):
