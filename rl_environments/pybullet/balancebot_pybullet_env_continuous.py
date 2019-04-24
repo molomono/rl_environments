@@ -117,7 +117,6 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
 
     def _assign_throttle(self, action):
         dv = 0.1
-        #deltav = [-10.*dv,-5.*dv, -2.*dv, -0.1*dv, 0, 0.1*dv, 2.*dv,5.*dv, 10.*dv][action]
         deltav = action*dv
         vt = np.clip(self.vt + deltav, -self.maxV, self.maxV)
         self.vt = vt

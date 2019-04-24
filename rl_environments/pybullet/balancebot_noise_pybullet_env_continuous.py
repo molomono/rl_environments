@@ -16,12 +16,17 @@ class BalanceBotNoisePyBulletEnvContinuous(BalanceBotPyBulletEnvContinuous):
     def _compute_observation(self):
         observation = super(BalanceBotPyBulletEnvContinuous, self)._compute_observation()
         return np.array([observation[0] + np.random.normal(0,0.05) + self.pitch_offset,
-                observation[1] + np.random.normal(0,0.01),
-                observation[2] + np.random.normal(0,0.05)])
+                observation[1] + np.random.normal(0,0.05),
+                observation[2] + np.random.normal(0,0.05), 
+                observation[3] + np.random.normal(0,0.05), 
+                observation[4] + np.random.normal(0,0.05))
+
 
     def reset(self):
         self.pitch_offset = np.random.normal(0,0.1)
-        observation = super(BalanceBotPyBulletEnvContinuous, self)._reset()
+        observation = super(BalanceBotPyBulletEnvContinuous, self).reset()
         return np.array([observation[0] + np.random.normal(0,0.05) + self.pitch_offset,
-                observation[1] + np.random.normal(0,0.01),
-                observation[2] + np.random.normal(0,0.05)])
+                observation[1] + np.random.normal(0,0.05),
+                observation[2] + np.random.normal(0,0.05), 
+                observation[3] + np.random.normal(0,0.05), 
+                observation[4] + np.random.normal(0,0.05))
