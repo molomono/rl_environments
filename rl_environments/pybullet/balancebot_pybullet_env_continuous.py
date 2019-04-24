@@ -67,7 +67,7 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
-    def step(self, action):
+    def _step(self, action):
         self._assign_throttle(action)
         p.stepSimulation()
         self._observation = self._compute_observation()
@@ -78,7 +78,7 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
 
         return np.array(self._observation), reward, done, {}
 
-    def reset(self):
+    def _reset(self):
         # reset is called once at initialization of simulation
         self.vt = 0
         self.vd = 0
@@ -135,8 +135,7 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         cubePos, cubeOrn = p.getBasePositionAndOrientation(self.botId)
         cubeEuler = p.getEulerFromQuaternion(cubeOrn)
         linear, angular = p.getBaseVelocity(self.botId)
-        obs = list(cubeEuler + angular[0:2])
-        return obs
+        return np.array(cubeEuler + angular[0:2])
 
     def _compute_reward(self):
         return 0.1 - np.mean(abs(self.vt - self.vd)) * 0.005

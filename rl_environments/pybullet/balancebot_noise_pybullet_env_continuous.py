@@ -24,7 +24,7 @@ class BalanceBotNoisePyBulletEnvContinuous(BalanceBotPyBulletEnvContinuous):
 
     def reset(self):
         self.pitch_offset = np.random.normal(0,0.1)
-        observation = super(BalanceBotPyBulletEnvContinuous, self).reset()
+        observation = super(BalanceBotPyBulletEnvContinuous, self)._reset()
         return np.array([observation[0] + np.random.normal(0,0.05) + self.pitch_offset,
                 observation[1] + np.random.normal(0,0.05),
                 observation[2] + np.random.normal(0,0.05), 
