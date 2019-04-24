@@ -99,10 +99,13 @@ class BalanceBotPyBulletEnv(gym.Env):
         p.setTimeStep(dt) # sec
         planeId = p.loadURDF("plane.urdf")
         cubeStartPos = [0,0,0.001]
-        cubeStartOrientation = p.getQuaternionFromEuler([0,0,0])
+        tilt = (np.random.rand(1)-0.5)
+        yaw =  (np.random.rand(1)-0.5*np.pi)
+
+        cubeStartOrientation = p.getQuaternionFromEuler([tilt,0.,0.])
 
         path = os.path.abspath(os.path.dirname(__file__))
-        self.botId = p.loadURDF(os.path.join(path, "balancebot_simple.xml"),
+        self.botId = p.loadURDF(os.path.join(path, "balancebot_simple.urdf"),
                            cubeStartPos,
                            cubeStartOrientation)
 
