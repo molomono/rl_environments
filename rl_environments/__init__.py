@@ -48,8 +48,22 @@ register(
 )
 
 register(
+    id='PyBulletBalanceBotContinuous-v0',
+    entry_point='rl_environments.pybullet.balancebot_pybullet_env_continuous:BalanceBotPyBulletEnvContinuous',
+    max_episode_steps=10000,
+    reward_threshold=100000.0
+)
+
+register(
     id='PyBulletBalanceBotNoise-v0',
-    entry_point='rl_environments.pybullet.balancebot_noise_pybullet_env:BalanceBotNoisePyBulletEnv',
+    entry_point='rl_environments.pybullet.balancebot_noise_pybullet_env_continuous:BalanceBotNoisePyBulletEnv',
+    max_episode_steps=10000,
+    reward_threshold=100000.0
+)
+
+register(
+    id='PyBulletBalanceBotContinuousNoise-v0',
+    entry_point='rl_environments.pybullet.balancebot_noise_pybullet_env_continuous:BalanceBotNoisePyBulletEnvContinuous',
     max_episode_steps=10000,
     reward_threshold=100000.0
 )
