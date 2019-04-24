@@ -52,7 +52,7 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         self.observation_space = spaces.Box(np.array([-math.pi, -math.pi, -math.pi, -np.inf, -np.inf]), 
                                             np.array([math.pi, math.pi, math.pi, np.inf, np.inf])) # pitch, gyro, com.sp.
 
-        if (render):
+        if (render == False):
             self.physicsClient = p.connect(p.GUI)
         else:
             self.physicsClient = p.connect(p.DIRECT)  # non-graphical version
