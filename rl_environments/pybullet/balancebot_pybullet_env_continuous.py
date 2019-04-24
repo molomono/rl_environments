@@ -141,7 +141,7 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         return obs
 
     def _compute_reward(self):
-        return 0.1 - abs(self.vt - self.vd) * 0.005
+        return 0.1 - np.mean(abs(self.vt - self.vd)) * 0.005
 
     def _compute_done(self):
         cubePos, _ = p.getBasePositionAndOrientation(self.botId)
