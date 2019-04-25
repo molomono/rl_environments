@@ -54,10 +54,12 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         self.observation_space = spaces.Box(np.array([-math.pi, -math.pi, -math.pi, -np.inf, -np.inf]), 
                                             np.array([math.pi, math.pi, math.pi, np.inf, np.inf])) # pitch, gyro, com.sp.
 
-        if (render):
-            self.physicsClient = p.connect(p.TCP, "localhost", 6667)
-        else:
-            self.physicsClient = p.connect(p.DIRECT)  # non-graphical version
+        # if (render):
+        #     self.physicsClient = p.connect(p.TCP, "localhost", 6667)
+        # else:
+        #     self.physicsClient = p.connect(p.DIRECT)  # non-graphical version
+
+        self.physicsClient = p.connect(p.TCP, "localhost", 6667)
 
         p.setAdditionalSearchPath(pybullet_data.getDataPath())  # used by loadURDF
 
