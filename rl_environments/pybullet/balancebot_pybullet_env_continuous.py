@@ -10,6 +10,11 @@
 ##      - TODO: Changes to the reward function
 ##      - TODO: New definition for completing the environment
 ##      - TODO: New Robot Model (Resembling the Loomo)
+##
+## NOTE:
+## 1. The noise wrapper does not work yet, fix this
+## 2. The environment cannot be rendered on ubuntu due to openGL
+##      See if there is a possibility to remotely run it on windows and access it through sockets
 
 import os
 import math
@@ -50,7 +55,7 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
                                             np.array([math.pi, math.pi, math.pi, np.inf, np.inf])) # pitch, gyro, com.sp.
 
         if (render):
-            self.physicsClient = p.connect(p.GUI)
+            self.physicsClient = p.connect(p.TCP, "localhost", 6667)
         else:
             self.physicsClient = p.connect(p.DIRECT)  # non-graphical version
 
