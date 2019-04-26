@@ -145,8 +145,9 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
 
     def _compute_done(self):
         cubePos, cubeOrn = p.getBasePositionAndOrientation(self.botId)
-        print(cubeOrn)
-        return abs(cubeOrn[0]) > np.pi/3 or self._envStepCounter >= 1500
+        cubeEuler = p.getEulerFromQuaternion(cubeOrn)
+        print(cubeEuler)
+        return abs(cubeEuler[0]) > np.pi/3 or self._envStepCounter >= 1500
 
     def _render(self, mode='human', close=False):
         pass
