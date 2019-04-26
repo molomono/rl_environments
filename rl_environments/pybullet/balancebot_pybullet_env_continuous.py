@@ -145,7 +145,7 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
 
     def _compute_done(self):
         cubePos, cubeOrn = p.getBasePositionAndOrientation(self.botId)
-        return cubeOrn[0] < np.pi/3 or self._envStepCounter >= 1500
+        return abs(cubeOrn[0]) > 60 or self._envStepCounter >= 1500
 
     def _render(self, mode='human', close=False):
         pass
