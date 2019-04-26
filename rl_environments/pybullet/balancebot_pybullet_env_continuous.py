@@ -109,7 +109,8 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         cubeStartOrientation = p.getQuaternionFromEuler([tilt,0.,0.])
 
         path = os.path.abspath(os.path.dirname(__file__))
-        self.botId = p.loadURDF(os.path.join(path, "balancebot_simple.urdf"),
+        path = "C:/github/rl_environments/rl_environments/pybullet/"
+        self.botId = p.loadURDF(path + "balancebot_simple.urdf",
                            cubeStartPos,
                            cubeStartOrientation)
 
