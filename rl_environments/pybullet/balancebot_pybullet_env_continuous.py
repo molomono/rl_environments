@@ -112,8 +112,8 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         path = "C:/github/rl_environments/rl_environments/pybullet/"
         self.botId = p.loadURDF(path + "balancebot_simple.urdf",
                            cubeStartPos,
-                           cubeStartOrientation) + 1
-                           
+                           cubeStartOrientation)
+
         # you *have* to compute and return the observation from reset()
         self._observation = self._compute_observation()
         return np.array(self._observation)
