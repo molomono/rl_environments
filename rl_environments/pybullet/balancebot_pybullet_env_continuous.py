@@ -57,9 +57,9 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         # if (render):
         #     self.physicsClient = p.connect(p.TCP, "localhost", 6667)
         # else:
-        #     self.physicsClient = p.connect(p.DIRECT)  # non-graphical version
+        self.physicsClient = p.connect(p.DIRECT)  # non-graphical version
 
-        self.physicsClient = p.connect(p.TCP, "localhost", 6667)
+        #self.physicsClient = p.connect(p.TCP, "localhost", 6667)
 
         p.setAdditionalSearchPath(pybullet_data.getDataPath())  # used by loadURDF
 
@@ -109,8 +109,8 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         cubeStartOrientation = p.getQuaternionFromEuler([tilt,0.,0.])
 
         path = os.path.abspath(os.path.dirname(__file__))
-        path = "C:/github/rl_environments/rl_environments/pybullet/"
-        self.botId = p.loadURDF(path + "balancebot_simple.urdf",
+        #path = "C:/github/rl_environments/rl_environments/pybullet/"
+        self.botId = p.loadURDF(os.path.join(path, "balancebot_simple.urdf"),
                            cubeStartPos,
                            cubeStartOrientation)
 
