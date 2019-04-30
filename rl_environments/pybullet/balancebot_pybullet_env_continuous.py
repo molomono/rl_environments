@@ -46,7 +46,7 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         'video.frames_per_second' : 50
     }
 
-    def __init__(self, render=False):
+    def __init__(self, render=False, remote=True):
         self._observation = []
         self.min_action = -5.0
         self.max_action =  5.0
@@ -54,10 +54,11 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         self.observation_space = spaces.Box(np.array([-math.pi, -math.pi, -math.pi, -np.inf, -np.inf]), 
                                             np.array([math.pi, math.pi, math.pi, np.inf, np.inf])) # pitch, gyro, com.sp.
 
-        # if (render):
-        self.physicsClient = p.connect(p.TCP, "localhost", 6667)
-        # else:
-        #self.physicsClient = p.connect(p.DIRECT)  # non-graphical version
+        self.remote = remote
+        if self.remote:
+            self.physicsClient = p.connect(p.TCP, "localhost", 6667)
+        else:
+            self.physicsClient = p.connect(p.DIRECT)  # non-graphical version
 
         #self.physicsClient = p.connect(p.TCP, "localhost", 6667)
 
@@ -109,7 +110,8 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         cubeStartOrientation = p.getQuaternionFromEuler([tilt,0.,0.])
 
         path = os.path.abspath(os.path.dirname(__file__))
-        #path = "C:/github/rl_environments/rl_environments/pybullet/"
+        if self.remote:
+            path = "C:/github/rl_environments/rl_environments/pybullet/"
         self.botId = p.loadURDF(os.path.join(path, "balancebot_simple.urdf"),
                            cubeStartPos,
                            cubeStartOrientation)
