@@ -104,8 +104,8 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         p.setTimeStep(dt) # sec
         planeId = p.loadURDF("plane.urdf")
         cubeStartPos = [0,0,0.001]
-        tilt = (np.random.rand(1)-0.5)
-        yaw =  (np.random.rand(1)-0.5*np.pi)
+        tilt = (np.random.rand(1)-0.3)
+        yaw =  (np.random.rand(1)-0.3*np.pi)
 
         cubeStartOrientation = p.getQuaternionFromEuler([tilt,0.,0.])
 
