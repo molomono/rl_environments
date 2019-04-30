@@ -210,7 +210,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 			self.stop_simulation()
 		self.start_simulation()
 		
-		#Unifrom pitch randomization, changing initial starting position
+		#Unifrom pitch randomization, changing initial starting position 
 		start_pitch = np.random.uniform(-np.pi/9, np.pi/9)
 		self.obj_set_orientation(eulerAngles=np.array([start_pitch, 0.0, 0.0]))
 
