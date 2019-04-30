@@ -31,6 +31,10 @@ def gaussian_2d(x,y, scale_x=0.5, scale_y=0.5):
 def gaussian(x,sig=1.0):
     return np.exp(-np.power(sig*np.linalg.norm(x),2.0))
 
+
+## TODO: Add randomization to the start position/orientation of the loomo robot
+
+
 # #modify: the env class name
 class BalanceBotVrepEnv(vrep_env.VrepEnv):
 	metadata = {
@@ -97,17 +101,16 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		# start with empty list
 		lst_o = []
 
+		#Add IMU data, Accel 3dof and Gyros 3dof
+
+
 		#Definition of the observation vector:
-		# [x, y, theta, base_ang_vel x 3, wheel_encoder_l, wheel_encoder_r]
 		pos = self.obj_get_position(self.oh_shape[0])
 		ang_pos = self.obj_get_orientation(self.oh_shape[0])
 		lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
 		self.ang_vel = ang_vel
 
 		#calculate the relative velocity of the balance bot
-		#TODO: change the way i fixed this, but becase the balance bot is differential drive and only translates in x
-		#I'm acting like the relative velocity is the distance function between the two vectors, This does not hold true if the
-		#robot slips, so i should transform it with a transform matrix instead, this is a quick fix for now.
 		rel_lin_vel_x = np.sqrt( np.power(lin_vel[0], 2) + np.power(lin_vel[1], 2) )
 
 		lst_o += pos[0:2]
@@ -119,20 +122,16 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#add the lin velocity
 		lst_o += [rel_lin_vel_x]
 		try:
-			self.l_wheel_old = self.l_angle
-			self.r_wheel_old = self.r_angle
+		 	self.l_wheel_old = self.l_angle
+		 	self.r_wheel_old = self.r_angle
 		except:
 			pass
-		#add wheel angles to the observation
 		self.l_angle = self.obj_get_joint_angle(self.oh_joint[0])
 		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
-		# I should calculate the wheel velocity in complex numbers
-		#if self.r_angle in locals():
 		self.l_wheel_delta = self.l_angle - self.l_wheel_old
 		self.r_wheel_delta = self.r_angle - self.r_wheel_old
-		lst_o += [self.l_wheel_delta, self.r_wheel_delta]
-		#lst_o += [np.sin(l_angle), np.cos(l_angle)]
-		#lst_o += [np.sin(r_angle), np.cos(r_angle)]
+		# lst_o += [self.l_wheel_delta, self.r_wheel_delta]
+
 
 		self.observation = np.array(lst_o).astype('float32');
 	
@@ -210,6 +209,11 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		if self.sim_running:
 			self.stop_simulation()
 		self.start_simulation()
+		
+		#Unifrom 
+		start_pitch = np.random.uniform(-np.pi/9, np.pi/9)
+		self.obj_set_orientation(eulerAngles=np.array([start_pitch, 0.0, 0.0]))
+
 		self._make_observation()
 		return self.observation
 	
