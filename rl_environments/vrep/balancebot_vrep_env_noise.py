@@ -3,10 +3,17 @@
 #     all names in this file are just examples
 # Search for '#modify' and replace accordingly
 
+
+#TODO: Change the sensor readout to represent that actual sensors on the system, do this using a dict 
+# The next todo should also be part of this dict.
 #TODO: The noise is added in a very ugly way at this moment, make it modular/recursive and allow for
 #a delceration of the noise parameters earlier in the class. This will increase the usability hugely
-# I might want to add a list style decleration to regulate the sensors just for easibility, can even sub
+# I might want to add a dict style decleration to regulate the sensors just for easibility, can even sub
 # sample the different sensors independantly then.
+
+##TODO: Redo the reward function to represent the actual observable variables
+
+##TODO: Create a new environment that also allows Goal specification
 
 from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
@@ -36,8 +43,8 @@ def gaussian_2d(x,y, scale_x=0.5, scale_y=0.5):
 def gaussian(x,sig=1.0):
     return np.exp(-np.power(sig*np.linalg.norm(x),2.0))
 
+# Decleration of the balancebot sensor types, names and noises
 
-## TODO: Add randomization to the start position/orientation of the loomo robot
 
 
 # #modify: the env class name
@@ -224,7 +231,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.start_simulation()
 		
 		#Unifrom pitch randomization, changing initial starting position 
-		start_pitch = np.random.uniform(-np.pi/9, np.pi/9)
+		start_pitch = np.random.uniform(-np.pi/24, np.pi/24)
 		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, 0.0]))
         
 		self.pitch_offset = np.random.uniform(0,0.05)
@@ -247,7 +254,7 @@ def main(args):
 	   Agent does random actions with 'action_space.sample()'
 	"""
 	# #modify: the env class name
-	env = BalanceBotVrepEnv()
+	env = BalanceBotVrepEnvNoise()
 	for i_episode in range(8): 
 		observation = env.reset()
 		total_reward = 0
