@@ -210,7 +210,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 			self.stop_simulation()
 		self.start_simulation()
 		
-		#Unifrom 
+		#Unifrom pitch randomization, changing initial starting position
 		start_pitch = np.random.uniform(-np.pi/9, np.pi/9)
 		self.obj_set_orientation(eulerAngles=np.array([start_pitch, 0.0, 0.0]))
 
@@ -233,7 +233,7 @@ def main(args):
 	"""
 	# #modify: the env class name
 	env = BalanceBotVrepEnv()
-	for i_episode in range(8):
+	for i_episode in range(8): 
 		observation = env.reset()
 		total_reward = 0
 		for t in range(256):
