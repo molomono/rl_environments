@@ -55,9 +55,9 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
                                             np.array([math.pi, math.pi, math.pi, np.inf, np.inf])) # pitch, gyro, com.sp.
 
         # if (render):
-        #     self.physicsClient = p.connect(p.TCP, "localhost", 6667)
+        self.physicsClient = p.connect(p.TCP, "localhost", 6667)
         # else:
-        self.physicsClient = p.connect(p.DIRECT)  # non-graphical version
+        #self.physicsClient = p.connect(p.DIRECT)  # non-graphical version
 
         #self.physicsClient = p.connect(p.TCP, "localhost", 6667)
 
