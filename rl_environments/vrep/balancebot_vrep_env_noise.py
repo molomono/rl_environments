@@ -29,7 +29,7 @@ class BalanceBotVrepEnvNoise(BalanceBotVrepEnv):
 
     def reset(self):
         self.pitch_offset = np.random.normal(0,0.1)
-        super(BalanceBotVrepEnv, self).reset()
-        self.observation = np.array([self.observation[0] + np.random.normal(0,0.05) + self.pitch_offset,
+        self.observation = super(BalanceBotVrepEnv, self).reset()
+        return np.array([self.observation[0] + np.random.normal(0,0.05) + self.pitch_offset,
                 self.observation[1] + np.random.normal(0,0.05),
                 self.observation[2] + np.random.normal(0,0.05)])
