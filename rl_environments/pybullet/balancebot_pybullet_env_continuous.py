@@ -46,7 +46,7 @@ class BalanceBotPyBulletEnvContinuous(gym.Env):
         'video.frames_per_second' : 50
     }
 
-    def __init__(self, render=False, remote=True):
+    def __init__(self, render=False, remote=False):
         self._observation = []
         self.min_action = -5.0
         self.max_action =  5.0

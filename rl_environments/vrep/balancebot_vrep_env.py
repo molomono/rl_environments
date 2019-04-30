@@ -134,8 +134,6 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#lst_o += [np.sin(l_angle), np.cos(l_angle)]
 		#lst_o += [np.sin(r_angle), np.cos(r_angle)]
 
-		
-
 		self.observation = np.array(lst_o).astype('float32');
 	
 	def _make_action(self, a):

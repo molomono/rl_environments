@@ -36,6 +36,12 @@ register(
     entry_point='rl_environments.vrep.cartpole_continuous_swingup_vrep_env:DoubleCartPoleSwingupVrepEnv', 
     max_episode_steps=500
 )
+register(
+    id='VrepBalanceBotNoise-v0', 
+    entry_point='rl_environments.vrep.balancebot_vrep_env_noise:BalanceBotVrepEnvNoise', 
+    max_episode_steps=10000, 
+    reward_threshold=100000.0
+)
 
 
 # PyBullet
