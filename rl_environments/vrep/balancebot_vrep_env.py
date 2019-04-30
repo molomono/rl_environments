@@ -108,7 +108,6 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		pos = self.obj_get_position(self.oh_shape[0])
 		ang_pos = self.obj_get_orientation(self.oh_shape[0])
 		lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
-		self.ang_vel = ang_vel
 
 		#calculate the relative velocity of the balance bot
 		rel_lin_vel_x = np.sqrt( np.power(lin_vel[0], 2) + np.power(lin_vel[1], 2) )
@@ -117,7 +116,6 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#Theta is in Radians, make it a complex number
 		lst_o += [np.sin(ang_pos[2]), np.cos(ang_pos[2])]
 		lst_o += ang_vel
-		self.ang_vel
 
 		#add the lin velocity
 		lst_o += [rel_lin_vel_x]
@@ -130,7 +128,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
 		self.l_wheel_delta = self.l_angle - self.l_wheel_old
 		self.r_wheel_delta = self.r_angle - self.r_wheel_old
-		# lst_o += [self.l_wheel_delta, self.r_wheel_delta]
+		lst_o += [self.l_wheel_delta, self.r_wheel_delta]
 
 
 		self.observation = np.array(lst_o).astype('float32');
@@ -169,7 +167,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
 		#print(delta_pos)
 		r_regul = gaussian( 20* delta_pos, sig=1.0)
-		r_ang_eng = gaussian(30* np.abs(1/2 * self.ang_vel**2), sig=1.0)  #kinetic energy
+		#r_ang_eng = gaussian(30* np.abs(1/2 * self.ang_vel**2), sig=1.0)  #kinetic energy
 		r_alive = 1.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
@@ -183,7 +181,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		#thus if the reward can be max 9 points than a = 0.11 for:
 		# r := a*R(x,a,x',g); whereby R(x,a,x',g) := sum(rewards) at each time step
 		a = 1.0/10.0		
-		reward = ((8.0*(r_alive) + r_regul + r_ang_eng)) * a 
+		reward = ((8.0*(r_alive) + r_regul )) * a 
 		
 		#reward = (a*(8.0*(r_alive) + 0.1*r_regul) + b) - 7.0
 		#reward = r_regul
