@@ -227,8 +227,9 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		#TODO: change the action to the deltaPos of the wheels:
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
 		#print(delta_pos)
-		r_regul = gaussian( 20* delta_pos, sig=1.0)
-		#r_ang_eng = gaussian(30* np.abs(1/2 * self.ang_vel**2), sig=1.0)  #kinetic energy
+		#r_regul = gaussian( 20* delta_pos, sig=1.0)
+		r_ang_x_en = gaussian(30* np.abs(1/2 * self.observation[3]**2), sig=1.0)  #kinetic energy
+		r_ang_z_en = gaussian(30* np.abs(1/2 * self.observation[5]**2), sig=1.0)  #kinetic energy
 		r_alive = 1.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
@@ -241,8 +242,12 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		#NOTE: NEW METHOD: The reward function is formulated to have a range of 0 to 1 for each time step.
 		#thus if the reward can be max 9 points than a = 0.11 for:
 		# r := a*R(x,a,x',g); whereby R(x,a,x',g) := sum(rewards) at each time step
-		a = 1.0/10.0		
-		reward = ((8.0*(r_alive) + r_regul )) * a 
+		#a = 1.0/10.0		
+		#reward = ((8.0*(r_alive) + r_regul )) * a 
+
+		##
+		a = 1./10.
+		reward = (8.*r_alive + r_ang_x_en + r_ang_z_en) * a
 		
 		#reward = (a*(8.0*(r_alive) + 0.1*r_regul) + b) - 7.0
 		#reward = r_regul
