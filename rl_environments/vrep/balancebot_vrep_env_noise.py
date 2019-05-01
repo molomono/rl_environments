@@ -230,8 +230,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		#r_regul = gaussian( 20* delta_pos, sig=1.0)
 		r_ang_xy_en = gaussian(np.sum(np.mean(np.abs(self.observation[3:4]))**2), sig=1.0)  #kinetic energy
 		r_ang_z_en = gaussian(30* np.abs(1/2 * self.observation[5]**2))  #kinetic energy
-		print(r_ang_xy_en)
-		print(r_ang_z_en)
+		print(r_ang_xy_en, self.observation[3:4])
 		r_alive = 1.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
