@@ -180,9 +180,9 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 
 		self.observation = np.array(lst_o).astype('float32')
 
-        self.add_sensor_noise()
+		self.add_sensor_noise()
 
-    def add_sensor_noise():
+	def add_sensor_noise():
 		self.observation = np.array([self.observation[0] + np.random.normal(0,0.05) + self.pitch_offset,
 					self.observation[1] + np.random.normal(0,0.05),
 					self.observation[2] + np.random.normal(0,0.05),
