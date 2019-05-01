@@ -1,6 +1,6 @@
 
 # This file is a template for V-rep environments
-#     all names in this file are just examples
+#	 all names in this file are just examples
 # Search for '#modify' and replace accordingly
 
 
@@ -37,21 +37,57 @@ def rads2complex(rads):
 	return [np.sin(rads), np.cos(rads)]
 
 def gaussian_2d(x,y, scale_x=0.5, scale_y=0.5):
-    r = np.abs(np.add(scale_x*np.power(x,2), scale_y*np.power(y,2)))
-    return 1.0 - np.tanh(1.0/(np.pi*2.0)*r)
+	r = np.abs(np.add(scale_x*np.power(x,2), scale_y*np.power(y,2)))
+	return 1.0 - np.tanh(1.0/(np.pi*2.0)*r)
 
 def gaussian(x,sig=1.0):
-    return np.exp(-np.power(sig*np.linalg.norm(x),2.0))
-
-# Decleration of the balancebot sensor types, names and noises
-
-
+	return np.exp(-np.power(sig*np.linalg.norm(x),2.0))
 
 # #modify: the env class name
 class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 	metadata = {
 		'render.modes': [],
 	}
+	
+	#TODO: Parse the dict below to define the number of sensors and initialize the observation domain in gym 
+	# Decleration of the balancebot sensor types, names and noises
+	#structure of the dict is:
+	# Sensor_name
+	# -- value names
+	# -- sensor domain
+	# -- -- lower bound
+	# -- -- higher bound
+	# -- sensor noise
+	# -- -- mean
+	# -- -- covariance (asuming uncorrilated noise so it is a 1D list, not covar matrix)
+		
+	sensor_dict = {
+		'imu': {
+			'labels': ['x_accel', 'y_accel', 'z_accel', 'x_gyro', 'y_gyro', 'z_gyro'], #Names of the sensors this is for developer readability
+			'domain': {
+				'init': [0, 0, 0, 0, 0, 0],  #Start position of the sensor
+				'low': [0, 0, 0, 0, 0, 0],   #Lower range of sensors
+				'high': [0, 0, 0, 0, 0, 0], #Upper range of sensors
+			},
+			'noise': {
+				'mean': [0, 0, 0, 0, 0, 0],
+				'covar': [0.2, 0.2, 0.2, 0.2, 0.2, 0.2],
+			},
+		},
+		'wheel_vel': {
+			'labels': ['right', 'left'],
+			'domain': {
+				'init': [0, 0],
+				'low': [0, 0],
+				'high': [0, 0],
+			},
+			'noise': {
+				'mean': [0, 0],
+				'covar': [0.1, 0.1],
+			},
+		},
+	}
+
 	def __init__(
 		self,
 		server_addr='127.0.0.1',
@@ -92,9 +128,9 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		# #modify: action_space and observation_space to suit your needs
 		self.joints_max_velocity = 3.0
 		act = np.array( [self.joints_max_velocity] * num_act )
-		obs = np.array(          [np.inf]          * num_obs )
+		obs = np.array(		  [np.inf]		  * num_obs )
 		#TODO: Change the observation space to reflect the actual boundaries of observation
-		self.action_space      = spaces.Box(-act,act)
+		self.action_space	  = spaces.Box(-act,act)
 		self.observation_space = spaces.Box(-obs,obs)
 		
 		#the placeholders for the delta position of the wheel encoders
@@ -144,16 +180,19 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 
 		self.observation = np.array(lst_o).astype('float32')
 
+        self.add_sensor_noise()
+
+    def add_sensor_noise():
 		self.observation = np.array([self.observation[0] + np.random.normal(0,0.05) + self.pitch_offset,
-                    self.observation[1] + np.random.normal(0,0.05),
-                    self.observation[2] + np.random.normal(0,0.05),
-                    self.observation[3] + 0.0,
-                    self.observation[4] + 0.0,
-                    self.observation[5] + 0.0,
-                    self.observation[6] + 0.0,
-                    self.observation[7] + 0.0,
-                    self.observation[8] + 0.0,
-                    self.observation[9] + 0.0])
+					self.observation[1] + np.random.normal(0,0.05),
+					self.observation[2] + np.random.normal(0,0.05),
+					self.observation[3] + np.random.normal(0,0.05),
+					self.observation[4] + np.random.normal(0,0.05),
+					self.observation[5] + np.random.normal(0,0.05),
+					self.observation[6] + np.random.normal(0,0.05),
+					self.observation[7] + np.random.normal(0,0.05),
+					self.observation[8] + np.random.normal(0,0.05),
+					self.observation[9] + np.random.normal(0,0.05)])
 	
 	def _make_action(self, a):
 		"""Query V-rep to make action.
@@ -231,9 +270,9 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.start_simulation()
 		
 		#Unifrom pitch randomization, changing initial starting position 
-		start_pitch = np.random.uniform(-np.pi/24, np.pi/24)
+		start_pitch = np.random.uniform(-np.pi/12, np.pi/12)
 		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, 0.0]))
-        
+		
 		self.pitch_offset = np.random.uniform(0,0.05)
 
 		self._make_observation()
