@@ -182,7 +182,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 
 		self.add_sensor_noise()
 
-	def add_sensor_noise():
+	def add_sensor_noise(self):
 		self.observation = np.array([self.observation[0] + np.random.normal(0,0.05) + self.pitch_offset,
 					self.observation[1] + np.random.normal(0,0.05),
 					self.observation[2] + np.random.normal(0,0.05),
