@@ -8,6 +8,6 @@ setup(name='rl_environments',
       packages=['rl_environments', 'rl_environments.vrep', 'rl_environments.pybullet', 'abstract_classes'],
       version='0.0.2',
       install_requires=['pybullet', 'vrep_env'],
-      package_data={'': ['*.xml','*.urdf', '*.json', '*.yaml']},
+      package_data={'': ['*.xml','*.urdf', '*.json', '*.yaml', '*.pickle']},
       include_package_data=True
 )
