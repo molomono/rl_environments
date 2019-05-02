@@ -1,77 +1,32 @@
 import numpy as np
+import pickle
 
 class SensorInfo: 
-    # Decleration of the balancebot sensor types, names and noises
-	#structure of the dict is:
-	# Sensor_name
-	# -- value names
-	# -- sensor domain
-	# -- -- lower bound
-	# -- -- higher bound
-	# -- sensor noise
-	# -- -- mean
-	# -- -- covariance (asuming uncorrilated sensor noise so it is a 1D list, not covar matrix)
-    
-    # TODO: Add datatype declerations, float, complex, integer
 
-    sensor_dict = {
-        'imu': {
-            'labels': ['x_accel', 'y_accel', 'z_accel', 'x_gyro', 'y_gyro', 'z_gyro'], #Names of the sensors this is for developer readability
-            'domain': {
-                'init': [0, 0, 0, 0, 0, 0],  #Start position of the sensor
-                'low': [0, 0, 0, 0, 0, 0],   #Lower range of sensors
-                'high': [0, 0, 0, 0, 0, 0], #Upper range of sensors
-            },
-            'noise': {
-                'mean': [0, 0, 0, 0, 0, 0],
-                'covar': [0.2, 0.2, 0.2, 0.2, 0.2, 0.2],
-            },
-        },
-        'wheel_vel': {
-            'labels': ['right', 'left'],
-            'domain': {
-                'init': [0, 0],
-                'low': [0, 0],
-                'high': [0, 0],
-            },
-            'noise': {
-                'mean': [0., 0.],
-                'covar': [0.1, 0.1],
-            },
-        },
-        'odom':{
-            'labels': ['x', 'y', 'theta'],
-            'domain': {
-                'init': [0,0, 1+0j],
-                'low': [0, 0, 0],
-                'high': [0, 0, 0],
-            },
-            'noise': {  #noise on the odom can be used to impose drift in simulation
-                'mean': [0., 0.],
-                'covar': [0.0, 0.0],
-            },
-        },
-    }
+    def __init__(self, robot='loomo'):
+        with open('./environment_data/sensors/'+robot+'.pickle', 'rb') as handle:
+            self.sensor_dict = pickle.load(handle)
+        pass
 
-    def set_odom_init(self, odom):
+    def set_odom_2d_origin(self, odom):
         ''' Set the initialization value of the odom, used in conjunction with get_relative_pose() to calculate relative positioning
         '''
         x, y, theta = odom
         if np.iscomplexobj(theta):
-            self.sensor_dict["odom"]["domain"]["init"] = [x, y, theta]
+            self.sensor_dict["odom_2d"]["domain"]["init"] = [x, y, theta]
         else:
-            self.sensor_dict["odom"]["domain"]["init"] = [x, y, complex(np.cos(theta), np.sin(theta))]
+            self.sensor_dict["odom_2d"]["domain"]["init"] = [x, y, complex(np.cos(theta), np.sin(theta))]
 
-    def get_relative_pose(self, odom):
+    def get_relative_2d_pose(self, odom):
         ''' Converts the odometry information to relative positioning w.r.t. the last set odom 'init' point
         '''
-        xy_relative = np.array(odom[0:2]) - np.array(self.sensor_dict["odom"]["domain"]["init"][0:2])
+        xy_relative = np.array(odom[0:2]) - np.array(self.sensor_dict["odom_2d"]["domain"]["init"][0:2])
         if np.iscomplexobj(odom[2]):
-            theta = self.sensor_dict["odom"]["domain"]["init"][2] * odom[2]
+            theta = self.sensor_dict["odom_2d"]["domain"]["init"][2] * odom[2]
             return list(xy_relative) + [theta]
         else:
             # If the input is euler the math is still complex but the function returns euler
-            theta = self.sensor_dict["odom"]["domain"]["init"][2] * complex(np.cos(odom[2]), np.sin(odom[2]) )
+            theta = self.sensor_dict["odom_2d"]["domain"]["init"][2] * complex(np.cos(odom[2]), np.sin(odom[2]) )
             return list(xy_relative) + [np.arctan2( theta.imag, theta.real )]
         
     def get_n_sensors(self):
@@ -111,7 +66,6 @@ class SensorInfo:
         return mean, covar
 
 
-
 if __name__=="__main__":
     sensors = SensorInfo()
     
@@ -125,8 +79,8 @@ if __name__=="__main__":
     print(np.random.normal( mean, covar))
 
     print('-------------------------------------')
-    print(sensors.get_relative_pose([1,2,0+1j]))
-    print(sensors.sensor_dict["odom"]["domain"]["init"][2])
-    sensors.set_odom_init( [1, 2, np.pi/4] )
-    print(sensors.sensor_dict["odom"]["domain"]["init"][2])
-    print(sensors.get_relative_pose([1,2, np.pi*4])) 
+    print(sensors.get_relative_2d_pose([1,2,0+1j]))
+    print(sensors.sensor_dict["odom_2d"]["domain"]["init"][2])
+    sensors.set_odom_2d_origin( [1, 2, np.pi/4] )
+    print(sensors.sensor_dict["odom_2d"]["domain"]["init"][2])
+    print(sensors.get_relative_2d_pose([1,2, np.pi*4])) 

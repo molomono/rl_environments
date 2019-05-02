@@ -6,10 +6,6 @@
 
 #TODO: Change the sensor readout to represent that actual sensors on the system, do this using a dict 
 # The next todo should also be part of this dict.
-#TODO: The noise is added in a very ugly way at this moment, make it modular/recursive and allow for
-#a delceration of the noise parameters earlier in the class. This will increase the usability hugely
-# I might want to add a dict style decleration to regulate the sensors just for easibility, can even sub
-# sample the different sensors independantly then.
 
 ##TODO: Redo the reward function to represent the actual observable variables
 
@@ -17,7 +13,6 @@
 
 from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
-from abstract_classes.sensor_info import SensorInfo
 
 import os
 if os.name == 'nt':
@@ -45,7 +40,7 @@ def gaussian(x,sig=1.0):
 	return np.exp(-np.power(sig*np.linalg.norm(x),2.0))
 
 # #modify: the env class name
-class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
+class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 	metadata = {
 		'render.modes': [],
 	}
