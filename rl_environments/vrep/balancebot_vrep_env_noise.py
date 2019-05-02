@@ -17,6 +17,7 @@
 
 from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
+from abstract_classes.sensor_info import SensorInfo
 
 import os
 if os.name == 'nt':
@@ -44,48 +45,9 @@ def gaussian(x,sig=1.0):
 	return np.exp(-np.power(sig*np.linalg.norm(x),2.0))
 
 # #modify: the env class name
-class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
+class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 	metadata = {
 		'render.modes': [],
-	}
-	
-	#TODO: Parse the dict below to define the number of sensors and initialize the observation domain in gym 
-	# Decleration of the balancebot sensor types, names and noises
-	#structure of the dict is:
-	# Sensor_name
-	# -- value names
-	# -- sensor domain
-	# -- -- lower bound
-	# -- -- higher bound
-	# -- sensor noise
-	# -- -- mean
-	# -- -- covariance (asuming uncorrilated noise so it is a 1D list, not covar matrix)
-		
-	sensor_dict = {
-		'imu': {
-			'labels': ['x_accel', 'y_accel', 'z_accel', 'x_gyro', 'y_gyro', 'z_gyro'], #Names of the sensors this is for developer readability
-			'domain': {
-				'init': [0, 0, 0, 0, 0, 0],  #Start position of the sensor
-				'low': [0, 0, 0, 0, 0, 0],   #Lower range of sensors
-				'high': [0, 0, 0, 0, 0, 0], #Upper range of sensors
-			},
-			'noise': {
-				'mean': [0, 0, 0, 0, 0, 0],
-				'covar': [0.2, 0.2, 0.2, 0.2, 0.2, 0.2],
-			},
-		},
-		'wheel_vel': {
-			'labels': ['right', 'left'],
-			'domain': {
-				'init': [0, 0],
-				'low': [0, 0],
-				'high': [0, 0],
-			},
-			'noise': {
-				'mean': [0, 0],
-				'covar': [0.1, 0.1],
-			},
-		},
 	}
 
 	def __init__(
