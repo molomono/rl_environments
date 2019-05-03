@@ -168,7 +168,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		assert self.action_space.contains(action), "Action {} ({}) is invalid".format(action, type(action))
 		
 		# Actuate
-		self._make_action(action)
+		self._make_action(action * 5)
 		# Step
 		self.step_simulation()
 		# Observe
