@@ -164,7 +164,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		"""Gym environment 'step'
 		"""
 		# #modify Either clip the actions outside the space or assert the space contains them
-		#action = action
+		
 		action = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)
 		#assert self.action_space.contains(action), "Action {} ({}) is invalid".format(action, type(action))
 		
@@ -206,7 +206,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 
 		##
 		a = 1./10.
-		reward = (10.*r_alive) * a
+		reward = (8.*r_alive + r_ang_xy_en + r_ang_z_en) * a
 		
 		#reward = (a*(8.0*(r_alive) + 0.1*r_regul) + b) - 7.0
 		#reward = r_regul
