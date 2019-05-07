@@ -185,8 +185,9 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		#TODO: change the action to the deltaPos of the wheels:
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
 		#print(delta_pos)
-		#r_regul = gaussian( 20* delta_pos, sig=1.0)
-		r_ang_xy_en = gaussian(np.sum(np.mean(np.abs(self.observation[3:5]))**2), sig=1.4)  #kinetic energy
+		r_regul = gaussian( 20* delta_pos, sig=1.0)
+		r_ang_x_en = gaussian(np.mean(np.abs(self.observation[3]s)**2), sig=1.4)  #kinetic energy
+		r_ang_y_en = gaussian(np.mean(np.abs(self.observation[4]s)**2), sig=1.4)
 		r_ang_z_en = gaussian(30* np.abs(1/2 * self.observation[5]**2))  #kinetic energy
 		#print(r_ang_xy_en, self.observation[3:5])
 		r_alive = 1.0
@@ -205,8 +206,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		#reward = ((8.0*(r_alive) + r_regul )) * a 
 
 		##
-		a = 1./10.
-		reward = (8.*r_alive + r_ang_xy_en + r_ang_z_en) * a
+		a = 1./11.
+		reward = (7.*r_alive + r_regul + r_ang_x_en + r_ang_y_en + r_ang_z_en) * a
 		
 		#reward = (a*(8.0*(r_alive) + 0.1*r_regul) + b) - 7.0
 		#reward = r_regul
