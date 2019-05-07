@@ -206,8 +206,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		#reward = ((8.0*(r_alive) + r_regul )) * a 
 
 		##
-		a = 1./11.
-		reward = (8.*r_alive + r_regul + r_ang_z_en) * a
+		a = 1./9.
+		reward = (8.*r_alive + r_regul) * a
 		
 		#reward = (a*(8.0*(r_alive) + 0.1*r_regul) + b) - 7.0
 		#reward = r_regul
