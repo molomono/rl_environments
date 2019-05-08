@@ -49,7 +49,6 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self,
 		server_addr='127.0.0.1',
 		server_port=19997,
-		# #modify: the filename of your v-rep scene
 		scene_path=vrep_scenes_path+'/balance_test.ttt'
 	):
 		
@@ -235,7 +234,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.start_simulation()
 		
 		#Unifrom pitch randomization, changing initial starting position 
-		start_pitch = np.random.uniform(-np.pi/12, np.pi/12)
+		start_pitch = np.random.uniform(-np.pi/24, np.pi/24)
 		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, 0.0]))
 		
 		self.pitch_offset = np.random.uniform(0,0.05)

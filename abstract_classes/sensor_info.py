@@ -2,7 +2,8 @@ import numpy as np
 import pickle
 
 class SensorInfo: 
-
+    ''' Sensor Info class loads the .pickle file containing the domains and noise specifications for all the sensors in the specified system
+    '''
     def __init__(self, robot='loomo'):
         with open('./environment_data/sensors/'+robot+'.pickle', 'rb') as handle:
             self.sensor_dict = pickle.load(handle)
