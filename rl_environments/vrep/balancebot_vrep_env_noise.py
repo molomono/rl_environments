@@ -14,7 +14,7 @@
 from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
 
-from sensor_info import SensorInfo
+from abstract_classes.sensor_info import SensorInfo
 
 import os
 if os.name == 'nt':
