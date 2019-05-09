@@ -14,6 +14,8 @@
 from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
 
+from sensor_info import SensorInfo
+
 import os
 if os.name == 'nt':
 	#print('If you are running this code on windows you need to manually define the vrep scene path in each respective environment.')
@@ -40,7 +42,7 @@ def gaussian(x,sig=1.0):
 	return np.exp(-np.power(sig*np.sum(np.abs(x)),2.0))
 
 # #modify: the env class name
-class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
+class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 	metadata = {
 		'render.modes': [],
 	}
@@ -139,6 +141,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.add_sensor_noise()
 
 	def add_sensor_noise(self):
+		#mean, covar = sensors.get_sensor_noise_params()
+    	#self.observation = self.observation + np.random.normal( mean, covar)
 		self.observation = np.array([self.observation[0] + np.random.normal(0,0.05),
 					self.observation[1] + np.random.normal(0,0.05),
 					self.observation[2] + np.random.normal(0,0.05),
@@ -187,7 +191,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		r_regul = gaussian( 20* delta_pos, sig=1.0)
 		#r_ang_x_en = gaussian(np.mean(np.abs(self.observation[3])**2), sig=1.4)  #kinetic energy
 		#r_ang_y_en = gaussian(np.mean(np.abs(self.observation[4])**2), sig=1.4)
-		r_ang_z_en = gaussian(30* np.abs(1/2 * self.observation[5]**2))  #kinetic energy
+		r_ang_en = gaussian(30* self.observation[3:5] )  #kinetic angular energy
 		#print(r_ang_xy_en, self.observation[3:5])
 		r_alive = 1.0
 		# example: different weights in reward 
@@ -205,8 +209,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		#reward = ((8.0*(r_alive) + r_regul )) * a 
 
 		##
-		a = 1./9.
-		reward = (8.*r_alive + r_regul) * a
+		a = 1./11.
+		reward = (8.*r_alive + r_regul + 2.*r_ang_en) * a
 		
 		#reward = (a*(8.0*(r_alive) + 0.1*r_regul) + b) - 7.0
 		#reward = r_regul

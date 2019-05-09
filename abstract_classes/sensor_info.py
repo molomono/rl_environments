@@ -56,7 +56,7 @@ class SensorInfo:
             low += self.sensor_dict.get(key)["domain"]["high"]
         return high, low
 
-    def get_sensor_noise(self):
+    def get_sensor_noise_params(self):
         ''' Parse the sensor dictionary and returns the mean and covariance of the sensors.
         '''
         mean = []
@@ -66,6 +66,9 @@ class SensorInfo:
             covar = covar + self.sensor_dict.get(key)["noise"]["covar"]
         return mean, covar
 
+    def get_sensor_noise(self):
+        mean, covar = self.get_sensor_noise_params()
+        return np.random.normal( mean, covar)
 
 if __name__=="__main__":
     sensors = SensorInfo()
@@ -76,7 +79,7 @@ if __name__=="__main__":
     
     print(sensors.get_observation_domain())
     
-    mean, covar = sensors.get_sensor_noise()
+    mean, covar = sensors.get_sensor_noise_params()
     print(np.random.normal( mean, covar))
 
     print('-------------------------------------')
@@ -85,3 +88,5 @@ if __name__=="__main__":
     sensors.set_odom_2d_origin( [1, 2, np.pi/4] )
     print(sensors.sensor_dict["odom_2d"]["domain"]["init"][2])
     print(sensors.get_relative_2d_pose([1,2, np.pi*4])) 
+
+    print(sensors.get_sensor_noise())
