@@ -37,7 +37,7 @@ def gaussian_2d(x,y, scale_x=0.5, scale_y=0.5):
 	return 1.0 - np.tanh(1.0/(np.pi*2.0)*r)
 
 def gaussian(x,sig=1.0):
-	return np.exp(-np.power(sig*np.linalg.norm(x),2.0))
+	return np.exp(-np.power(sig*np.sum(np.abs(x)),2.0))
 
 # #modify: the env class name
 class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
