@@ -199,7 +199,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 
 		##
 		a = 1./9.
-		reward = (8.*r_alive + r_reguls) * a
+		reward = (8.*r_alive + r_regul) * a
 		
 		
 		#Check if the balancebot fell over 

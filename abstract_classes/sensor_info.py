@@ -30,13 +30,13 @@ class SensorInfo:
             theta = self.sensor_dict["odom_2d"]["domain"]["init"][2] * complex(np.cos(odom[2]), np.sin(odom[2]) )
             return list(xy_relative) + [np.arctan2( theta.imag, theta.real )]
         
-    def get_n_sensors(self):
+    def get_n_obs(self):
         ''' Parse the sensor dictionary and returns the total number of sensors.
         '''
-        n_sensors = 0
+        n_obs = 0
         for key in self.sensor_dict.keys():
-            n_sensors += len(self.sensor_dict.get(key)["labels"] )
-        return n_sensors
+            n_obs += len(self.sensor_dict.get(key)["labels"] )
+        return n_obs
 
     def get_sensor_labels(self):
         ''' Parse the sensor dictionary and returns sensor labels
