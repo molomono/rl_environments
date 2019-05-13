@@ -1,4 +1,8 @@
-
+###########
+###########---- Big TODO: Stop the simulation environment when exiting the final simulation iteration
+###########---- env.env.close()  or env.close() can be used to reset the scene, stop the simulation and disconnect TCP. 
+###########---- This is necisarry other wise i need to manually pause the simulation before i can connect using a new AI.
+###########
 # This file is a template for V-rep environments
 #	 all names in this file are just examples
 # Search for '#modify' and replace accordingly
@@ -6,10 +10,10 @@
 
 #TODO: Change the sensor readout to represent that actual sensors on the system, do this using a dict 
 # The next todo should also be part of this dict.
-
 ##TODO: Redo the reward function to represent the actual observable variables
-
 ##TODO: Create a new environment that also allows Goal specification
+
+
 
 from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
@@ -239,7 +243,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 	
 def main(args):
 	"""main function used as test and example.
-	   Agent does random actions with 'action_space.sample()'
+	   Agent takes random actions using 'env.action_space.sample()'
 	"""
 	# #modify: the env class name
 	env = BalanceBotVrepEnvNoise()
