@@ -8,12 +8,47 @@
 # Search for '#modify' and replace accordingly
 
 
-#TODO: Change the sensor readout to represent that actual sensors on the system, do this using a dict 
-# The next todo should also be part of this dict.
-##TODO: Redo the reward function to represent the actual observable variables
-##TODO: Create a new environment that also allows Goal specification
+#################### WIP environment #######################
+#TODO: Need to alter the observation space to contain observation, achieved goal and desired goal
+#TODO: add compute_reward function, which is a function of achieved_goal vs desired_goal.
+############################################################
 
+'''
+class GoalEnv(Env):
+    """A goal-based environment. It functions just as any regular OpenAI Gym environment but it
+    imposes a required structure on the observation_space. More concretely, the observation
+    space is required to contain at least three elements, namely `observation`, `desired_goal`, and
+    `achieved_goal`. Here, `desired_goal` specifies the goal that the agent should attempt to achieve.
+    `achieved_goal` is the goal that it currently achieved instead. `observation` contains the
+    actual observations of the environment as per usual.
+    """
 
+    def reset(self):
+        # Enforce that each GoalEnv uses a Goal-compatible observation space.
+        if not isinstance(self.observation_space, gym.spaces.Dict):
+            raise error.Error('GoalEnv requires an observation space of type gym.spaces.Dict')
+        for key in ['observation', 'achieved_goal', 'desired_goal']:
+            if key not in self.observation_space.spaces:
+                raise error.Error('GoalEnv requires the "{}" key to be part of the observation dictionary.'.format(key))
+
+    def compute_reward(self, achieved_goal, desired_goal, info):
+        """Compute the step reward. This externalizes the reward function and makes
+        it dependent on an a desired goal and the one that was achieved. If you wish to include
+        additional rewards that are independent of the goal, you can include the necessary values
+        to derive it in info and compute it accordingly.
+        Args:
+            achieved_goal (object): the goal that was achieved during execution
+            desired_goal (object): the desired goal that we asked the agent to attempt to achieve
+            info (dict): an info dictionary with additional information
+        Returns:
+            float: The reward that corresponds to the provided achieved goal w.r.t. to the desired
+            goal. Note that the following should always hold true:
+                ob, reward, done, info = env.step()
+                assert reward == env.compute_reward(ob['achieved_goal'], ob['goal'], info)
+        """
+        raise NotImplementedError
+'''
+VECTOR_ACTION = True
 
 from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
@@ -170,8 +205,13 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 	def step(self, action):
 		"""Gym environment 'step'
 		"""
+        # transform the action from vector (lin and rot action) to motor control
+		if VECTOR_ACTION:
+			kinematics = np.matrix([[-1, 1], [1, 1]])
+			normalize_action = lambda x: x * 1./np.linalg.norm(x) * self.joints_max_velocity
+			action = normalize_action(np.matrix(action) * kinematics)
+
 		# #modify Either clip the actions outside the space or assert the space contains them
-		
 		action = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)
 		#assert self.action_space.contains(action), "Action {} ({}) is invalid".format(action, type(action))
 		
@@ -183,7 +223,21 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		self._make_observation()
 		
 		# Reward
-		# #modify the reward computation
+		reward = compute_reward(action)
+		
+		#Check if the balancebot fell over 
+		angle_base = self.obj_get_orientation(self.oh_shape[0])
+		# Early stop
+		tolerable_threshold = 0.707  #rads
+		done = (np.abs(angle_base[0]) > tolerable_threshold or np.abs(angle_base[1]) > tolerable_threshold)
+		#done = False
+		
+		return self.observation, reward, done, {}
+	
+	def compute_reward(self, action, achieved_goal=None, desired_goal=None, info=None):
+		''' This function takes in observations, actions and goals and outputs reward
+		'''
+        #modify the reward computation
 		# example: possible variables used in reward
 		head_pos_x = self.observation[0] # front/back
 		head_pos_y = self.observation[1] # left/right
@@ -203,18 +257,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 
 		##
 		a = 1./9.
-		reward = (8.*r_alive + r_regul) * a
-		
-		
-		#Check if the balancebot fell over 
-		angle_base = self.obj_get_orientation(self.oh_shape[0])
-		# Early stop
-		tolerable_threshold = 0.707  #rads
-		done = (np.abs(angle_base[0]) > tolerable_threshold or np.abs(angle_base[1]) > tolerable_threshold)
-		#done = False
-		
-		return self.observation, reward, done, {}
-	
+		return (8.*r_alive + r_regul) * a
+
 	def reset(self):
 		"""Gym environment 'reset'
 		"""
