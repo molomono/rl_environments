@@ -210,7 +210,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 			print("original action: ", action)
 			kinematics = np.matrix([[-1, 1], [1, 1]])
 			normalize_action = lambda x: np.asarray(x * 1./np.linalg.norm(x) * self.joints_max_velocity)
-			action = normalize_action(np.matrix(action) * kinematics)
+			action = np.array(normalize_action(np.matrix(action) * kinematics)).reshape(-1)
 			print("New Action: ", action)
 
 		# #modify Either clip the actions outside the space or assert the space contains them
