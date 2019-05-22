@@ -207,9 +207,11 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		"""
         # transform the action from vector (lin and rot action) to motor control
 		if VECTOR_ACTION:
+			print("original action: ", action)
 			kinematics = np.matrix([[-1, 1], [1, 1]])
 			normalize_action = lambda x: np.asarray(x * 1./np.linalg.norm(x) * self.joints_max_velocity)
 			action = normalize_action(np.matrix(action) * kinematics)
+			print("New Action: ", action)
 
 		# #modify Either clip the actions outside the space or assert the space contains them
 		action = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)
@@ -223,7 +225,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		self._make_observation()
 		
 		# Reward
-		reward = compute_reward(action)
+		reward = self.compute_reward(action)
 		
 		#Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
