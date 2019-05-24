@@ -42,6 +42,12 @@ register(
     max_episode_steps=10000, 
     reward_threshold=100000.0
 )
+register(
+    id='VrepBalanceBotGoal-v0',
+    entry_point='rl_environments.vrep.balancebot_goal_vrep_env_noise:BalanceBotVrepEnvNoiseGoal',
+    max_episode_steps=10000,
+    reward_threshold=100000.0
+)
 
 
 # PyBullet
