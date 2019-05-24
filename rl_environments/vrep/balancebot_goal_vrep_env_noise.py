@@ -152,7 +152,7 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		# Observation dict keys: ['observation', 'achieved_goal', 'desired_goal']
 		# IMU:
 		# X.. Y.. Z.. 				: observation
-		force, torque = self.obj_read_force_sensor(self.oh_shape[self.forcesensor])
+		force, torque = self.obj_read_force_sensor(self.forcesensor)
 		accel = np.asarray(force) / 1.000e-3
 		print('Acceleration',accel)
 		# roll. yaw. 				: observation
