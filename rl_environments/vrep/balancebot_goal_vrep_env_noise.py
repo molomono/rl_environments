@@ -152,9 +152,9 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		# Observation dict keys: ['observation', 'achieved_goal', 'desired_goal']
 		# IMU:
 		# X.. Y.. Z.. 				: observation
-		force, torque = self.obj_read_force_sensor(self.forcesensor)
-		accel = np.asarray(force) / 1.000e-3
-		print('Acceleration',accel)
+		#force, torque = self.obj_read_force_sensor(self.forcesensor)
+		#accel = np.asarray(force) / 1.000e-3
+		#print('Acceleration',accel)
 		# roll. yaw. 				: observation
 		lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
 		#i'll probably have to transform the velocity and acceleration to the robot frame
