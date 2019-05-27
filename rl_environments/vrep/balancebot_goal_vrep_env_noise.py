@@ -193,7 +193,7 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		"""
 		#TODO: Add the accelerometer
 		# start with empty list
-		obs_dict = {'observation': [], 'achieved_goal': [], 'desired_goal': []}
+		obs_dict = {'observation': None, 'achieved_goal': None, 'desired_goal': None}
 
 		#Retrieve the pose from world frame to robot base
 		pos = self.obj_get_position(self.oh_shape[0])
@@ -237,9 +237,9 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		print('pitch., x, y  ', ang_vel[1], pos[0:2])
 		
 		#append information to the observation dict
-		obs_dict['observation'] += np.array([ang_vel[0], ang_vel[2], self.r_wheel_delta, self.l_wheel_delta]).astype('float32')
+		obs_dict['observation'] = np.array([ang_vel[0], ang_vel[2], self.r_wheel_delta, self.l_wheel_delta]).astype('float32')
 		#append information to the achieved goal dict
-		obs_dict['achieved_goal'] += np.array([ang_vel[1], pos[0], pos[1]]).astype('float32')
+		obs_dict['achieved_goal'] = np.array([ang_vel[1], pos[0], pos[1]]).astype('float32')
 		#Append the goal
 		obs_dict['desired_goal'] = self.goal.copy()
 
