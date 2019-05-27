@@ -198,6 +198,8 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		#Retrieve the pose from world frame to robot base
 		pos = self.obj_get_position(self.oh_shape[0])
 		orient = self.obj_get_orientation(self.oh_shape[0])
+		#absolute yaw, part of the odom information
+		abs_yaw = orient[2]
 		#Construct Transformation matrix from world to robot base frame
 		world_to_robot_transform = transform_matrix(pos, orient)
 		#Extract the Rotation matrix from the transform matrix
@@ -237,7 +239,7 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		print('pitch., x, y  ', ang_vel[1], pos[0:2])
 		
 		#append information to the observation dict
-		obs_dict['observation'] = np.array([ang_vel[0], ang_vel[2], self.r_wheel_delta, self.l_wheel_delta]).astype('float32')
+		obs_dict['observation'] = np.array([ang_vel[0], ang_vel[2], abs_yaw, self.r_wheel_delta, self.l_wheel_delta]).astype('float32')
 		#append information to the achieved goal dict
 		obs_dict['achieved_goal'] = np.array([ang_vel[1], pos[0], pos[1]]).astype('float32')
 		#Append the goal
