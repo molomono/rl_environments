@@ -274,7 +274,7 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 			action = np.matrix(action) * kinematics
 
 		# #modify Either clip the actions outside the space or assert the space contains them
-		a = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)
+		a = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)[0]
 		print('Action: ', a)
 		# example: set a velocity for each joint
 		for i_oh, i_a in zip(self.oh_joint, a):
