@@ -268,7 +268,14 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		"""Query V-rep to make action.
 		   no return value
 		"""
-		# #modify
+        # transform the action from vector (lin and rot action) to motor control
+		if VECTOR_ACTION:
+			kinematics = np.matrix([[1, -1], [1, 1]])
+			action = np.matrix(action) * kinematics
+
+		# #modify Either clip the actions outside the space or assert the space contains them
+		a = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)
+		print('Action: ', a)
 		# example: set a velocity for each joint
 		for i_oh, i_a in zip(self.oh_joint, a):
 			self.obj_set_velocity(i_oh, i_a)
@@ -276,15 +283,6 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 	def step(self, action):
 		"""Gym environment 'step'
 		"""
-        # transform the action from vector (lin and rot action) to motor control
-		if VECTOR_ACTION:
-			kinematics = np.matrix([[-1, 1], [1, 1]])
-			action = np.matrix(action) * kinematics
-
-		# #modify Either clip the actions outside the space or assert the space contains them
-		action = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)
-		#assert self.action_space.contains(action), "Action {} ({}) is invalid".format(action, type(action))
-		
 		# Actuate
 		self._make_action(action)
 		# Step
