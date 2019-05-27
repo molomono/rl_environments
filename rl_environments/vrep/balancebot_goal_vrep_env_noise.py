@@ -264,7 +264,7 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 					self.observation[8] + np.random.normal(0,0.05),
 					self.observation[9] + np.random.normal(0,0.05)])
 	
-	def _make_action(self, a):
+	def _make_action(self, action):
 		"""Query V-rep to make action.
 		   no return value
 		"""
