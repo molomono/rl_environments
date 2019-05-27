@@ -218,7 +218,7 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		lin_vel = world_to_robot_rotation * np.matrix(lin_vel).T
 		ang_vel = world_to_robot_rotation * np.matrix(ang_vel).T
 
-		print('Angular Velocity roll., yaw.', ang_vel[0], ang_vel[2])
+		#print('Angular Velocity roll., yaw.', ang_vel[0], ang_vel[2])
 		
 		# L-Wheel-vel, R-wheel-vel	: observation
 		try:
@@ -230,13 +230,13 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
 		self.l_wheel_delta = self.l_angle - self.l_wheel_old
 		self.r_wheel_delta = self.r_angle - self.r_wheel_old
-		print('RWheel', self.r_wheel_delta, '    Lwheel', self.l_wheel_delta) 
+		#print('RWheel', self.r_wheel_delta, '    Lwheel', self.l_wheel_delta) 
 		
 		# Planar Odom: Theta  		: observation 
-		print('Position: ', pos[0:2], 'Orientation', orient[2])
+		#print('Position: ', pos[0:2], 'Orientation', orient[2])
 		# Observable Goal Info
 		# imu: pitch., odom:  X, Y
-		print('pitch., x, y  ', ang_vel[1], pos[0:2])
+		#print('pitch., x, y  ', ang_vel[1], pos[0:2])
 		
 		#append information to the observation dict
 		obs_dict['observation'] = np.array([ang_vel[0], ang_vel[2], abs_yaw, self.r_wheel_delta, self.l_wheel_delta]).astype('float32')
@@ -245,6 +245,7 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		#Append the goal
 		obs_dict['desired_goal'] = self.goal.copy()
 
+		print(obs_dict)
 		self.observation = obs_dict.copy()
 		#self.add_sensor_noise()
 
