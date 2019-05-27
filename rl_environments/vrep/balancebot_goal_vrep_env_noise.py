@@ -311,18 +311,14 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		:returns: Reward for the current timestep 
 		'''
 		#pitch velocity reward
-		r_vel_p = gaussian( self.observation[0], sig=1.5 ) 
-		
-		pos_x = achieved_goal[1] # front/back
-		pos_y = achieved_goal[2] # left/right
-
-		#normalized linear distance Reward
-		r_pos_xy = np.linalg.norm([pos_x, pos_y]) * 1./(14.1421) 
+		r_vel_p = gaussian( achieved_goal[0], sig=1.5 ) 
+		#normalized linear distance Reward, The 14.14 comes from the maximum goal distance ||10, 10||
+		r_pos_xy = np.linalg.norm([achieved_goal[1], achieved_goal[2]]) * 1./(14.1421) 
 		#reward for being alive 1 iteration
 		r_alive = 1.0
 		
 		#weight vector
-		weight_vector = np.array([10., 4., 1.])
+		weight_vector = np.array([10., 2., 2.])
 		#normalization factor
 		a = 1./(np.sum(weight_vector))
 
