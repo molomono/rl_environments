@@ -80,6 +80,39 @@ def gaussian_2d(x,y, scale_x=0.5, scale_y=0.5):
 def gaussian(x,sig=1.0):
 	return np.exp(-np.power(sig*np.sum(np.abs(x)),2.0))
 
+def trig(r):
+	return np.cos(r), np.sin(r)
+
+def transform_matrix(rotation, translation):
+	''' Returns homogeneous affine transformation matrix for a translation and rotation vector
+	:param rotation: Roll, Pitch, Yaw as a 1d numpy.array or list
+	:param translation: X, Y, Z as 1d numpy.array or list
+	:returns: 3D Homogenous transform matrix 
+	'''
+	xC, xS = trig(rotation[0])
+	yC, yS = trig(rotation[1])
+	zC, zS = trig(rotation[2])
+	dX = translation[0]
+	dY = translation[1]
+	dZ = translation[2]
+	Translate_matrix =np.array([[1, 0, 0, dX],
+								[0, 1, 0, dY],
+								[0, 0, 1, dZ],
+								[0, 0, 0, 1]])
+	Rotate_X_matrix = np.array([[1, 0, 0, 0],
+								[0, xC, -xS, 0],
+								[0, xS, xC, 0],
+								[0, 0, 0, 1]])
+	Rotate_Y_matrix = np.array([[yC, 0, yS, 0],
+								[0, 1, 0, 0],
+								[-yS, 0, yC, 0],
+								[0, 0, 0, 1]])
+	Rotate_Z_matrix = np.array([[zC, -zS, 0, 0],
+								[zS, zC, 0, 0],
+								[0, 0, 1, 0],
+								[0, 0, 0, 1]])
+	return np.dot(Rotate_Z_matrix,np.dot(Rotate_Y_matrix,np.dot(Rotate_X_matrix,Translate_matrix)))
+
 # #modify: the env class name
 class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 	metadata = {
@@ -125,11 +158,6 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		
 		# #modify: action_space and observation_space to suit your needs
 		self.joints_max_velocity = 3.0
-		act = np.array( [self.joints_max_velocity] * num_act )
-		obs = np.array(		  [np.inf]		  * num_obs )
-		#TODO: Change the observation space to reflect the actual boundaries of observation
-		self.action_space	  = spaces.Box(-act,act)
-		self.observation_space = spaces.Box(-obs,obs)
 		
 		#the placeholders for the delta position of the wheel encoders
 		# i should instead instantiate them during the first step using if var in locals:
@@ -139,14 +167,41 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		self.r_wheel_old = 0.0
 		# #modify: optional message
 		print('BalanceBot Environment: initialized')
+
+		#Example on how to initialize the GoalEnv spaces
+		self.goal = self._sample_goal()
+		self._make_observation() # creates self.observation
+		self.observation
+		self.action_space = spaces.Box(-self.joints_max_velocity., self.joints_max_velocity., shape=(num_act,), dtype='float32')
+		self.observation_space = spaces.Dict(dict(
+			desired_goal=spaces.Box(-np.inf, np.inf, shape=self.observation['achieved_goal'].shape, dtype='float32'),
+			achieved_goal=spaces.Box(-np.inf, np.inf, shape=self.observation['achieved_goal'].shape, dtype='float32'),
+			observation=spaces.Box(-np.inf, np.inf, shape=self.observation['observation'].shape, dtype='float32'),
+		))
+
+	def _sample_goal(self):
+		'''
+		Samples a goal from the goal space
+		'''
+		pitch_vel = 0.0
+		rel_x, rel_y = np.random.uniform(low = -10.0, high = 10.0, size =2)
+		return [pitch_vel, rel_x, rel_y]
 	
 	def _make_observation(self):
 		"""Query V-rep to make observation.
 		   The observation is stored in self.observation
 		"""
+		#TODO: Add the accelerometer
 		# start with empty list
-		lst_o = []
 		obs_dict = {'observation': [], 'achieved_goal': [], 'desired_goal': []}
+
+		#Retrieve the pose from world frame to robot base
+		pos = self.obj_get_position(self.oh_shape[0])
+		orient = self.obj_get_orientation(self.oh_shape[0])
+		#Construct Transformation matrix from world to robot base frame
+		world_to_robot_transform = transform_matrix(pos, orient)
+		#Extract the Rotation matrix from the transform matrix
+		world_to_robot_rotation = world_to_robot_transform[0:3,0:3] 
 
 		#Add IMU data, Accel 3dof and Gyros 3dof
 		# Observation dict keys: ['observation', 'achieved_goal', 'desired_goal']
@@ -157,9 +212,12 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		#print('Acceleration',accel)
 		# roll. yaw. 				: observation
 		lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
-		#i'll probably have to transform the velocity and acceleration to the robot frame
+		#Rotate the velocity vectors to be represented in the robot base frame
+		lin_vel = world_to_robot_rotation * np.matrix(lin_vel).T
+		ang_vel = world_to_robot_rotation * np.matrix(ang_vel).T
+
 		print('Angular Velocity roll., yaw.', ang_vel[0], ang_vel[2])
-		pitch_vel = ang_vel[1]
+		
 		# L-Wheel-vel, R-wheel-vel	: observation
 		try:
 		 	self.l_wheel_old = self.l_angle
@@ -170,49 +228,29 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
 		self.l_wheel_delta = self.l_angle - self.l_wheel_old
 		self.r_wheel_delta = self.r_angle - self.r_wheel_old
-		print('RWheel', self.r_wheel_delta, '    Lwheel', self.l_wheel_delta)
+		print('RWheel', self.r_wheel_delta, '    Lwheel', self.l_wheel_delta) 
+		
 		# Planar Odom: Theta  		: observation 
-		pos = self.obj_get_position(self.oh_shape[0])[0:2]
-		orient = self.obj_get_orientation(self.oh_shape[0])[2]
-		print('Position: ', pos, 'Orientation', orient)
+		print('Position: ', pos[0:2], 'Orientation', orient[2])
 		# Observable Goal Info
 		# imu: pitch., odom:  X, Y
-		print('pitch., x, y  ', pitch_vel, pos)
-		# 
-		#
+		print('pitch., x, y  ', ang_vel[1], pos[0:2])
+		
+		#append information to the observation dict
+		obs_dict['observation'] += np.array([ang_vel[0], ang_vel[2], self.r_wheel_delta, self.l_wheel_delta]).astype('float32')
+		#append information to the achieved goal dict
+		obs_dict['achieved_goal'] += np.array([ang_vel[1], pos[0], pos[1]]).astype('float32')
+		#Append the goal
+		obs_dict['desired_goal'] = self.goal.copy()
 
+		self.observation = obs_dict.copy()
+		#self.add_sensor_noise()
 
-		#Definition of the observation vector:
-		pos = self.obj_get_position(self.oh_shape[0])
-		ang_pos = self.obj_get_orientation(self.oh_shape[0])
-		lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
-
-		#calculate the relative velocity of the balance bot
-		rel_lin_vel_x = np.sqrt( np.power(lin_vel[0], 2) + np.power(lin_vel[1], 2) )
-
-		lst_o += pos[0:2]
-		#Theta is in Radians, make it a complex number
-		lst_o += [np.sin(ang_pos[2]), np.cos(ang_pos[2])]
-		lst_o += ang_vel
-
-		#add the lin velocity
-		lst_o += [rel_lin_vel_x]
-		try:
-		 	self.l_wheel_old = self.l_angle
-		 	self.r_wheel_old = self.r_angle
-		except:
-			pass
-		self.l_angle = self.obj_get_joint_angle(self.oh_joint[0])
-		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
-		self.l_wheel_delta = self.l_angle - self.l_wheel_old
-		self.r_wheel_delta = self.r_angle - self.r_wheel_old
-		lst_o += [self.l_wheel_delta, self.r_wheel_delta]
-
-		self.observation = np.array(lst_o).astype('float32')
-
-		self.add_sensor_noise()
+		#for simplicity reasons, make this function return a dict of the observation + achieved goal
+		# return {'observation': obs.copy(), 'achieved_goal': achieved_goal.copy(), 'desired_goal':self.goal.copy()}
 
 	def add_sensor_noise(self):
+		print("this function needs to be reworked for the GoalEnv class")
 		#mean, covar = sensors.get_sensor_noise_params()
     	#self.observation = self.observation + np.random.normal( mean, covar)
 		self.observation = np.array([self.observation[0] + np.random.normal(0,0.05),
@@ -255,41 +293,41 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		self._make_observation()
 		
 		# Reward
-		reward = self.compute_reward(action)
+		reward = self.compute_reward(action, self.observation['achieved_goal'], self.observation['desired_goal'])
 		
 		#Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
 		# Early stop
-		tolerable_threshold = 0.707  #rads
+		tolerable_threshold = np.pi/6.  #rads
 		done = (np.abs(angle_base[0]) > tolerable_threshold or np.abs(angle_base[1]) > tolerable_threshold)
-		#done = False
 		
 		return self.observation, reward, done, {}
 	
-	def compute_reward(self, action, achieved_goal=None, desired_goal=None, info=None):
+	def compute_reward(self, action, achieved_goal, desired_goal):
 		''' This function takes in observations, actions and goals and outputs reward
+		:param action: the policy action
+		:param achieved_goal: the observed goal state
+		:param desired_goal: The final desired goal state
+		
+		:returns: Reward for the current timestep 
 		'''
-        #modify the reward computation
-		# example: possible variables used in reward
-		head_pos_x = self.observation[0] # front/back
-		head_pos_y = self.observation[1] # left/right
-		theta  	= gaussian( self.observation[2], sig=1.5 ) 
+		#pitch velocity reward
+		r_vel_p = gaussian( self.observation[0], sig=1.5 ) 
+		
+		pos_x = achieved_goal[1] # front/back
+		pos_y = achieved_goal[2] # left/right
 
-		#TODO: change the action to the deltaPos of the wheels:
-		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
-		#print(delta_pos)
-		r_regul = gaussian( 20* delta_pos, sig=1.0)
-		#r_ang_xy_en = gaussian(self.observation[3:4]*10, sig=1.4)  #kinetic energy
-		#r_ang_y_en = gaussian(self.observation[4]*20, sig=1.4)
-		#r_ang_z_en = gaussian(30* self.observation[5] )  #kinetic angular energy
-		#print(r_ang_xy_en, self.observation[3:5])
+		#normalized linear distance Reward
+		r_pos_xy = np.linalg.norm([pos_x, pos_y]) * 1./(14.1421) 
+		#reward for being alive 1 iteration
 		r_alive = 1.0
-		# example: different weights in reward 
-		#attempts to stay alive and stay centered
+		
+		#weight vector
+		weight_vector = np.array([10., 4., 1.])
+		#normalization factor
+		a = 1./(np.sum(weight_vector))
 
-		##
-		a = 1./9.
-		return (8.*r_alive + r_regul) * a
+		return (weight_vector[0]*r_alive + weight_vector[1]*r_pos_xy + weight_vector[2]*r_vel_p) * a
 
 	def reset(self):
 		"""Gym environment 'reset'
@@ -330,7 +368,7 @@ def main(args):
 	   Agent takes random actions using 'env.action_space.sample()'
 	"""
 	# #modify: the env class name
-	env = BalanceBotVrepEnvNoise()
+	env = BalanceBotVrepEnvNoiseGoal()
 	for i_episode in range(8): 
 		observation = env.reset()
 		total_reward = 0
