@@ -287,6 +287,7 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 	def step(self, action):
 		"""Gym environment 'step'
 		"""
+		
 		# Actuate
 		self._make_action(action)
 		# Step
@@ -303,7 +304,7 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		tolerable_threshold = np.pi/6.  #rads
 		done = (np.abs(angle_base[0]) > tolerable_threshold or np.abs(angle_base[1]) > tolerable_threshold)
 		
-		return self.observation, reward, done, {}
+		return self.observation.copy(), reward.copy(), bool(done), {}
 	
 	def compute_reward(self, action, achieved_goal, desired_goal):
 		''' This function takes in observations, actions and goals and outputs reward
