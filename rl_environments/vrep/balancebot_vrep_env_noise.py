@@ -156,7 +156,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		num_obs = 8
 		
 		# #modify: action_space and observation_space to suit your needs
-		self.joints_max_velocity = 3.0
+		self.joints_max_velocity = 6.0
 		act = np.array( [self.joints_max_velocity] * num_act )
 		obs = np.array(		  [np.inf]		  * num_obs )
 		#TODO: Change the observation space to reflect the actual boundaries of observation
@@ -321,7 +321,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 
 		#TODO: change the action to the deltaPos of the wheels:
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
-		r_regul = gaussian(delta_pos, sig=0.3)
+		r_regul = gaussian(delta_pos, sig=2.0)
 		
 		print("regulation factors, wheel: {}, pitch: {}".format(r_regul, theta))
 		##
