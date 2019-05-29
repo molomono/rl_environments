@@ -323,11 +323,11 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
 		r_regul = gaussian( 20* delta_pos, sig=1.0)
 		
-
+		print("regulation facotrs, wheel: {}, pitch: {}".format(r_regul, theta))
 		##
 		r_alive = 1.0
 		a = 1./10.
-		return (8.*r_alive + theta + r_alive) * a
+		return (8.*r_alive + theta + r_regul) * a
 
 	def reset(self):
 		"""Gym environment 'reset'
