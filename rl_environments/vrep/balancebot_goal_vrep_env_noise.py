@@ -238,7 +238,7 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		# Observable Goal Info
 		# imu: pitch., odom:  X, Y
 		#print('pitch., x, y  ', ang_vel[1], pos[0:2])
-		
+		#self.observation = np.array([ang_vel[0], ang_vel[2], abs_yaw, ang_vel[1], pos[0], pos[1], self.r_wheel_delta, self.l_wheel_delta])
 		#append information to the observation dict
 		obs_dict['observation'] = np.array([ang_vel[0], ang_vel[2], abs_yaw, self.r_wheel_delta, self.l_wheel_delta]).astype('float32')
 		#append information to the achieved goal dict

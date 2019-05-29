@@ -80,6 +80,39 @@ def gaussian_2d(x,y, scale_x=0.5, scale_y=0.5):
 def gaussian(x,sig=1.0):
 	return np.exp(-np.power(sig*np.sum(np.abs(x)),2.0))
 
+def trig(r):
+	return np.cos(r), np.sin(r)
+
+def transform_matrix(rotation, translation):
+	''' Returns homogeneous affine transformation matrix for a translation and rotation vector
+	:param rotation: Roll, Pitch, Yaw as a 1d numpy.array or list
+	:param translation: X, Y, Z as 1d numpy.array or list
+	:returns: 3D Homogenous transform matrix 
+	'''
+	xC, xS = trig(rotation[0])
+	yC, yS = trig(rotation[1])
+	zC, zS = trig(rotation[2])
+	dX = translation[0]
+	dY = translation[1]
+	dZ = translation[2]
+	Translate_matrix =np.array([[1, 0, 0, dX],
+								[0, 1, 0, dY],
+								[0, 0, 1, dZ],
+								[0, 0, 0, 1]])
+	Rotate_X_matrix = np.array([[1, 0, 0, 0],
+								[0, xC, -xS, 0],
+								[0, xS, xC, 0],
+								[0, 0, 0, 1]])
+	Rotate_Y_matrix = np.array([[yC, 0, yS, 0],
+								[0, 1, 0, 0],
+								[-yS, 0, yC, 0],
+								[0, 0, 0, 1]])
+	Rotate_Z_matrix = np.array([[zC, -zS, 0, 0],
+								[zS, zC, 0, 0],
+								[0, 0, 1, 0],
+								[0, 0, 0, 1]])
+	return np.dot(Rotate_Z_matrix,np.dot(Rotate_Y_matrix,np.dot(Rotate_X_matrix,Translate_matrix)))
+
 # #modify: the env class name
 class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 	metadata = {
@@ -139,6 +172,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# #modify: optional message
 		print('BalanceBot Environment: initialized')
 	
+	'''
 	def _make_observation(self):
 		"""Query V-rep to make observation.
 		   The observation is stored in self.observation
@@ -178,7 +212,52 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		self.observation = np.array(lst_o).astype('float32')
 
 		self.add_sensor_noise()
+	'''
+		
+	def _make_observation(self):
+		"""Query V-rep to make observation.
+		   The observation is stored in self.observation
+		"""
+		#TODO: Add the accelerometer
+		# start with empty list
+		obs_dict = {'observation': None, 'achieved_goal': None, 'desired_goal': None}
 
+		#Retrieve the pose from world frame to robot base
+		pos = self.obj_get_position(self.oh_shape[0])
+		orient = self.obj_get_orientation(self.oh_shape[0])
+		#absolute yaw, part of the odom information
+		abs_yaw = orient[2]
+		#Construct Transformation matrix from world to robot base frame
+		world_to_robot_transform = transform_matrix(pos, orient)
+		#Extract the Rotation matrix from the transform matrix
+		world_to_robot_rotation = world_to_robot_transform[0:3,0:3] 
+
+		#Add IMU data, Accel 3dof and Gyros 3dof
+		# Observation dict keys: ['observation', 'achieved_goal', 'desired_goal']
+		# IMU:
+		# X.. Y.. Z.. 				: observation
+		#force, torque = self.obj_read_force_sensor(self.forcesensor)
+		#accel = np.asarray(force) / 1.000e-3
+		#print('Acceleration',accel)
+		# roll. yaw. 				: observation
+		lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
+		#Rotate the velocity vectors to be represented in the robot base frame
+		lin_vel = world_to_robot_rotation * np.matrix(lin_vel).T
+		ang_vel = world_to_robot_rotation * np.matrix(ang_vel).T
+
+		# L-Wheel-vel, R-wheel-vel	: observation
+		try:
+		 	self.l_wheel_old = self.l_angle
+		 	self.r_wheel_old = self.r_angle
+		except:
+			pass
+		self.l_angle = self.obj_get_joint_angle(self.oh_joint[0])
+		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
+		self.l_wheel_delta = self.l_angle - self.l_wheel_old
+		self.r_wheel_delta = self.r_angle - self.r_wheel_old
+		
+		self.observation = np.array([ang_vel[0], ang_vel[2], abs_yaw, ang_vel[1], pos[0], pos[1], self.r_wheel_delta, self.l_wheel_delta])
+		
 	def add_sensor_noise(self):
 		#mean, covar = sensors.get_sensor_noise_params()
     	#self.observation = self.observation + np.random.normal( mean, covar)
@@ -239,25 +318,26 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		'''
         #modify the reward computation
 		# example: possible variables used in reward
-		head_pos_x = self.observation[0] # front/back
-		head_pos_y = self.observation[1] # left/right
-		theta  	= gaussian( self.observation[2], sig=1.5 ) 
+		head_pos_x = self.observation[4] # front/back
+		head_pos_y = self.observation[5] # left/right
+		theta  	= gaussian( self.observation[3], sig=1.5 ) 
 
 		#TODO: change the action to the deltaPos of the wheels:
-		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
+		#delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
 		#print(delta_pos)
-		r_regul = gaussian( 20* delta_pos, sig=1.0)
+		#r_regul = gaussian( 20* delta_pos, sig=1.0)
 		#r_ang_xy_en = gaussian(self.observation[3:4]*10, sig=1.4)  #kinetic energy
 		#r_ang_y_en = gaussian(self.observation[4]*20, sig=1.4)
 		#r_ang_z_en = gaussian(30* self.observation[5] )  #kinetic angular energy
 		#print(r_ang_xy_en, self.observation[3:5])
-		r_alive = 1.0
+		#r_alive = 1.0
 		# example: different weights in reward 
 		#attempts to stay alive and stay centered
 
 		##
+		r_alive = 1.0
 		a = 1./9.
-		return (8.*r_alive + r_regul) * a
+		return (8.*r_alive + theta) * a
 
 	def reset(self):
 		"""Gym environment 'reset'
