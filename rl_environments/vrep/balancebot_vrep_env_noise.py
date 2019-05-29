@@ -282,7 +282,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		"""
         # transform the action from vector (lin and rot action) to motor control
 		if VECTOR_ACTION:
-			kinematics = np.matrix([[0., 1.], [0., 1]])
+			kinematics = np.matrix([[0., 1.], [0., 1]]) 
 			#normalize_action = lambda x: np.asarray( ( x * 1./np.linalg.norm(x) * self.joints_max_velocity if np.linalg.norm(x) < )  )
 			action = np.asarray(np.matrix(action) * kinematics).reshape(-1)
 			print(action)
