@@ -321,7 +321,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 
 		#TODO: change the action to the deltaPos of the wheels:
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
-		r_regul = gaussian( 20* delta_pos, sig=1.0)
+		r_regul = gaussian(delta_pos, sig=0.1)
 		
 		print("regulation facotrs, wheel: {}, pitch: {}".format(r_regul, theta))
 		##
