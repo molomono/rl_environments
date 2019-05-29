@@ -317,7 +317,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# example: possible variables used in reward
 		head_pos_x = self.observation[4] # front/back
 		head_pos_y = self.observation[5] # left/right
-		theta  	= gaussian( self.observation[3], sig=1.5 ) 
+		theta  	= gaussian( self.observation[3], sig=2.5 ) 
 
 		#TODO: change the action to the deltaPos of the wheels:
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
