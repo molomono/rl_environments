@@ -178,6 +178,7 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 			achieved_goal=spaces.Box(-np.inf, np.inf, shape=self.observation['achieved_goal'].shape, dtype='float32'),
 			observation=spaces.Box(-np.inf, np.inf, shape=self.observation['observation'].shape, dtype='float32'),
 		))
+		print(observation_space)
 
 	def _sample_goal(self):
 		'''
