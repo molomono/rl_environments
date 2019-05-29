@@ -218,10 +218,6 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		"""Query V-rep to make observation.
 		   The observation is stored in self.observation
 		"""
-		#TODO: Add the accelerometer
-		# start with empty list
-		obs_dict = {'observation': None, 'achieved_goal': None, 'desired_goal': None}
-
 		#Retrieve the pose from world frame to robot base
 		pos = self.obj_get_position(self.oh_shape[0])
 		orient = self.obj_get_orientation(self.oh_shape[0])
@@ -289,6 +285,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 			kinematics = np.matrix([[0., 1.], [0., 1]])
 			#normalize_action = lambda x: np.asarray( ( x * 1./np.linalg.norm(x) * self.joints_max_velocity if np.linalg.norm(x) < )  )
 			action = np.asarray(np.matrix(action) * kinematics).reshape(-1)
+			print(action)
 			
 		# #modify Either clip the actions outside the space or assert the space contains them
 		action = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)
