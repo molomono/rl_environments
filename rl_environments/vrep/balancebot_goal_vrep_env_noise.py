@@ -185,7 +185,7 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		'''
 		pitch_vel = 0.0
 		rel_x, rel_y = np.random.uniform(low = -10.0, high = 10.0, size =2)
-		return [pitch_vel, rel_x, rel_y]
+		return np.array([pitch_vel, rel_x, rel_y])
 	
 	def _make_observation(self):
 		"""Query V-rep to make observation.
