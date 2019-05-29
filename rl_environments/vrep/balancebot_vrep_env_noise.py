@@ -320,21 +320,14 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		theta  	= gaussian( self.observation[3], sig=1.5 ) 
 
 		#TODO: change the action to the deltaPos of the wheels:
-		#delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
-		#print(delta_pos)
-		#r_regul = gaussian( 20* delta_pos, sig=1.0)
-		#r_ang_xy_en = gaussian(self.observation[3:4]*10, sig=1.4)  #kinetic energy
-		#r_ang_y_en = gaussian(self.observation[4]*20, sig=1.4)
-		#r_ang_z_en = gaussian(30* self.observation[5] )  #kinetic angular energy
-		#print(r_ang_xy_en, self.observation[3:5])
-		#r_alive = 1.0
-		# example: different weights in reward 
-		#attempts to stay alive and stay centered
+		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
+		r_regul = gaussian( 20* delta_pos, sig=1.0)
+		
 
 		##
 		r_alive = 1.0
-		a = 1./9.
-		return (8.*r_alive + theta) * a
+		a = 1./10.
+		return (8.*r_alive + theta + r_alive) * a
 
 	def reset(self):
 		"""Gym environment 'reset'
