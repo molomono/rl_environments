@@ -262,7 +262,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		#Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
 		# Early stop
-		tolerable_threshold = np.pi*2/3  #rads
+		tolerable_threshold = 0.707  #rads
 		done = (np.abs(angle_base[0]) > tolerable_threshold or np.abs(angle_base[1]) > tolerable_threshold)
 		#done = False
 		
