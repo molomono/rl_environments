@@ -153,7 +153,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# Example: 3 dimensions of linear and angular (2) velocities + 6 additional dimension
 		# 3 =  X, Y, Theta thus planar position (Might want to expand it to the velocities as well)
 		#num_obs = 12 
-		num_obs = 9
+		num_obs = 11
 		
 		# #modify: action_space and observation_space to suit your needs
 		self.joints_max_velocity = 6.0
@@ -240,7 +240,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		#Rotate the velocity vectors to be represented in the robot base frame
 		lin_vel = world_to_robot_rotation * np.matrix(lin_vel).T
 		ang_vel = world_to_robot_rotation * np.matrix(ang_vel).T
-
+		orient  = world_to_robot_rotation * np.matrix(orient).T
 		# L-Wheel-vel, R-wheel-vel	: observation
 		try:
 		 	self.l_wheel_old = self.l_angle
@@ -252,7 +252,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		self.l_wheel_delta = self.l_angle - self.l_wheel_old
 		self.r_wheel_delta = self.r_angle - self.r_wheel_old
 		
-		self.observation = np.array([ang_vel[0], ang_vel[2], np.cos(abs_yaw), np.sin(abs_yaw), ang_vel[1], pos[0], pos[1], self.r_wheel_delta, self.l_wheel_delta])
+		self.observation = np.array([ang_vel[0], ang_vel[2], np.cos(orient[1]), np.sin(orient[1]), np.cos(abs_yaw), np.sin(abs_yaw), ang_vel[1], pos[0], pos[1], self.r_wheel_delta, self.l_wheel_delta])
 		self.add_sensor_noise()
 
 	def add_sensor_noise(self):
