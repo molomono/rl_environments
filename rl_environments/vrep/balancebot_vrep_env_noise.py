@@ -319,7 +319,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		head_pos_y = self.observation[5] # left/right
 		theta  	= gaussian( self.observation[3], sig=2.5 ) 
 
-		norm_pos_dist = 1-(np.linalg.norm([head_pos_x,head_pos_y]) * 1./np.linalg.norm([10,10]))
+		norm_pos_dist = np.linalg.norm([head_pos_x,head_pos_y]) * 1./np.linalg.norm([10,10])
 
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
 		r_regul = gaussian(delta_pos, sig=2.0)
