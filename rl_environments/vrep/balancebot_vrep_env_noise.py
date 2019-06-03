@@ -172,6 +172,48 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# #modify: optional message
 		print('BalanceBot Environment: initialized')
 	
+	'''
+	def _make_observation(self):
+		"""Query V-rep to make observation.
+		   The observation is stored in self.observation
+		"""
+		# start with empty list
+		lst_o = []
+
+		#Add IMU data, Accel 3dof and Gyros 3dof
+
+
+		#Definition of the observation vector:
+		pos = self.obj_get_position(self.oh_shape[0])
+		ang_pos = self.obj_get_orientation(self.oh_shape[0])
+		lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
+
+		#calculate the relative velocity of the balance bot
+		rel_lin_vel_x = np.sqrt( np.power(lin_vel[0], 2) + np.power(lin_vel[1], 2) )
+
+		lst_o += pos[0:2]
+		#Theta is in Radians, make it a complex number
+		lst_o += [np.sin(ang_pos[2]), np.cos(ang_pos[2])]
+		lst_o += ang_vel
+
+		#add the lin velocity
+		lst_o += [rel_lin_vel_x]
+		try:
+		 	self.l_wheel_old = self.l_angle
+		 	self.r_wheel_old = self.r_angle
+		except:
+			pass
+		self.l_angle = self.obj_get_joint_angle(self.oh_joint[0])
+		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
+		self.l_wheel_delta = self.l_angle - self.l_wheel_old
+		self.r_wheel_delta = self.r_angle - self.r_wheel_old
+		lst_o += [self.l_wheel_delta, self.r_wheel_delta]
+
+		self.observation = np.array(lst_o).astype('float32')
+
+		self.add_sensor_noise()
+	'''
+		
 	def _make_observation(self):
 		"""Query V-rep to make observation.
 		   The observation is stored in self.observation
@@ -286,7 +328,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		##
 		r_alive = 1.0
 		a = 1./12.
-		return (8.*r_alive + theta + r_regul + 2.*norm_pos_dist) * a
+		return (8.*r_alive + theta + r_regul + 2*norm_pos_dist) * a
 
 	def reset(self):
 		"""Gym environment 'reset'
