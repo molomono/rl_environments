@@ -253,20 +253,12 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		self.r_wheel_delta = self.r_angle - self.r_wheel_old
 		
 		self.observation = np.array([ang_vel[0], ang_vel[2], np.cos(abs_yaw), np.sin(abs_yaw), ang_vel[1], pos[0], pos[1], self.r_wheel_delta, self.l_wheel_delta])
-		
+		self.add_sensor_noise()
+
 	def add_sensor_noise(self):
-		#mean, covar = sensors.get_sensor_noise_params()
-    	#self.observation = self.observation + np.random.normal( mean, covar)
-		self.observation = np.array([self.observation[0] + np.random.normal(0,0.05),
-					self.observation[1] + np.random.normal(0,0.05),
-					self.observation[2] + np.random.normal(0,0.05),
-					self.observation[3] + np.random.normal(0,0.05),
-					self.observation[4] + np.random.normal(0,0.05),
-					self.observation[5] + np.random.normal(0,0.05),
-					self.observation[6] + np.random.normal(0,0.05),
-					self.observation[7] + np.random.normal(0,0.05),
-					self.observation[8] + np.random.normal(0,0.05),
-					self.observation[9] + np.random.normal(0,0.05)])
+		for index in range(len(self.observation)):
+			self.observation[index] += np.random.normal(0,0.05)
+		
 	
 	def _make_action(self, a):
 		"""Query V-rep to make action.
