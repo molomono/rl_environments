@@ -154,10 +154,10 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		# Example: 3 dimensions of linear and angular (2) velocities + 6 additional dimension
 		# 3 =  X, Y, Theta thus planar position (Might want to expand it to the velocities as well)
 		#num_obs = 12 
-		num_obs = 10
-		
+		num_obs = 11
+
 		# #modify: action_space and observation_space to suit your needs
-		self.joints_max_velocity = 3.0
+		self.joints_max_velocity = 6.0
 		
 		#the placeholders for the delta position of the wheel encoders
 		# i should instead instantiate them during the first step using if var in locals:
@@ -174,8 +174,8 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		self.observation
 		self.action_space = spaces.Box(-self.joints_max_velocity, self.joints_max_velocity, shape=(num_act,), dtype='float32')
 		self.observation_space = spaces.Dict(dict(
-			desired_goal=spaces.Box(-10, 10, shape=self.observation['achieved_goal'].shape, dtype='float32'),
-			achieved_goal=spaces.Box(-10, 10, shape=self.observation['achieved_goal'].shape, dtype='float32'),
+			desired_goal=spaces.Box(-1, 1, shape=self.observation['achieved_goal'].shape, dtype='float32'),
+			achieved_goal=spaces.Box(-1, 1, shape=self.observation['achieved_goal'].shape, dtype='float32'),
 			observation=spaces.Box(-np.inf, np.inf, shape=self.observation['observation'].shape, dtype='float32'),
 		))
 		print(self.observation_space)
@@ -185,7 +185,10 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		Samples a goal from the goal space
 		'''
 		pitch_vel = 0.0
-		rel_x, rel_y = np.random.uniform(low = -10.0, high = 10.0, size =2)
+		#TODO: make all the goal sampling functions use the desired_goal.box.limits to set the sample region.
+		#rel_x, rel_y = np.random.uniform(low = -10.0, high = 10.0, size =2)
+		rel_x = 0.0
+		rel_y = 0.0
 		return np.array([pitch_vel, rel_x, rel_y])
 	
 	def _make_observation(self):
@@ -240,7 +243,7 @@ class BalanceBotVrepEnvNoiseGoal(vrep_env.VrepEnv, SensorInfo, gym.GoalEnv):
 		#print('pitch., x, y  ', ang_vel[1], pos[0:2])
 		#self.observation = np.array([ang_vel[0], ang_vel[2], abs_yaw, ang_vel[1], pos[0], pos[1], self.r_wheel_delta, self.l_wheel_delta])
 		#append information to the observation dict
-		obs_dict['observation'] = np.array([ang_vel[0], ang_vel[2], abs_yaw, self.r_wheel_delta, self.l_wheel_delta]).astype('float32')
+		obs_dict['observation'] = np.array([ang_vel[0], ang_vel[2], np.cos(abs_yaw), np.sin(abs_yaw), self.r_wheel_delta, self.l_wheel_delta]).astype('float32')
 		#append information to the achieved goal dict
 		obs_dict['achieved_goal'] = np.array([ang_vel[1], pos[0], pos[1]]).astype('float32')
 		#Append the goal
