@@ -26,7 +26,6 @@ import numpy as np
 class CartPoleContinuousVrepEnv(vrep_env.VrepEnv):
 	metadata = {
 		'render.modes': ['human', 'rgb_array'],
-		'video.frames_per_second' : 50
 	}
 	def __init__(
 		self,
@@ -53,7 +52,7 @@ class CartPoleContinuousVrepEnv(vrep_env.VrepEnv):
 		#self.force_mag = 10.0
 		self.force_mag = 100.0
 
-		self.set_float_parameter(vrep.sim_floatparam_simulation_time_step, self.tau)
+		#self.set_float_parameter(vrep.sim_floatparam_simulation_time_step, self.tau)
 		self.set_array_parameter(vrep.sim_arrayparam_gravity,[0,0,-self.gravity])
 		self.obj_set_force(self.action,self.force_mag)
 		
@@ -127,7 +126,7 @@ class CartPoleContinuousVrepEnv(vrep_env.VrepEnv):
 			self.stop_simulation()
 		self.start_simulation()
 		self.steps_beyond_done = None
-		self.set_float_parameter(vrep.sim_floatparam_simulation_time_step, self.tau)
+		#self.set_float_parameter(vrep.sim_floatparam_simulation_time_step, self.tau)
 		
 		v = self.np_random.uniform(low=-0.04, high=0.04, size=(1,))
 		self.obj_set_velocity(self.action,v)
