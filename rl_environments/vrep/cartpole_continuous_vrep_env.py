@@ -48,12 +48,12 @@ class CartPoleContinuousVrepEnv(vrep_env.VrepEnv):
 		self.viewer   = self.get_object_handle('viewer')
 		
 		# adjusting parameters
-		self.tau = 0.02  # seconds between state updates
+		self.tau = 0.0000002  # seconds between state updates
 		self.gravity = 9.8
 		#self.force_mag = 10.0
 		self.force_mag = 100.0
 		
-		#self.set_float_parameter(vrep.sim_floatparam_simulation_time_step, self.tau)
+		self.set_float_parameter(vrep.sim_floatparam_simulation_time_step, self.tau)
 		self.set_array_parameter(vrep.sim_arrayparam_gravity,[0,0,-self.gravity])
 		self.obj_set_force(self.action,self.force_mag)
 		
