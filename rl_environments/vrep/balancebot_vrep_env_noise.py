@@ -320,7 +320,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		##
 		r_alive = 1.0
 		a = 1./12.
-		return r_alive#(8.*r_alive + theta + r_regul + 2*norm_pos_dist) * a
+		return (10 * r_alive + 2 * (1 - norm_pos_dist) )* a #(8.*r_alive + theta + r_regul + 2*norm_pos_dist) * a
 
 	def reset(self):
 		"""Gym environment 'reset'

@@ -39,8 +39,8 @@ register(
 register(
     id='VrepBalanceBotNoise-v0', 
     entry_point='rl_environments.vrep.balancebot_vrep_env_noise:BalanceBotVrepEnvNoise', 
-    max_episode_steps=10000, 
-    reward_threshold=100000.0
+    max_episode_steps=600, 
+    reward_threshold=550.0
 )
 register(
     id='VrepBalanceBotGoal-v0',
