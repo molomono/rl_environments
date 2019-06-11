@@ -272,6 +272,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 	def step(self, action):
 		"""Gym environment 'step'
 		"""
+		self.steps += 1
         # transform the action from vector (lin and rot action) to motor control
 		if VECTOR_ACTION:
 			kinematics = np.matrix([[0., 0.], [1., 1.]]) 
@@ -292,7 +293,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		
 		# Reward
 		reward = self.compute_reward(action)
-		
+
 		#Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
 		# Early stop
@@ -307,8 +308,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		'''
         #modify the reward computation
 		# example: possible variables used in reward
-		head_pos_x = self.observation[4] # front/back
-		head_pos_y = self.observation[5] # left/right
+		head_pos_x = self.observation[6] # front/back
+		head_pos_y = self.observation[7] # left/right
 		theta  	= gaussian( self.observation[3], sig=2.5 ) 
 
 		norm_pos_dist = np.asarray(np.linalg.norm([head_pos_x,head_pos_y]) * 1./np.linalg.norm([10,10])).reshape(-1)[0]
@@ -319,8 +320,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		print("regulation factors, wheel: {}, pitch: {}, pos_dist: {}".format(r_regul, theta, norm_pos_dist))
 		##
 		r_alive = 1.0
-		a = 1./12.
-		return (10 * r_alive + 2 * (1 - norm_pos_dist) )* a #(8.*r_alive + theta + r_regul + 2*norm_pos_dist) * a
+		a = 1./12.25
+		return (10 * r_alive + 2 * (1 - norm_pos_dist) + 0.25 * r_regul )* a #(8.*r_alive + theta + r_regul + 2*norm_pos_dist) * a
 
 	def reset(self):
 		"""Gym environment 'reset'
@@ -329,6 +330,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 			self.stop_simulation()
 		self.start_simulation()
 		
+		self.steps = 0
 		#Unifrom pitch randomization, changing initial starting position 
 		start_pitch = np.random.uniform(-np.pi/24, np.pi/24)
 		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, 0.0]))
