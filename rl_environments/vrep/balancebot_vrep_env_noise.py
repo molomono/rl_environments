@@ -153,7 +153,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# Example: 3 dimensions of linear and angular (2) velocities + 6 additional dimension
 		# 3 =  X, Y, Theta thus planar position (Might want to expand it to the velocities as well)
 		#num_obs = 12 
-		num_obs = 11
+		num_obs = 10
 		
 		# #modify: action_space and observation_space to suit your needs
 		self.joints_max_velocity = 6.0
