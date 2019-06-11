@@ -252,7 +252,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		self.l_wheel_delta = self.l_angle - self.l_wheel_old
 		self.r_wheel_delta = self.r_angle - self.r_wheel_old
 		
-		self.observation = np.array([ang_vel[0], ang_vel[2], np.cos(orient[0]), np.sin(orient[0]), np.cos(abs_yaw), np.sin(abs_yaw), ang_vel[1], pos[0], pos[1], self.r_wheel_delta, self.l_wheel_delta])
+		self.observation = np.array([ang_vel[0], ang_vel[2], orient[0], np.cos(abs_yaw), np.sin(abs_yaw), ang_vel[1], pos[0], pos[1], self.r_wheel_delta, self.l_wheel_delta])
 		#self.add_sensor_noise
 
 	def add_sensor_noise(self):
