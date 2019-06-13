@@ -294,12 +294,12 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# Reward
 		reward = self.compute_reward(action)
 
-		#Check if the balancebot fell over 
+		# Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
 		# Early stop
 		tolerable_threshold = 0.707  #rads
 		done = (np.abs(angle_base[0]) > tolerable_threshold or np.abs(angle_base[1]) > tolerable_threshold)
-		#done = False
+		# done = False
 		
 		return self.observation, reward, done, {}
 	
@@ -320,8 +320,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		print("regulation factors, wheel: {}, pitch: {}, pos_dist: {}".format(r_regul, theta, norm_pos_dist))
 		##
 		r_alive = 1.0
-		a = 1./15.
-		return (10. * r_alive + 4. * (1. - norm_pos_dist) + 1. * r_regul )* a #(8.*r_alive + theta + r_regul + 2*norm_pos_dist) * a
+		a = 1./14.
+		return (10. * r_alive + 4. * (1. - norm_pos_dist) + 0. * r_regul )* a #(8.*r_alive + theta + r_regul + 2*norm_pos_dist) * a
 
 	def reset(self):
 		"""Gym environment 'reset'
