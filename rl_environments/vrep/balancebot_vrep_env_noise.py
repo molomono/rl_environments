@@ -253,7 +253,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		self.r_wheel_delta = self.r_angle - self.r_wheel_old
 		
 		self.observation = np.array([ang_vel[0], ang_vel[2], orient[0], np.cos(abs_yaw), np.sin(abs_yaw), ang_vel[1], pos[0], pos[1], self.r_wheel_delta, self.l_wheel_delta])
-		#self.add_sensor_noise
+		self.add_sensor_noise
 
 	def add_sensor_noise(self):
 		for index in range(len(self.observation)):
@@ -310,7 +310,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# example: possible variables used in reward
 		head_pos_x = self.observation[6] # front/back
 		head_pos_y = self.observation[7] # left/right
-		theta  	= gaussian( self.observation[3], sig=2.5 ) 
+		theta  	= gaussian( self.observation[2], sig=2.5 ) 
 
 		norm_pos_dist = np.asarray(np.linalg.norm([head_pos_x,head_pos_y]) * 1./np.linalg.norm([10,10])).reshape(-1)[0]
 
@@ -320,8 +320,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		print("regulation factors, wheel: {}, pitch: {}, pos_dist: {}".format(r_regul, theta, norm_pos_dist))
 		##
 		r_alive = 1.0
-		a = 1./12.25
-		return (10 * r_alive + 2 * (1 - norm_pos_dist) + 0.25 * r_regul )* a #(8.*r_alive + theta + r_regul + 2*norm_pos_dist) * a
+		a = 1./15.
+		return (10. * r_alive + 4. * (1. - norm_pos_dist) + 1. * r_regul )* a #(8.*r_alive + theta + r_regul + 2*norm_pos_dist) * a
 
 	def reset(self):
 		"""Gym environment 'reset'
