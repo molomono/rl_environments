@@ -10,7 +10,6 @@
 
 #################### WIP environment #######################
 #TODO: Need to alter the observation space to contain observation, achieved goal and desired goal
-#TODO: add compute_reward function, which is a function of achieved_goal vs desired_goal.
 ############################################################
 
 '''
@@ -123,7 +122,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		self,
 		server_addr='127.0.0.1',
 		server_port=19997,
-		scene_path=vrep_scenes_path+'/balance_test.ttt'
+		scene_path=vrep_scenes_path+'/balance_test.ttt',
+		goal_mode_on = False
 	):
 		
 		vrep_env.VrepEnv.__init__(self,server_addr,server_port,scene_path)
@@ -162,6 +162,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		#TODO: Change the observation space to reflect the actual boundaries of observation
 		self.action_space	  = spaces.Box(-act,act)
 		self.observation_space = spaces.Box(-obs,obs)
+		self.goal_space = spaces.Box(np.array([-10,-10]), np.array([10,10]))
 		
 		#the placeholders for the delta position of the wheel encoders
 		# i should instead instantiate them during the first step using if var in locals:
@@ -171,6 +172,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		self.r_wheel_old = 0.0
 		# #modify: optional message
 		print('BalanceBot Environment: initialized')
+		
 	
 	'''
 	def _make_observation(self):
@@ -273,6 +275,9 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		self.observation = np.array([lin_acc[0], lin_acc[1], lin_acc[2], ang_vel[0], ang_vel[2], orient[0], np.cos(abs_yaw), np.sin(abs_yaw), ang_vel[1], pos[0], pos[1], self.r_wheel_delta, self.l_wheel_delta])
 		self.add_sensor_noise
 
+		if self.goal_mode_on:
+			self.observation = np.hstack([self.observation, self.goal])
+
 	def add_sensor_noise(self):
 		for index in range(len(self.observation)):
 			self.observation[index] += np.random.normal(0,0.05)
@@ -326,8 +331,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		'''
         #modify the reward computation
 		# example: possible variables used in reward
-		head_pos_x = self.observation[6] # front/back
-		head_pos_y = self.observation[7] # left/right
+		head_pos_x = self.goal[0] - self.observation[6] # front/back
+		head_pos_y = self.goal[1] - self.observation[7] # left/right
 		theta  	= gaussian( self.observation[2], sig=2.5 ) 
 
 		norm_pos_dist = np.asarray(np.linalg.norm([head_pos_x,head_pos_y]) * 1./np.linalg.norm([10,10])).reshape(-1)[0]
@@ -355,8 +360,15 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		
 		self.pitch_offset = np.random.uniform(0,0.05)
 
+		self.goal = self.sample_goal()
+		print("Goal: ", self.goal)
 		self._make_observation()
 		return self.observation
+
+	def sample_goal(self):
+		goal = self.goal_space.sample()
+		goal = np.asarray(goal[0], 0.0)
+		return goal
 	
 	def render(self, mode='human', close=False):
 		"""Gym environment 'render'
