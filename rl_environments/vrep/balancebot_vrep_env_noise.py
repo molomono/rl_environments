@@ -157,6 +157,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# 3 =  X, Y, Theta thus planar position (Might want to expand it to the velocities as well)
 		#num_obs = 12 
 		num_obs = 13
+		if self.goal_mode_on:
+			num_obs += 2
 		
 		# #modify: action_space and observation_space to suit your needs
 		self.joints_max_velocity = 6.0
@@ -165,7 +167,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		#TODO: Change the observation space to reflect the actual boundaries of observation
 		self.action_space	  = spaces.Box(-act,act)
 		self.observation_space = spaces.Box(-obs,obs)
-		self.goal_space = spaces.Box(np.array([-10,-10]), np.array([10,10]))
+		self.goal_max = 2
+		self.goal_space = spaces.Box(np.array([-self.goal_max,-self.goal_max]), np.array([self.goal_max,self.goal_max]))
 		
 		#the placeholders for the delta position of the wheel encoders
 		# i should instead instantiate them during the first step using if var in locals:
@@ -320,7 +323,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# Reward
 		reward = self.compute_reward(action)
 		if self.verbose:
-			print('Reward: {0:1.2f}', reward)
+			print('Reward: {0:1.2f}'.format(reward))
 		# Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
 		# Early stop
@@ -339,7 +342,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		head_pos_y = self.goal[1] - self.observation[7] # left/right
 		theta  	= gaussian( self.observation[2], sig=2.5 ) 
 
-		norm_pos_dist = np.asarray(np.linalg.norm([head_pos_x,head_pos_y]) * 1./np.linalg.norm([10,10])).reshape(-1)[0]
+		norm_pos_dist = np.asarray(np.linalg.norm([head_pos_x,head_pos_y]) * 1./np.linalg.norm([self.goal_max,self.goal_max])).reshape(-1)[0]
 
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
 		r_regul = gaussian(delta_pos, sig=2.0)
