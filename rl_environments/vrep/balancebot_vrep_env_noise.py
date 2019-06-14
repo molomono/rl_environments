@@ -228,6 +228,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		"""
 		#Retrieve the pose from world frame to robot base
 		pos = self.obj_get_position(self.oh_shape[0])
+		print('Position: {}'.format(pos))
 		orient = self.obj_get_orientation(self.oh_shape[0])
 		#absolute yaw, part of the odom information
 		abs_yaw = orient[2]
@@ -265,8 +266,9 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		lin_acc += grav_vec_base_frame
 		####################################################
 		
-		ang_vel = np.asarray(world_to_robot_rotation * np.matrix(ang_vel).T).reshape(-1)
-		orient  = np.asarray(world_to_robot_rotation * np.matrix(orient).T).reshape(-1)
+		#ang_vel = np.asarray(world_to_robot_rotation * np.matrix(ang_vel).T).reshape(-1)
+		#orient  = np.asarray(world_to_robot_rotation * np.matrix(orient).T).reshape(-1)
+		
 		# L-Wheel-vel, R-wheel-vel	: observation
 		try:
 		 	self.l_wheel_old = self.l_angle
