@@ -232,9 +232,9 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# Observation dict keys: ['observation', 'achieved_goal', 'desired_goal']
 		# IMU:
 		# X.. Y.. Z.. 				: observation
-		ax = self.get_float_signal('accelerometerX')
-		ay = self.get_float_signal('accelerometerY')
-		az = self.get_float_signal('accelerometerZ')		
+		ax = self.get_float_signal('accelX')
+		ay = self.get_float_signal('accelY')
+		az = self.get_float_signal('accelZ')		
 		accel = [ax, ay, az]
 		gx = self.get_float_signal('gyroX')
 		gy = self.get_float_signal('gyroX')
