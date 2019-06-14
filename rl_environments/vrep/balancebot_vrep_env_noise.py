@@ -256,8 +256,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		lin_acc = self.lin_vel_old - self.lin_vel
 		print("acceleration: ",lin_acc)
 
-		ang_vel = world_to_robot_rotation * np.matrix(ang_vel).T
-		orient  = world_to_robot_rotation * np.matrix(orient).T
+		ang_vel = np.asarray(world_to_robot_rotation * np.matrix(ang_vel).T).reshape(-1)
+		orient  = np.asarray(world_to_robot_rotation * np.matrix(orient).T).reshape(-1)
 		# L-Wheel-vel, R-wheel-vel	: observation
 		try:
 		 	self.l_wheel_old = self.l_angle
