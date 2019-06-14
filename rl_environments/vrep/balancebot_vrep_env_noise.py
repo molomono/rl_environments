@@ -249,17 +249,14 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# roll. yaw. 				: observation
 		self.lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
 		#Rotate the velocity vectors to be represented in the robot base frame
-		print("Angles", orient)
-		print("Rotation matrix", world_to_robot_rotation)
 		self.lin_vel = np.asarray(world_to_robot_rotation * np.matrix(self.lin_vel).T).reshape(-1)
 		lin_acc = (self.lin_vel_old - self.lin_vel) * 20. #Multiply by 20 as there are 20 steps per second
 		#Add the gravity vector to the lin_acceleration
 		gravity_vector = np.array([0., 0., -9.81])
 		grav_vec_base_frame = np.asarray(world_to_robot_rotation * np.matrix(gravity_vector).T).reshape(-1)
 		lin_acc += grav_vec_base_frame
-		print("Gravity_vector: ", grav_vec_base_frame)
-		print("acceleration: ",lin_acc)
-
+		####################################################
+		
 		ang_vel = np.asarray(world_to_robot_rotation * np.matrix(ang_vel).T).reshape(-1)
 		orient  = np.asarray(world_to_robot_rotation * np.matrix(orient).T).reshape(-1)
 		# L-Wheel-vel, R-wheel-vel	: observation
