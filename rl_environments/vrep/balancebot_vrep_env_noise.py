@@ -345,7 +345,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		pos_xy_dist = np.linalg.norm([head_pos_x,head_pos_y])
 		goal_xy_dist =np.linalg.norm(self.goal)
 
-		norm_pos_dist = np.asarray(np.linalg.norm(pos_xy_dist, goal_xy_dist) * 1./np.linalg.norm([self.goal_max,self.goal_max]) ).reshape(-1)[0]
+		norm_pos_dist = np.asarray(np.abs(goal_xy_dist-pos_xy_dist) * 1./np.linalg.norm([self.goal_max,self.goal_max]) ).reshape(-1)[0]
 		
 		if self.verbose:
 			print("Distance from goal: {}".format(norm_pos_dist*np.asarray(np.linalg.norm([self.goal_max,self.goal_max])).reshape(-1)[0]))
