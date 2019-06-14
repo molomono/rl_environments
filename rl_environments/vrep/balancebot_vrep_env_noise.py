@@ -241,8 +241,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		#gy = self.get_float_signal('gyroY')
 		#gz = self.get_float_signal('gyroZ')
 		#gyro = [gx, gy, gz]
-		
-
+	
 		#Because i can't use the accelerometer yet i'll use lin_velocity deltas for accel:
 		try:
 			self.lin_vel_old = lin_vel
@@ -252,6 +251,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# roll. yaw. 				: observation
 		self.lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
 		#Rotate the velocity vectors to be represented in the robot base frame
+		print("Angles", orient)
+		print("Rotation matrix", world_to_robot_rotation)
 		self.lin_vel = np.asarray(world_to_robot_rotation * np.matrix(self.lin_vel).T).reshape(-1)
 		lin_acc = self.lin_vel_old - self.lin_vel
 		#Add the gravity vector to the lin_acceleration
