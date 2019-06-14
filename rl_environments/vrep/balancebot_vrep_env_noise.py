@@ -123,8 +123,11 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		server_addr='127.0.0.1',
 		server_port=19997,
 		scene_path=vrep_scenes_path+'/balance_test.ttt',
-		goal_mode_on = False
+		goal_mode_on = False,
+		verbose = False
 	):
+		self.verbose = verbose
+		self.goal_mode_on = goal_mode_on
 		
 		vrep_env.VrepEnv.__init__(self,server_addr,server_port,scene_path)
 		# #modify: the name of the joints to be used in action space
@@ -316,7 +319,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		
 		# Reward
 		reward = self.compute_reward(action)
-
+		if self.verbose:
+			print('Reward: {0:1.2f}', reward)
 		# Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
 		# Early stop
