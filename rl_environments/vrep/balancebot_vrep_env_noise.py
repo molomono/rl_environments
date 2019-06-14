@@ -232,20 +232,30 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# Observation dict keys: ['observation', 'achieved_goal', 'desired_goal']
 		# IMU:
 		# X.. Y.. Z.. 				: observation
-		ax = self.get_float_signal('accelX')
-		ay = self.get_float_signal('accelY')
-		az = self.get_float_signal('accelZ')		
-		accel = [ax, ay, az]
-		gx = self.get_float_signal('gyroX')
-		gy = self.get_float_signal('gyroX')
-		gz = self.get_float_signal('gyroX')
-		gyro = [gx, gy, gz]
+		#TODO: Set the variables in the correct scripts in V-REP. I need a dongle to save these changes.
+		#ax = self.get_float_signal('accelX')
+		#ay = self.get_float_signal('accelY')
+		#az = self.get_float_signal('accelZ')		
+		#accel = [ax, ay, az]
+		#gx = self.get_float_signal('gyroX')
+		#gy = self.get_float_signal('gyroY')
+		#gz = self.get_float_signal('gyroZ')
+		#gyro = [gx, gy, gz]
 		
-		print('Acceleration: {} Gyroscope: {}'.format(accel, gyro))
+
+		#Because i can't use the accelerometer yet i'll use lin_velocity deltas for accel:
+		try:
+			self.lin_vel_old = lin_vel
+		except:
+			self.lin_vel_old = np.array([0., 0., 0.])
+		#print('Acceleration: {} Gyroscope: {}'.format(accel, gyro))
 		# roll. yaw. 				: observation
-		lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
+		self.lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
 		#Rotate the velocity vectors to be represented in the robot base frame
-		lin_vel = world_to_robot_rotation * np.matrix(lin_vel).T
+		self.lin_vel = np.asarray(world_to_robot_rotation * np.matrix(lin_vel).T).reshape(-1)
+		lin_acc = self.lin_vel_old - self.lin_vel
+		print("acceleration: ",lin_acc)
+
 		ang_vel = world_to_robot_rotation * np.matrix(ang_vel).T
 		orient  = world_to_robot_rotation * np.matrix(orient).T
 		# L-Wheel-vel, R-wheel-vel	: observation
