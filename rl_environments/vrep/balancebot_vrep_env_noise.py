@@ -224,9 +224,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		#absolute yaw, part of the odom information
 		abs_yaw = orient[2]
 		#Construct Transformation matrix from world to robot base frame
-		world_to_robot_transform = transform_matrix(pos, orient)
-		#Extract the Rotation matrix from the transform matrix
-		world_to_robot_rotation = world_to_robot_transform[0:3,0:3] 
+		world_to_robot_rotation = transform_matrix(orient, pos)[0:3,0:3]
 
 		#Add IMU data, Accel 3dof and Gyros 3dof
 		# Observation dict keys: ['observation', 'achieved_goal', 'desired_goal']
@@ -259,6 +257,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		gravity_vector = np.array([0., 0., -9.81])
 		grav_vec_base_frame = np.asarray(world_to_robot_rotation * np.matrix(gravity_vector).T).reshape(-1)
 		lin_acc += grav_vec_base_frame
+		print("Gravity_vector: ", grav_vec_base_frame)
 		print("acceleration: ",lin_acc)
 
 		ang_vel = np.asarray(world_to_robot_rotation * np.matrix(ang_vel).T).reshape(-1)
