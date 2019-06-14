@@ -338,12 +338,17 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		'''
         #modify the reward computation
 		# example: possible variables used in reward
-		head_pos_x = self.goal[0] - self.observation[6] # left/right
-		head_pos_y = self.goal[1] - self.observation[7] # front/back
+		head_pos_x = self.observation[6] # left/right
+		head_pos_y = self.observation[7] # front/back
 		theta  	= gaussian( self.observation[2], sig=2.5 ) 
 
-		#norm_pos_dist = np.asarray(np.linalg.norm([head_pos_x,head_pos_y]) * 1./np.linalg.norm([self.goal_max,self.goal_max])).reshape(-1)[0]
-		norm_pos_dist = (np.abs(head_pos_x) + np.abs(head_pos_y)) * 1./np.asarray(np.linalg.norm([self.goal_max,self.goal_max])).reshape(-1)[0]
+		pos_xy_dist = np.linalg.norm([head_pos_x,head_pos_y])
+		goal_xy_dist =np.linalg.norm(self.goal)
+
+		norm_pos_dist = np.asarray(np.linalg.norm(pos_xy_dist, goal_xy_dist) * 1./np.linalg.norm([self.goal_max,self.goal_max]) ).reshape(-1)[0]
+		
+		if self.verbose:
+			print("Distance from goal: {}".format(norm_pos_dist*np.asarray(np.linalg.norm([self.goal_max,self.goal_max])).reshape(-1)[0]))
 
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
 		r_regul = gaussian(delta_pos, sig=2.0)
