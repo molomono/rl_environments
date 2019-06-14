@@ -232,9 +232,16 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# Observation dict keys: ['observation', 'achieved_goal', 'desired_goal']
 		# IMU:
 		# X.. Y.. Z.. 				: observation
-		#force, torque = self.obj_read_force_sensor(self.forcesensor)
-		#accel = np.asarray(force) / 1.000e-3
-		#print('Acceleration',accel)
+		ax = self.get_float_signal('accelerometerX')
+		ay = self.get_float_signal('accelerometerY')
+		az = self.get_float_signal('accelerometerZ')		
+		accel = [ax, ay, az]
+		gx = self.get_float_signal('gyroX')
+		gy = self.get_float_signal('gyroX')
+		gz = self.get_float_signal('gyroX')
+		gyro = [gx, gy, gz]
+		
+		print('Acceleration: {} Gyroscope: {}'.format(accel, gyro))
 		# roll. yaw. 				: observation
 		lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
 		#Rotate the velocity vectors to be represented in the robot base frame
@@ -278,7 +285,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 			kinematics = np.matrix([[0., 0.], [1., 1.]]) 
 			#normalize_action = lambda x: np.asarray( ( x * 1./np.linalg.norm(x) * self.joints_max_velocity if np.linalg.norm(x) < )  )
 			action = np.asarray(np.matrix(action) * kinematics).reshape(-1)
-			print(action)
+			#print(action)
 			
 		# #modify Either clip the actions outside the space or assert the space contains them
 		action = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)
@@ -317,7 +324,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
 		r_regul = gaussian(delta_pos, sig=2.0)
 		
-		print("regulation factors, wheel: {}, pitch: {}, pos_dist: {}".format(r_regul, theta, norm_pos_dist))
+		#print("regulation factors, wheel: {}, pitch: {}, pos_dist: {}".format(r_regul, theta, norm_pos_dist))
 		##
 		r_alive = 1.0
 		a = 1./14.
