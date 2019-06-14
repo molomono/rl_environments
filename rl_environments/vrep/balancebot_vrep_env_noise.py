@@ -252,7 +252,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# roll. yaw. 				: observation
 		self.lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
 		#Rotate the velocity vectors to be represented in the robot base frame
-		self.lin_vel = np.asarray(world_to_robot_rotation * np.matrix(lin_vel).T).reshape(-1)
+		self.lin_vel = np.asarray(world_to_robot_rotation * np.matrix(self.lin_vel).T).reshape(-1)
 		lin_acc = self.lin_vel_old - self.lin_vel
 		print("acceleration: ",lin_acc)
 
