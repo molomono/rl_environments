@@ -228,7 +228,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		"""
 		#Retrieve the pose from world frame to robot base
 		pos = self.obj_get_position(self.oh_shape[0])
-		print('Position: {}'.format(pos))
+		
 		orient = self.obj_get_orientation(self.oh_shape[0])
 		#absolute yaw, part of the odom information
 		abs_yaw = orient[2]
@@ -280,7 +280,12 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		self.l_wheel_delta = self.l_angle - self.l_wheel_old
 		self.r_wheel_delta = self.r_angle - self.r_wheel_old
 		
-		self.observation = np.array([lin_acc[0], lin_acc[1], lin_acc[2], ang_vel[0], ang_vel[2], orient[0], np.cos(abs_yaw), np.sin(abs_yaw), ang_vel[1], pos[0], pos[1], self.r_wheel_delta, self.l_wheel_delta])
+		
+		self.observation = np.array([lin_acc[0], lin_acc[1], lin_acc[2], 
+									 ang_vel[0], ang_vel[1], ang_vel[2], 
+									 orient[0], np.cos(abs_yaw), np.sin(abs_yaw), 
+									 pos[0], pos[1], 
+									 self.r_wheel_delta, self.l_wheel_delta])
 		self.add_sensor_noise
 
 		if self.goal_mode_on:
@@ -340,9 +345,9 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		'''
         #modify the reward computation
 		# example: possible variables used in reward
-		head_pos_x = self.observation[6] # left/right
-		head_pos_y = self.observation[7] # front/back
-		theta  	= gaussian( self.observation[2], sig=2.5 ) 
+		head_pos_x = self.observation[10] # left/right
+		head_pos_y = self.observation[11] # front/back
+		theta  	= gaussian( self.observation[5], sig=2.5 ) 
 
 		pos_xy_dist = np.linalg.norm([head_pos_x,head_pos_y])
 		goal_xy_dist =np.linalg.norm(self.goal)
