@@ -153,7 +153,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# Example: 3 dimensions of linear and angular (2) velocities + 6 additional dimension
 		# 3 =  X, Y, Theta thus planar position (Might want to expand it to the velocities as well)
 		#num_obs = 12 
-		num_obs = 10
+		num_obs = 13
 		
 		# #modify: action_space and observation_space to suit your needs
 		self.joints_max_velocity = 6.0
@@ -252,7 +252,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		print("Angles", orient)
 		print("Rotation matrix", world_to_robot_rotation)
 		self.lin_vel = np.asarray(world_to_robot_rotation * np.matrix(self.lin_vel).T).reshape(-1)
-		lin_acc = self.lin_vel_old - self.lin_vel
+		lin_acc = (self.lin_vel_old - self.lin_vel) * 20. #Multiply by 20 as there are 20 steps per second
 		#Add the gravity vector to the lin_acceleration
 		gravity_vector = np.array([0., 0., -9.81])
 		grav_vec_base_frame = np.asarray(world_to_robot_rotation * np.matrix(gravity_vector).T).reshape(-1)
