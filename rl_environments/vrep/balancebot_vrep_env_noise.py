@@ -387,7 +387,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 
 	def sample_goal(self):
 		goal = self.goal_space.sample()
-		goal = np.asarray([0.0, goal[0]])
+		#goal = np.asarray([0.0, goal[0]])
 		return goal
 	
 	def render(self, mode='human', close=False):
