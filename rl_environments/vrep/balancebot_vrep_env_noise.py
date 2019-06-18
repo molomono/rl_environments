@@ -277,9 +277,14 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 			pass
 		self.l_angle = self.obj_get_joint_angle(self.oh_joint[0])
 		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
-		self.l_wheel_delta = self.l_angle - self.l_wheel_old
-		self.r_wheel_delta = self.r_angle - self.r_wheel_old
-		
+		# Calculating the delta joint angles using complex numbers to avoid the large delta jump at pi and -pi
+		self.l_wheel_delta = np.complex(np.cos(self.l_angle), np.sin(self.l_angle)) \
+							/np.complex(np.cos(self.l_wheel_old), np.sin(self.l_wheel_old))
+		self.r_wheel_delta = np.complex(np.cos(self.r_angle), np.sin(self.r_angle)) \
+							/np.complex(np.cos(self.r_wheel_old), np.sin(self.r_wheel_old))
+		# Converting the complex deltas into angles
+		self.l_wheel_delta = np.angle(self.l_wheel_delta)
+		self.r_wheel_delta = np.angle(self.r_wheel_delta)
 		
 		self.observation = np.array([lin_acc[0], lin_acc[1], lin_acc[2], 
 									 ang_vel[0], ang_vel[1], ang_vel[2], 
@@ -345,8 +350,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		'''
         #modify the reward computation
 		# example: possible variables used in reward
-		head_pos_x = self.observation[10] # left/right
-		head_pos_y = self.observation[11] # front/back
+		head_pos_x = self.observation[9] # left/right
+		head_pos_y = self.observation[10] # front/back
 		theta  	= gaussian( self.observation[5], sig=2.5 ) 
 
 		pos_xy_dist = np.linalg.norm([head_pos_x,head_pos_y])
