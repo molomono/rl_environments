@@ -47,6 +47,12 @@ class GoalEnv(Env):
         """
         raise NotImplementedError
 '''
+
+# TODO: Sparse goal rewards with goal thresholding and new goal definition
+# The new goal environment is defined in more detail in Note-book. page 6,7
+# TODO: Change the environment success condition
+# 
+
 VECTOR_ACTION = True
 
 from vrep_env import vrep_env
