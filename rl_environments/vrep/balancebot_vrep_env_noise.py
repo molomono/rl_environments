@@ -335,7 +335,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		# Reward
 		reward = self.compute_reward(action)
 		if self.verbose:
-			print('Reward: {0:1.2f}'.format(reward))
+			print('Reward: {0:1.4f}'.format(reward))
 		# Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
 		# Early stop
@@ -348,28 +348,27 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 	def compute_reward(self, action, achieved_goal=None, desired_goal=None, info=None):
 		''' This function takes in observations, actions and goals and outputs reward
 		'''
-        #modify the reward computation
-		# example: possible variables used in reward
-		head_pos_x = self.observation[9] # left/right
-		head_pos_y = self.observation[10] # front/back
-		theta  	= gaussian( self.observation[5], sig=2.5 ) 
-
-		pos_xy_dist = np.linalg.norm([head_pos_x,head_pos_y])
-		goal_xy_dist =np.linalg.norm(self.goal)
-
-		norm_pos_dist = np.asarray(np.abs(goal_xy_dist-pos_xy_dist) * 1./np.linalg.norm([self.goal_max,self.goal_max]) ).reshape(-1)[0]
-		
+		# Calculate the goal vector relative to the position of the balance-bot
+		rel_pos_dist = np.linalg.norm([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10]])
+		# Normalize the goal vector with respect to the largest paussible goal distance
+		norm_pos_dist = np.asarray(rel_pos_dist * 1./np.linalg.norm([self.goal_max,self.goal_max]) ).reshape(-1)[0]
+		# Print the goal distance if verbosity is on
 		if self.verbose:
 			print("Distance from goal: {}".format(norm_pos_dist*np.asarray(np.linalg.norm([self.goal_max,self.goal_max])).reshape(-1)[0]))
-
+		
+		# Regulatory factor for wheel velocities
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
 		r_regul = gaussian(delta_pos, sig=2.0)
 		
-		#print("regulation factors, wheel: {}, pitch: {}, pos_dist: {}".format(r_regul, theta, norm_pos_dist))
-		##
+		# The actual reward function is below, a standard format is being used to ensure the size of the reward remains predictable:
+		# y_reward := (w_1 * a + w_2 * b + w_3 * c + ....) / (sum(w_1, w_2, w_3 ....)
+		# a, b, c are different attributes that provide a reward, they do this on a scale no larger than 1
+		# w_x is the weight for each attribute this provides the priority to different learned attributes
+		# The sum of weights at the end is used to ensure that the max reward that can be recieved is 1.0
 		r_alive = 1.0
-		a = 1./14.
-		return (10. * r_alive + 4. * (1. - norm_pos_dist) + 0. * r_regul )* a #(8.*r_alive + theta + r_regul + 2*norm_pos_dist) * a
+		w = [10., 4., 0.]
+		scale_factor = 1./sum(w)
+		return (w[0] * r_alive + w[1] * (1. - norm_pos_dist) + w[2] * r_regul )* scale_factor
 
 	def reset(self):
 		"""Gym environment 'reset'
