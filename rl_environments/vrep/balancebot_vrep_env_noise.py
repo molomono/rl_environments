@@ -299,7 +299,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 									 self.r_wheel_delta, self.l_wheel_delta])
 		self.add_sensor_noise
 
-		if self.goal_mode_on:d
+		if self.goal_mode_on:
 			relative_goal = np.array([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10]])
 			goal_dist = np.linalg.norm(relative_goal)
 			self.observation = np.hstack([self.observation, relative_goal, goal_dist])
