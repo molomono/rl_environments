@@ -128,11 +128,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
 		self.l_wheel_delta = self.l_angle - self.l_wheel_old
 		self.r_wheel_delta = self.r_angle - self.r_wheel_old
-<<<<<<< HEAD
 		lst_o += [self.l_wheel_delta, self.r_wheel_delta]
-=======
-		# lst_o += [self.l_wheel_delta, self.r_wheel_delta]
->>>>>>> develop
 
 
 		self.observation = np.array(lst_o).astype('float32');
@@ -212,15 +208,9 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 			self.stop_simulation()
 		self.start_simulation()
 		
-<<<<<<< HEAD
 		#Unifrom pitch randomization, changing initial starting position 
 		start_pitch = np.random.uniform(-np.pi/9, np.pi/9)
 		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, 0.0]))
-=======
-		#Unifrom 
-		start_pitch = np.random.uniform(-np.pi/9, np.pi/9)
-		self.obj_set_orientation([start_pitch])
->>>>>>> develop
 
 		self._make_observation()
 		return self.observation
