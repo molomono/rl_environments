@@ -331,6 +331,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		action = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)
 		#assert self.action_space.contains(action), "Action {} ({}) is invalid".format(action, type(action))
 		
+		
 		# Actuate
 		self._make_action(action)
 		# Step
