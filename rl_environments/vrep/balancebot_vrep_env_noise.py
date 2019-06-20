@@ -301,7 +301,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 
 		if self.goal_mode_on:
 			#Calculate the relative position vector
-			relative_goal = np.complex([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10])
+			relative_goal = np.complex(self.goal[0]-self.observation[9], self.goal[1]-self.observation[10])
 			#Rotate the position vector into the robot frame
 			rotated_vector = relative_goal * np.complex(self.observation[7], self.observation[8])
 			#Make the goal vector non-complex
