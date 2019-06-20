@@ -300,7 +300,13 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.add_sensor_noise
 
 		if self.goal_mode_on:
-			relative_goal = np.array([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10]])
+			#Calculate the relative position vector
+			relative_goal = np.complex([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10]])
+			#Rotate the position vector into the robot frame
+			rotated_vector = relative_goal * np.complex(self.observation[7], self.observation[8])
+			#Make the goal vector non-complex
+			relative_goal = np.array([np.real(rotated_vector), np.imag(rotated_vector)])
+			#Calculate the goal distance
 			goal_dist = np.linalg.norm(relative_goal)
 			self.observation = np.hstack([self.observation, relative_goal, goal_dist])
 
