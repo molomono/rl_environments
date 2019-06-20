@@ -164,7 +164,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		#num_obs = 12 
 		num_obs = 13
 		if self.goal_mode_on:
-			num_obs += 2
+			num_obs += 3
 		
 		# #modify: action_space and observation_space to suit your needs
 		self.joints_max_velocity = 6.0
