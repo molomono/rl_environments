@@ -51,14 +51,22 @@ class GoalEnv(Env):
 # TODO: Sparse goal rewards with goal thresholding and new goal definition
 # The new goal environment is defined in more detail in Note-book. page 6,7
 # TODO: Change the environment success condition
+<<<<<<< HEAD
 # 
+=======
+# TODO: Add a function that constructs the goal disc in v-rep so the behavior can be visually followed.
+# TODO: Get a V-REP dongle so you can change the environment.
+>>>>>>> develop
 
 VECTOR_ACTION = True
 
 from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
 
+<<<<<<< HEAD
 from abstract_classes.sensor_info import SensorInfo
+=======
+>>>>>>> develop
 
 import os
 if os.name == 'nt':
@@ -119,7 +127,11 @@ def transform_matrix(rotation, translation):
 	return np.matrix(np.dot(Rotate_Z_matrix,np.dot(Rotate_Y_matrix,np.dot(Rotate_X_matrix,Translate_matrix))))
 
 # #modify: the env class name
+<<<<<<< HEAD
 class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
+=======
+class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
+>>>>>>> develop
 	metadata = {
 		'render.modes': [],
 	}
@@ -300,7 +312,14 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		self.add_sensor_noise
 
 		if self.goal_mode_on:
+<<<<<<< HEAD
 			self.observation = np.hstack([self.observation, self.goal])
+=======
+			#TODO: Also try with relative goal position
+			relative_goal = np.array([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10]])
+			goal_dist = np.linalg.norm(relative_goal)
+			self.observation = np.hstack([self.observation, relative_goal, goal_dist])
+>>>>>>> develop
 
 	def add_sensor_noise(self):
 		for index in range(len(self.observation)):
@@ -331,7 +350,10 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		action = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)
 		#assert self.action_space.contains(action), "Action {} ({}) is invalid".format(action, type(action))
 		
+<<<<<<< HEAD
 		
+=======
+>>>>>>> develop
 		# Actuate
 		self._make_action(action)
 		# Step
@@ -361,7 +383,11 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv, SensorInfo):
 		norm_pos_dist = np.asarray(rel_pos_dist * 1./np.linalg.norm([self.goal_max,self.goal_max]) ).reshape(-1)[0]
 		# Print the goal distance if verbosity is on
 		if self.verbose:
+<<<<<<< HEAD
 			print("Distance from goal: {}".format(norm_pos_dist*np.asarray(np.linalg.norm([self.goal_max,self.goal_max])).reshape(-1)[0]))
+=======
+			print("Relative X: {} Y: {} Dist: {}".format(self.observation[-3], self.observation[-2], self.observation[-1]))
+>>>>>>> develop
 		
 		# Regulatory factor for wheel velocities
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
