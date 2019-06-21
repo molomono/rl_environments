@@ -3,6 +3,7 @@
 # TODO: Change the environment success condition
 # TODO: Add a function that constructs the goal disc in v-rep so the behavior can be visually followed.
 # TODO: Get a V-REP dongle so you can change the environment.
+# TODO: Make the robot force controlled instead of velocity controlled
 
 
 '''NOTES:
@@ -82,7 +83,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 			num_obs += 3
 		
 		# #modify: action_space and observation_space to suit your needs
-		self.joints_max_velocity = 10000
+		self.joints_max_velocity = 25 #25 #max torque set in vrep
 		act = np.array( [self.joints_max_velocity] * num_act )
 		obs = np.array(		  [np.inf]		  * num_obs )
 		#TODO: Change the observation space to reflect the actual boundaries of observation
