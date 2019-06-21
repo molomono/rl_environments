@@ -210,7 +210,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 			kinematics = np.matrix([[-1., 1.], [1., 1.]]) 
 			action = np.asarray(np.matrix(action) * kinematics).reshape(-1)
 		#clip the action to the correct range	
-		action = np.clip(action, -self.action_space.low, self.action_space.high)
+		action = np.clip(action, self.action_space.low, self.action_space.high)
 
 		# Actuate
 		self._make_action(action)
