@@ -142,11 +142,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		gravity_vector = np.array([0., 0., -9.81])
 		grav_vec_base_frame = np.asarray(world_to_robot_rotation * np.matrix(gravity_vector).T).reshape(-1)
 		lin_acc += grav_vec_base_frame
-		####################################################
-		
-		#ang_vel = np.asarray(world_to_robot_rotation * np.matrix(ang_vel).T).reshape(-1)
-		#orient  = np.asarray(world_to_robot_rotation * np.matrix(orient).T).reshape(-1)
-		
+	
 		# L-Wheel-vel, R-wheel-vel	: observation
 		self.l_angle = self.obj_get_joint_angle(self.oh_joint[0])
 		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
@@ -275,7 +271,6 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 
 	def sample_goal(self):
 		goal = self.goal_space.sample()
-		#goal = np.asarray([0.0, goal[0]])
 		return goal
 	
 	def render(self, mode='human', close=False):
