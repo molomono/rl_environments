@@ -188,10 +188,10 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		"""Query V-rep to make action.
 		   no return value
 		"""
-		# #modify
-		# example: set a velocity for each joint
+		#def obj_set_force(self, handle, f):
+		#return self.RAPI_rc()
 		for i_oh, i_a in zip(self.oh_joint, a):
-			self.obj_set_force(i_oh, i_a)
+			vrep.simxSetJointForce(self.cID, i_oh, i_a, vrep.simx_opmode_continuous)
 	
 	def step(self, action):
 		"""Gym environment 'step'
