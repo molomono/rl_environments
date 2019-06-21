@@ -82,7 +82,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 			num_obs += 3
 		
 		# #modify: action_space and observation_space to suit your needs
-		self.joints_max_velocity = 4*6.0
+		self.joints_max_velocity = 100 
 		act = np.array( [self.joints_max_velocity] * num_act )
 		obs = np.array(		  [np.inf]		  * num_obs )
 		#TODO: Change the observation space to reflect the actual boundaries of observation
@@ -204,7 +204,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		# #modify Either clip the actions outside the space or assert the space contains them
 		action = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)
 		#assert self.action_space.contains(action), "Action {} ({}) is invalid".format(action, type(action))
-		
+		print("clipped action: {}".format(action))
 		# Actuate
 		self._make_action(action)
 		# Step
