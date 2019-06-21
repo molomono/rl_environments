@@ -12,7 +12,7 @@ from vrep_env import vrep # vrep.sim_handle_parent
 import os
 if os.name == 'nt':
 	#print('If you are running this code on windows you need to manually define the vrep scene path in each respective environment.')
-	vrep_scenes_path = 'C:\Program Files\V-REP3\V-REP_PRO\scenes'
+	vrep_scenes_path = 'C:/Program Files/V-REP3/V-REP_PRO/scenes'
 else:
 	vrep_scenes_path = os.environ['VREP_SCENES_PATH']
 
@@ -78,8 +78,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		act = np.array( [self.joints_max_velocity] * num_act )
 		obs = np.array(		  [np.inf]		  * num_obs )
 		#TODO: Change the observation space to reflect the actual boundaries of observation
-		self.action_space	  = spaces.Box(-act,act)
-		self.observation_space = spaces.Box(-obs,obs)
+		self.action_space	  = spaces.Box(-1.0*act,act)
+		self.observation_space = spaces.Box(-1.0*obs,obs)
 		self.goal_max = 2
 		self.goal_space = spaces.Box(np.array([-self.goal_max,-self.goal_max]), np.array([self.goal_max,self.goal_max]))
 		
@@ -140,11 +140,6 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		#orient  = np.asarray(world_to_robot_rotation * np.matrix(orient).T).reshape(-1)
 		
 		# L-Wheel-vel, R-wheel-vel	: observation
-		try:
-		 	self.l_wheel_old = self.l_angle
-		 	self.r_wheel_old = self.r_angle
-		except:
-			pass
 		self.l_angle = self.obj_get_joint_angle(self.oh_joint[0])
 		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
 		# Calculating the delta joint angles using complex numbers to avoid the large delta jump at pi and -pi
@@ -241,7 +236,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		
 		# Regulatory factor for wheel velocities
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
-		r_regul = gaussian(delta_pos, sig=2.0)
+		r_regul = gaussian(delta_pos, sigma=2.0)
 		
 		# The actual reward function is below, a standard format is being used to ensure the size of the reward remains predictable:
 		# y_reward := (w_1 * a + w_2 * b + w_3 * c + ....) / (sum(w_1, w_2, w_3 ....)
@@ -293,8 +288,8 @@ def main(args):
 	"""
 	# #modify: the env class name
 	env = BalanceBotVrepEnvNoise()
-	for i_episode in range(8): 
-		observation = env.reset()
+	for _ in range(8): 
+		env.reset()
 		total_reward = 0
 		for t in range(256):
 			action = env.action_space.sample()

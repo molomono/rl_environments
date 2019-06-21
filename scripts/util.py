@@ -8,12 +8,24 @@ def sigmoid(x):
 	return 1.0 / (1.0 + np.exp(-x))
 
 def gaussian(x,sigma=1.0):
-	''' Gaussian Normal distribution function
+	''' Gaussian distribution function
 	:param x: Value on the x axis of the distribution
 	:param sigma: sigma defines the distribution width
 	:returns: y value, the probability of x occuring 
 	'''
-	return np.exp(-np.power(sigma*np.sum(np.abs(x)),2.0))
+	return np.exp(-np.power(sigma*x,2.0))
+
+def gaussian_2d(x,y , sigma_x=1.0, sigma_y=1.0):
+	''' Two dimentional Gaussian distribution function
+	:param x: Value on the x axis of the distribution
+	:param y: Value on the y axis of the distribution
+	:param sigma_x: distribution width in the x axis
+	:param sigma_y: distribution width in the y axis
+	:returns: Probability of f(x,y) 
+	'''
+	return 1/(np.e*np.pi*sigma_x*sigma_y) \
+            * np.exp(-np.power(x,2.0) /(2*np.power(sigma_x,2.0))) \
+            * np.exp(-np.power(y,2.0) /(2*np.power(sigma_y,2.0)))  
 
 def trig(angle):
 	''' Converts angle to a vector on the unit circle
