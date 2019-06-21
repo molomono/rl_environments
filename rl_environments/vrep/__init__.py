@@ -3,5 +3,4 @@ from rl_environments.vrep.cartpole_continuous_vrep_env import CartPoleContinuous
 from rl_environments.vrep.hopper_vrep_env import HopperVrepEnv
 from rl_environments.vrep.balancebot_vrep_env import BalanceBotVrepEnv
 from rl_environments.vrep.balancebot_vrep_env_noise import BalanceBotVrepEnvNoise
-from rl_environments.vrep.balancebot_goal_vrep_env_noise import BalanceBotVrepEnvNoiseGoal
 from rl_environments.vrep.cartpole_continuous_swingup_vrep_env import DoubleCartPoleSwingupVrepEnv

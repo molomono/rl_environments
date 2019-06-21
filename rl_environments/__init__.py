@@ -21,12 +21,6 @@ register(
     reward_threshold=100000.0
 )
 register(
-    id='VrepBalanceBot2-v0', 
-    entry_point='rl_environments.vrep.balancebot_vrep_env_2:BalanceBotVrepEnv2', 
-    max_episode_steps=10000, 
-    reward_threshold=100000.0
-)
-register(
     id='VrepHopper-v0', 
     entry_point='rl_environments.vrep.hopper_vrep_env:HopperVrepEnv', 
     max_episode_steps=1000
@@ -41,12 +35,6 @@ register(
     entry_point='rl_environments.vrep.balancebot_vrep_env_noise:BalanceBotVrepEnvNoise', 
     max_episode_steps=600, 
     reward_threshold=550.0
-)
-register(
-    id='VrepBalanceBotGoal-v0',
-    entry_point='rl_environments.vrep.balancebot_goal_vrep_env_noise:BalanceBotVrepEnvNoiseGoal',
-    max_episode_steps=10000,
-    reward_threshold=100000.0
 )
 
 
