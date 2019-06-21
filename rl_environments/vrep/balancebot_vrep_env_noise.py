@@ -236,7 +236,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		
 		# Regulatory factor for wheel velocities
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
-		r_regul = gaussian(delta_pos, sigma=2.0)
+		r_regul = np.sum(gaussian(delta_pos, sigma=2.0)) * 1/float(len(delta_pos))
 		
 		# The actual reward function is below, a standard format is being used to ensure the size of the reward remains predictable:
 		# y_reward := (w_1 * a + w_2 * b + w_3 * c + ....) / (sum(w_1, w_2, w_3 ....)
