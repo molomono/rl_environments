@@ -4,6 +4,15 @@
 # TODO: Add a function that constructs the goal disc in v-rep so the behavior can be visually followed.
 # TODO: Get a V-REP dongle so you can change the environment.
 
+
+'''NOTES:
+Because it makes more sense to create different goal conditions for the AI, this environment
+will be modified to contain the robot implementation + sensor-noise and the domain-dynamics 
+randomization. 
+The goal tasks will be defined by wrappers that build upon this script.
+The goal conditions are defiend by self._compute_reward() and self._sample_goal()
+'''
+
 VECTOR_ACTION = True
 
 from vrep_env import vrep_env
@@ -195,9 +204,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
         # transform the action from vector (lin and rot action) to motor control
 		if VECTOR_ACTION:
 			kinematics = np.matrix([[-1., 1.], [1., 1.]]) 
-			#normalize_action = lambda x: np.asarray( ( x * 1./np.linalg.norm(x) * self.joints_max_velocity if np.linalg.norm(x) < )  )
 			action = np.asarray(np.matrix(action) * kinematics).reshape(-1)
-			#print(action)
 			
 		# #modify Either clip the actions outside the space or assert the space contains them
 		action = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)
