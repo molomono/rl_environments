@@ -83,7 +83,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 			num_obs += 3
 		
 		# #modify: action_space and observation_space to suit your needs
-		self.joints_max_velocity = 25000 #25 #max torque set in vrep
+		self.joints_max_velocity = 10 #25 #max torque set in vrep
 		act = np.array( [self.joints_max_velocity] * num_act )
 		obs = np.array(		  [np.inf]		  * num_obs )
 		#TODO: Change the observation space to reflect the actual boundaries of observation
