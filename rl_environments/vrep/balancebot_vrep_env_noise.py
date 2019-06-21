@@ -194,7 +194,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 
 		for i_oh, i_a in zip(self.oh_joint, a):
 			self.obj_set_velocity(i_oh, np.sign(i_a) * 1000.)
-			self.obj_set_force(i_oh, i_a)
+			self.obj_set_force(i_oh, np.abs(i_a))
 			#vrep.simxSetJointForce(self.cID, i_oh, i_a, vrep.simx_opmode_continuous)
 	
 	def step(self, action):
