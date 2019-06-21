@@ -82,8 +82,11 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		if self.goal_mode_on:
 			num_obs += 3
 		
-		# #modify: action_space and observation_space to suit your needs
-		self.joints_max_velocity = 10 #25 #max torque set in vrep
+		# Define minimum and maximum forces that actuators can apply
+		self.min_torque = 0.
+		self.max_torque = 25.
+		# Define action and observation space
+		self.joints_max_velocity = 1 #25 #max torque set in vrep
 		act = np.array( [self.joints_max_velocity] * num_act )
 		obs = np.array(		  [np.inf]		  * num_obs )
 		#TODO: Change the observation space to reflect the actual boundaries of observation
@@ -188,13 +191,14 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		"""Query V-rep to make action.
 		   no return value
 		"""
-		# VREP handles torque control in a highly obscure mannor:
-		# 1. Set unreachable Velocity in the direction of desired rotation: ie. -1000 or 1000
+		# VREP handles torque control in an obscure mannor:
+		# 1. Set unreachable Velocity in the direction of desired rotation: 
+		# sign(action) * 10000  to set velocity
 		# 2. Modulate the maximum Joint force to restrain the torque being applied
-
-		for i_oh, i_a in zip(self.oh_joint, a):
+		# maximum torque is mapped from -1 to 1 --> 0 to 25 Nm
+		for i_oh, i_a in zip(self.oh_joint, remap(a, self.action_space.low[0], self.action_space.high[0], self.min_torque, self.max_torque)):
 			self.obj_set_velocity(i_oh, np.sign(i_a) * 1000.)
-			self.obj_set_force(i_oh, np.abs(i_a))
+			self.obj_set_force(i_oh, i_a)
 			#vrep.simxSetJointForce(self.cID, i_oh, i_a, vrep.simx_opmode_continuous)
 	
 	def step(self, action):
@@ -209,7 +213,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		# #modify Either clip the actions outside the space or assert the space contains them
 		action = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)
 		#assert self.action_space.contains(action), "Action {} ({}) is invalid".format(action, type(action))
-		print("clipped action: {}".format(action))
+
 		# Actuate
 		self._make_action(action)
 		# Step
@@ -221,6 +225,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		reward = self.compute_reward(action)
 		if self.verbose:
 			print('Reward: {0:1.4f}'.format(reward))
+			print("clipped action: {}".format(action))
 		# Check if the balancebot fell over 
 		angle_base = self.obj_get_orientation(self.oh_shape[0])
 		# Early stop
