@@ -1,53 +1,3 @@
-###########
-###########---- Big TODO: Stop the simulation environment when exiting the final simulation iteration
-###########---- env.env.close()  or env.close() can be used to reset the scene, stop the simulation and disconnect TCP. 
-###########---- This is necisarry other wise i need to manually pause the simulation before i can connect using a new AI.
-###########
-# This file is a template for V-rep environments
-#	 all names in this file are just examples
-# Search for '#modify' and replace accordingly
-
-
-#################### WIP environment #######################
-#TODO: Need to alter the observation space to contain observation, achieved goal and desired goal
-############################################################
-
-'''
-class GoalEnv(Env):
-    """A goal-based environment. It functions just as any regular OpenAI Gym environment but it
-    imposes a required structure on the observation_space. More concretely, the observation
-    space is required to contain at least three elements, namely `observation`, `desired_goal`, and
-    `achieved_goal`. Here, `desired_goal` specifies the goal that the agent should attempt to achieve.
-    `achieved_goal` is the goal that it currently achieved instead. `observation` contains the
-    actual observations of the environment as per usual.
-    """
-
-    def reset(self):
-        # Enforce that each GoalEnv uses a Goal-compatible observation space.
-        if not isinstance(self.observation_space, gym.spaces.Dict):
-            raise error.Error('GoalEnv requires an observation space of type gym.spaces.Dict')
-        for key in ['observation', 'achieved_goal', 'desired_goal']:
-            if key not in self.observation_space.spaces:
-                raise error.Error('GoalEnv requires the "{}" key to be part of the observation dictionary.'.format(key))
-
-    def compute_reward(self, achieved_goal, desired_goal, info):
-        """Compute the step reward. This externalizes the reward function and makes
-        it dependent on an a desired goal and the one that was achieved. If you wish to include
-        additional rewards that are independent of the goal, you can include the necessary values
-        to derive it in info and compute it accordingly.
-        Args:
-            achieved_goal (object): the goal that was achieved during execution
-            desired_goal (object): the desired goal that we asked the agent to attempt to achieve
-            info (dict): an info dictionary with additional information
-        Returns:
-            float: The reward that corresponds to the provided achieved goal w.r.t. to the desired
-            goal. Note that the following should always hold true:
-                ob, reward, done, info = env.step()
-                assert reward == env.compute_reward(ob['achieved_goal'], ob['goal'], info)
-        """
-        raise NotImplementedError
-'''
-
 # TODO: Sparse goal rewards with goal thresholding and new goal definition
 # The new goal environment is defined in more detail in Note-book. page 6,7
 # TODO: Change the environment success condition
@@ -58,7 +8,6 @@ VECTOR_ACTION = True
 
 from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
-
 
 import os
 if os.name == 'nt':
@@ -72,51 +21,7 @@ from gym import spaces
 
 import numpy as np
 
-def sigmoid(x):
-	return 1.0 / (1.0 + np.exp(-x))
-
-def rads2complex(rads):
-	return [np.sin(rads), np.cos(rads)]
-
-def gaussian_2d(x,y, scale_x=0.5, scale_y=0.5):
-	r = np.abs(np.add(scale_x*np.power(x,2), scale_y*np.power(y,2)))
-	return 1.0 - np.tanh(1.0/(np.pi*2.0)*r)
-
-def gaussian(x,sig=1.0):
-	return np.exp(-np.power(sig*np.sum(np.abs(x)),2.0))
-
-def trig(r):
-	return np.cos(r), np.sin(r)
-
-def transform_matrix(rotation, translation):
-	''' Returns homogeneous affine transformation matrix for a translation and rotation vector
-	:param rotation: Roll, Pitch, Yaw as a 1d numpy.array or list
-	:param translation: X, Y, Z as 1d numpy.array or list
-	:returns: 3D Homogenous transform matrix 
-	'''
-	xC, xS = trig(rotation[0])
-	yC, yS = trig(rotation[1])
-	zC, zS = trig(rotation[2])
-	dX = translation[0]
-	dY = translation[1]
-	dZ = translation[2]
-	Translate_matrix =np.array([[1, 0, 0, dX],
-								[0, 1, 0, dY],
-								[0, 0, 1, dZ],
-								[0, 0, 0, 1]])
-	Rotate_X_matrix = np.array([[1, 0, 0, 0],
-								[0, xC, -xS, 0],
-								[0, xS, xC, 0],
-								[0, 0, 0, 1]])
-	Rotate_Y_matrix = np.array([[yC, 0, yS, 0],
-								[0, 1, 0, 0],
-								[-yS, 0, yC, 0],
-								[0, 0, 0, 1]])
-	Rotate_Z_matrix = np.array([[zC, -zS, 0, 0],
-								[zS, zC, 0, 0],
-								[0, 0, 1, 0],
-								[0, 0, 0, 1]])
-	return np.matrix(np.dot(Rotate_Z_matrix,np.dot(Rotate_Y_matrix,np.dot(Rotate_X_matrix,Translate_matrix))))
+from scripts.util import *
 
 # #modify: the env class name
 class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
@@ -130,10 +35,12 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		server_port=19997,
 		scene_path=vrep_scenes_path+'/balance_test.ttt',
 		goal_mode_on = True,
-		verbose = True
+		verbose = True,
+		goal_in_robot_frame = False
 	):
 		self.verbose = verbose
 		self.goal_mode_on = goal_mode_on
+		self.goal_in_robot_frame = True
 
 		vrep_env.VrepEnv.__init__(self,server_addr,server_port,scene_path)
 		# #modify: the name of the joints to be used in action space
@@ -184,50 +91,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.r_wheel_old = 0.0
 		# #modify: optional message
 		print('BalanceBot Environment: initialized')
-		
-	
-	'''
-	def _make_observation(self):
-		"""Query V-rep to make observation.
-		   The observation is stored in self.observation
-		"""
-		# start with empty list
-		lst_o = []
-
-		#Add IMU data, Accel 3dof and Gyros 3dof
-
-
-		#Definition of the observation vector:
-		pos = self.obj_get_position(self.oh_shape[0])
-		ang_pos = self.obj_get_orientation(self.oh_shape[0])
-		lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
-
-		#calculate the relative velocity of the balance bot
-		rel_lin_vel_x = np.sqrt( np.power(lin_vel[0], 2) + np.power(lin_vel[1], 2) )
-
-		lst_o += pos[0:2]
-		#Theta is in Radians, make it a complex number
-		lst_o += [np.sin(ang_pos[2]), np.cos(ang_pos[2])]
-		lst_o += ang_vel
-
-		#add the lin velocity
-		lst_o += [rel_lin_vel_x]
-		try:
-		 	self.l_wheel_old = self.l_angle
-		 	self.r_wheel_old = self.r_angle
-		except:
-			pass
-		self.l_angle = self.obj_get_joint_angle(self.oh_joint[0])
-		self.r_angle = self.obj_get_joint_angle(self.oh_joint[1])
-		self.l_wheel_delta = self.l_angle - self.l_wheel_old
-		self.r_wheel_delta = self.r_angle - self.r_wheel_old
-		lst_o += [self.l_wheel_delta, self.r_wheel_delta]
-
-		self.observation = np.array(lst_o).astype('float32')
-
-		self.add_sensor_noise()
-	'''
-		
+				
 	def _make_observation(self):
 		"""Query V-rep to make observation.
 		   The observation is stored in self.observation
@@ -302,10 +166,15 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		if self.goal_mode_on:
 			#Calculate the relative position vector
 			relative_goal = np.complex(self.goal[0]-self.observation[9], self.goal[1]-self.observation[10])
-			#Rotate the position vector into the robot frame
-			rotated_vector = relative_goal * np.complex(self.observation[7], self.observation[8])
-			#Make the goal vector non-complex
-			relative_goal = np.array([np.real(rotated_vector), np.imag(rotated_vector)])
+			if self.goal_in_robot_frame:
+				#Rotate the position vector into the robot frame
+				rotated_vector = relative_goal * np.complex(self.observation[7], -self.observation[8])
+				#Make the goal vector non-complex
+				relative_goal = np.array([np.real(rotated_vector), np.imag(rotated_vector)])
+			else:
+				#Make the goal vector non-complex
+				relative_goal = np.array([np.real(relative_goal), np.imag(relative_goal)])
+
 			#Calculate the goal distance
 			goal_dist = np.linalg.norm(relative_goal)
 			self.observation = np.hstack([self.observation, relative_goal, goal_dist])

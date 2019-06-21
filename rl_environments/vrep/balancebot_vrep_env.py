@@ -131,7 +131,7 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		lst_o += [self.l_wheel_delta, self.r_wheel_delta]
 
 
-		self.observation = np.array(lst_o).astype('float32');
+		self.observation = np.array(lst_o).astype('float32')
 	
 	def _make_action(self, a):
 		"""Query V-rep to make action.
@@ -141,6 +141,9 @@ class BalanceBotVrepEnv(vrep_env.VrepEnv):
 		# example: set a velocity for each joint
 		for i_oh, i_a in zip(self.oh_joint, a):
 			self.obj_set_velocity(i_oh, i_a)
+			#TODO: Change this to force control instead of velocity, 
+			# also test and figure out what the right action space range is 
+			#self.obj_set_force(i_oh, i_a)
 	
 	def step(self, action):
 		"""Gym environment 'step'
