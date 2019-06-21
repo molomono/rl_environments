@@ -188,10 +188,14 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		"""Query V-rep to make action.
 		   no return value
 		"""
-		#def obj_set_force(self, handle, f):
-		#return self.RAPI_rc()
+		# VREP handles torque control in a highly obscure mannor:
+		# 1. Set unreachable Velocity in the direction of desired rotation: ie. -1000 or 1000
+		# 2. Modulate the maximum Joint force to restrain the torque being applied
+
 		for i_oh, i_a in zip(self.oh_joint, a):
-			vrep.simxSetJointForce(self.cID, i_oh, i_a, vrep.simx_opmode_continuous)
+			self.obj_set_velocity(i_oh, np.sign(i_a) * 1000.)
+			self.obj_set_force(i_oh, i_a)
+			#vrep.simxSetJointForce(self.cID, i_oh, i_a, vrep.simx_opmode_continuous)
 	
 	def step(self, action):
 		"""Gym environment 'step'
