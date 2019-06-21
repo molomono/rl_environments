@@ -1,5 +1,21 @@
 import numpy as np
 
+
+
+def remap(value, input_min, input_max, output_min=0., output_max=1.):
+    ''' Remaps the input value from input range to output range
+	:param value: input value or numpy array
+	:param input_min: minimum value of the input range
+	:param input_max: maximum value of the input range
+	:param output_min: minimum value of the output range
+	:param output_max: maximum value of the output range
+	:returns: input value or numpy array remapped to the output range
+	'''
+    # Convert the input to 0-1 range
+    valueScaled = np.divide(value - input_min, (input_max - input_min))
+    # Convert the 0-1 range into a value in the right range.
+    return output_min + (np.multiply(valueScaled, (output_max - output_min)))
+
 def sigmoid(x):
 	''' Sigmoid function
     :param x: x value

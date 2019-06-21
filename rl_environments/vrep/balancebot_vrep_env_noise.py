@@ -32,7 +32,6 @@ import numpy as np
 
 from scripts.util import *
 
-# #modify: the env class name
 class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 	metadata = {
 		'render.modes': [],
