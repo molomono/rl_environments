@@ -84,7 +84,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		
 		# Define minimum and maximum forces that actuators can apply
 		self.min_torque = 0.
-		self.max_torque = 0.5
+		self.max_torque = 0.15
 		# Define action and observation space
 		self.joints_max_velocity = 1 #25 #max torque set in vrep
 		act = np.array( [self.joints_max_velocity] * num_act )
@@ -209,10 +209,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		if VECTOR_ACTION:
 			kinematics = np.matrix([[-1., 1.], [1., 1.]]) 
 			action = np.asarray(np.matrix(action) * kinematics).reshape(-1)
-			
-		# #modify Either clip the actions outside the space or assert the space contains them
-		action = np.clip(action,-self.joints_max_velocity, self.joints_max_velocity)
-		#assert self.action_space.contains(action), "Action {} ({}) is invalid".format(action, type(action))
+		#clip the action to the correct range	
+		action = np.clip(action, -self.action_space.low, self.action_space.high)
 
 		# Actuate
 		self._make_action(action)
@@ -256,7 +254,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		# w_x is the weight for each attribute this provides the priority to different learned attributes
 		# The sum of weights at the end is used to ensure that the max reward that can be recieved is 1.0
 		r_alive = 1.0
-		w = [10., 4., 0.]
+		w = [10., 0., 0.]
 		scale_factor = 1./sum(w)
 		return (w[0] * r_alive + w[1] * (1. - norm_pos_dist) + w[2] * r_regul )* scale_factor
 
