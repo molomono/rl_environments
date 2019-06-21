@@ -190,7 +190,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		# #modify
 		# example: set a velocity for each joint
 		for i_oh, i_a in zip(self.oh_joint, a):
-			self.obj_set_velocity(i_oh, i_a)
+			self.obj_set_force(i_oh, i_a)
 	
 	def step(self, action):
 		"""Gym environment 'step'
