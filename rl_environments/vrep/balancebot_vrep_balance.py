@@ -32,5 +32,5 @@ class BalanceBotVrepEnvBalance(BalanceBotVrepEnvNoise):
 		return (w[0] * r_alive + w[1] * (1. - norm_pos_dist) + w[2] * r_regul )* scale_factor
 
 	def compute_action(self, action):
-		kinematics = np.matrix([[0., 1.], [0., 1.]]) 
+		kinematics = np.matrix([[0., 0.], [1., 1.]]) 
 		return np.asarray(np.matrix(action) * kinematics).reshape(-1)
