@@ -78,7 +78,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		# Example: 3 dimensions of linear and angular (2) velocities + 6 additional dimension
 		# 3 =  X, Y, Theta thus planar position (Might want to expand it to the velocities as well)
 		#num_obs = 12 
-		num_obs = 13
+		num_obs = 14
 		if self.goal_mode_on:
 			num_obs += 3
 		
@@ -159,12 +159,17 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.l_wheel_delta = np.angle(self.l_wheel_delta)
 		self.r_wheel_delta = np.angle(self.r_wheel_delta)
 		
+		lin_vel = (self.r_wheel_delta + self.l_wheel_delta) / 2.
 		self.observation = np.array([lin_acc[0], lin_acc[1], lin_acc[2], 
 									 ang_vel[0], ang_vel[1], ang_vel[2], 
 									 orient[0], np.cos(abs_yaw), np.sin(abs_yaw), 
 									 pos[0], pos[1], 
-									 self.r_wheel_delta, self.l_wheel_delta])
-		self.add_sensor_noise
+									 self.r_wheel_delta, self.l_wheel_delta,
+									 lin_vel])
+
+		print("Observation: {}".format(self.observation))
+		self.add_sensor_noise()
+		self.remap_observations()
 
 		if self.goal_mode_on:
 			#Calculate the relative position vector
@@ -181,6 +186,21 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 			#Calculate the goal distance
 			goal_dist = np.linalg.norm(relative_goal)
 			self.observation = np.hstack([self.observation, relative_goal, goal_dist])
+
+	def remap_observations(self):
+		'''Linear remapping of the input range to a defined output range
+		'''
+		#Accel
+		self.observation[0:3] = remap(self.observation[0:3], 2*-9.81, 2*9.81, -1, 1)
+		#Gyro
+		self.observation[3:6] = remap(self.observation[3:6], -8.727, 8.727, -1, 1)
+		 	
+		#self.observation[6] 	#Absolute pitch
+		#self.observation[7:9]   #Continuous theta
+		#self.observation[9:11]	#Absolute Position
+		#self.observation[11:13] #Wheel Velocity
+		#self.observation[13] #linear velocity
+
 
 	def add_sensor_noise(self):
 		for index in range(len(self.observation)):
@@ -267,7 +287,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		
 		self.steps = 0
 		#Unifrom pitch randomization, changing initial starting position 
-		start_pitch = np.random.uniform(-np.pi/24, np.pi/24)
+		start_pitch = np.random.uniform(-np.pi/18, np.pi/18)
 		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, 0.0]))
 		
 		self.pitch_offset = np.random.uniform(0,0.05)
