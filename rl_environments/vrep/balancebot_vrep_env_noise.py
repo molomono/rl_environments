@@ -221,14 +221,18 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 			self.obj_set_force(i_oh, remap(i_a, self.action_space.low[0], self.action_space.high[0], self.min_torque, self.max_torque))
 			#vrep.simxSetJointForce(self.cID, i_oh, i_a, vrep.simx_opmode_continuous)
 	
+	def compute_action(self, action):
+		kinematics = np.matrix([[-1., 1.], [1., 1.]]) 
+		return np.asarray(np.matrix(action) * kinematics).reshape(-1)
+
 	def step(self, action):
 		"""Gym environment 'step'
 		"""
 		self.steps += 1
         # transform the action from vector (lin and rot action) to motor control
 		if VECTOR_ACTION:
-			kinematics = np.matrix([[-1., 1.], [1., 1.]]) 
-			action = np.asarray(np.matrix(action) * kinematics).reshape(-1)
+			action = self.compute_action(action)
+			
 		#clip the action to the correct range	
 		action = np.clip(action, self.action_space.low, self.action_space.high)
 
