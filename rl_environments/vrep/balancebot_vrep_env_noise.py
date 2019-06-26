@@ -50,6 +50,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.verbose = verbose
 		self.goal_mode_on = goal_mode_on
 		self.goal_in_robot_frame = True
+		self.sample_rate = 20
 
 		vrep_env.VrepEnv.__init__(self,server_addr,server_port,scene_path)
 		# #modify: the name of the joints to be used in action space
@@ -156,8 +157,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.r_wheel_delta = np.complex(np.cos(self.r_angle), np.sin(self.r_angle)) \
 							/np.complex(np.cos(self.r_wheel_old), np.sin(self.r_wheel_old))
 		# Converting the complex deltas into angles
-		self.l_wheel_delta = np.angle(self.l_wheel_delta)
-		self.r_wheel_delta = np.angle(self.r_wheel_delta)
+		self.l_wheel_delta = np.angle(self.l_wheel_delta) * self.sample_rate
+		self.r_wheel_delta = np.angle(self.r_wheel_delta) * self.sample_rate
 		
 		lin_vel = (self.r_wheel_delta + self.l_wheel_delta) / 2.
 		self.observation = np.array([lin_acc[0], lin_acc[1], lin_acc[2], 
