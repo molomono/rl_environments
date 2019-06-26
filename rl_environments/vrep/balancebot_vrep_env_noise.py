@@ -167,7 +167,6 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 									 self.r_wheel_delta, self.l_wheel_delta,
 									 lin_vel])
 
-		print("Observation: {}".format(self.observation))
 		self.add_sensor_noise()
 		self.remap_observations()
 

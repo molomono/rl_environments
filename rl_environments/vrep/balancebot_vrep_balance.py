@@ -27,10 +27,13 @@ class BalanceBotVrepEnvBalance(BalanceBotVrepEnvNoise):
 		# w_x is the weight for each attribute this provides the priority to different learned attributes
 		# The sum of weights at the end is used to ensure that the max reward that can be recieved is 1.0
 		r_alive = 1.0
-		w = [10., 0., 0.]
+		w = [10., 4., 0.]
 		scale_factor = 1./sum(w)
 		return (w[0] * r_alive + w[1] * (1. - norm_pos_dist) + w[2] * r_regul )* scale_factor
 
 	def compute_action(self, action):
 		kinematics = np.matrix([[0., 0.], [1., 1.]]) 
 		return np.asarray(np.matrix(action) * kinematics).reshape(-1)
+
+	def sample_goal(self):
+		return np.array([0.,0.])
