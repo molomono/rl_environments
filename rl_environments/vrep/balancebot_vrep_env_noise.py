@@ -218,7 +218,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		# maximum torque is mapped from -1 to 1 --> 0 to 25 Nm
 		for i_oh, i_a in zip(self.oh_joint, a):
 			self.obj_set_velocity(i_oh, np.sign(i_a) * 1000.)
-			self.obj_set_force(i_oh, remap(i_a, self.action_space.low[0], self.action_space.high[0], self.min_torque, self.max_torque))
+			self.obj_set_force(i_oh, remap(np.abs(i_a), self.action_space.low[0], self.action_space.high[0], self.min_torque, self.max_torque))
 			#vrep.simxSetJointForce(self.cID, i_oh, i_a, vrep.simx_opmode_continuous)
 	
 	def compute_action(self, action):
