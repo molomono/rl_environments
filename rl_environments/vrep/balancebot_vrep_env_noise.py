@@ -42,14 +42,23 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self,
 		server_addr='127.0.0.1',
 		server_port=19997,
-		scene_path=vrep_scenes_path+'/balance_bot_ram.ttt',
-		goal_mode_on = True,
-		verbose = True,
-		goal_in_robot_frame = False
+		scene_path=vrep_scenes_path+'/balance_bot_ram.ttt'
 	):
-		self.verbose = verbose
-		self.goal_mode_on = goal_mode_on
-		self.goal_in_robot_frame = True
+		''' Initialization of the robot environment.
+
+		Provided a V-REP server is being hosted on the server address and port provided.
+		This function connects to V-REP, loads the scene from the scene path.
+		It construcst the handles used to communicate with V-REP and subsequently
+		defines the action and observation spaces.
+		
+
+		:param server_addr: The server IP address the V-REP server is hosted on
+		:param server_port: The port the server is hosted on
+		:param scene_path: The path to the scene file, this location is local to the V-REP server.
+		'''
+		self.verbose = True
+		self.goal_mode_on = True
+		self.goal_in_robot_frame = False
 		self.sample_rate = 20
 
 		vrep_env.VrepEnv.__init__(self,server_addr,server_port,scene_path)

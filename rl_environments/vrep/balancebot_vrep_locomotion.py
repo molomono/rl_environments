@@ -8,7 +8,6 @@
 # 
 #
 
-
 import os
 if os.name == 'nt':
 	#print('If you are running this code on windows you need to manually define the vrep scene path in each respective environment.')
@@ -16,14 +15,19 @@ if os.name == 'nt':
 else:
 	vrep_scenes_path = os.environ['VREP_SCENES_PATH']
 
-
 from .balancebot_vrep_env_noise import BalanceBotVrepEnvNoise
 from scripts.util import *
 import numpy as np
 
+from vrep_env import vrep_env
+from vrep_env import vrep # vrep.sim_handle_parent
+
 class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
+	
+	time_till_goal_achieved = 2  
+
 	def reset(self):
-		"""Gym environment 'reset'
+		"""Locomotion Reset function
 		"""
 		if self.sim_running:
 			self.stop_simulation()
@@ -39,11 +43,21 @@ class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
 		self.goal = self.sample_goal()
 		print("Goal: ", self.goal)
 		self._make_observation()
+		#self.fix_orientation()
 		return self.observation
 
-
+	#def fix_orientation(self, eulerAngles):
+	#	'''This function locks the pitch/roll of the balance bot making it impossible 
+	#	for the robot to fall over.
+	#	'''
+	#	#def obj_set_orientation(self, handle, eulerAngles, relative_to=None):
+	#	vrep.simxSetObjectOrientation( self.cID, self.oh_shape[0], -1, eulerAngles, vrep.simx_opmode_continuous)
 
 	def compute_reward(self, action, achieved_goal=None, desired_goal=None, info=None):
+		pass
+
+	def validate_goal(self):
+		print(self.sample_rate * self.time_till_goal_achieved)
 		pass
 	
 	def compute_action(self, action):
