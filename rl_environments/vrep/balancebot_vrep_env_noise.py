@@ -91,7 +91,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.joints_max_velocity = 1 #25 #max torque set in vrep
 		act = np.array( [self.joints_max_velocity] * num_act )
 		#The first 6 observations are bound to a range between -1 and 1
-		obs = np.array( ([1.0] * 6) + ([np.inf] * num_obs-6) )
+		obs = np.array( ([1.0] * 6) + ([np.inf] * (num_obs-6)) )
 
 		#TODO: Change the observation space to reflect the actual boundaries of observation
 		self.action_space	  = spaces.Box(-1.0*act,act)
