@@ -20,7 +20,7 @@ sys.setrecursionlimit(1500)
 
 # -- Project information -----------------------------------------------------
 project = 'Demonstrator Code'
-copyright = '2019, Brian Armstrong'
+#copyright = '2019, Brian Armstrong'
 author = 'Brian Armstrong'
 
 # The full version, including alpha/beta/rc tags
