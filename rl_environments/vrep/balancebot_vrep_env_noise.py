@@ -50,7 +50,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		This function connects to V-REP, loads the scene from the scene path.
 		It construcst the handles used to communicate with V-REP and subsequently
 		defines the action and observation spaces.
-		
+
 
 		:param server_addr: The server IP address the V-REP server is hosted on
 		:param server_port: The port the server is hosted on
@@ -62,43 +62,37 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.sample_rate = 20
 
 		vrep_env.VrepEnv.__init__(self,server_addr,server_port,scene_path)
-		# #modify: the name of the joints to be used in action space
+		# List of joint names, which match with the joints in the V-REP scene
 		joint_names = ['l_wheel_joint','r_wheel_joint']
-		# #modify: the name of the shapes to be used in observation space
+		# List of object names, which match with the jonits in the V-REP scene
 		shape_names = ['base', 'l_wheel', 'r_wheel']
-		
-		## Getting object handles
-		# we will store V-rep object handles (oh = object handle)
 
-		# Meta
-		# #modify: if you want additional object handles
-		self.camera = self.get_object_handle('camera')
+		# TODO: Remove
+		#self.camera = self.get_object_handle('camera')
 		
+		# Get object handle IDs
 		# Actuators
 		self.oh_joint = list(map(self.get_object_handle, joint_names))
 		# Shapes
 		self.oh_shape = list(map(self.get_object_handle, shape_names))
 		
-		
-		# #modify: if size of action space is different than number of joints
-		# Example: One action per joint
+		# The number of actions is equal to the number of joints, Left and right wheel
 		num_act = len(self.oh_joint)
 		
-		# #modify: if size of observation space is different than number of joints
-		# Example: 3 dimensions of linear and angular (2) velocities + 6 additional dimension
-		# 3 =  X, Y, Theta thus planar position (Might want to expand it to the velocities as well)
-		#num_obs = 12 
+		# Define the dimensions of the observation space 
 		num_obs = 14
 		if self.goal_mode_on:
 			num_obs += 3
 		
 		# Define minimum and maximum forces that actuators can apply
-		self.min_torque = 0.
+		self.min_torque = 0.0
 		self.max_torque = 0.75
 		# Define action and observation space
 		self.joints_max_velocity = 1 #25 #max torque set in vrep
 		act = np.array( [self.joints_max_velocity] * num_act )
-		obs = np.array(		  [np.inf]		  * num_obs )
+		#The first 6 observations are bound to a range between -1 and 1
+		obs = np.array( ([1.0] * 6) + ([np.inf] * num_obs-6) )
+
 		#TODO: Change the observation space to reflect the actual boundaries of observation
 		self.action_space	  = spaces.Box(-1.0*act,act)
 		self.observation_space = spaces.Box(-1.0*obs,obs)
@@ -203,11 +197,12 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.observation[0:3] = remap(self.observation[0:3], 2*-9.81, 2*9.81, -1, 1)
 		#Gyro
 		self.observation[3:6] = remap(self.observation[3:6], -8.727, 8.727, -1, 1)
-		 	
+
+
 		#self.observation[6] 	#Absolute pitch
 		#self.observation[7:9]   #Continuous theta
 		#self.observation[9:11]	#Absolute Position
-		#self.observation[11:13] #Wheel Velocity
+		#self.observation[11:13] #Wheel Velocity * 1/self.sample_rate
 		#self.observation[13] #linear velocity
 
 
