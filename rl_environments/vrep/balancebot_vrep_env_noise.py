@@ -248,7 +248,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self._make_observation()
 		
 		# Reward
-		reward = self.compute_reward(action)
+		reward = self.compute_reward()
 		if self.verbose:
 			print('Reward: {0:1.4f}'.format(reward))
 			print("clipped action: {}".format(action))
@@ -261,8 +261,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		
 		return self.observation, reward, done, {}
 	
-	def compute_reward(self, action, achieved_goal=None, desired_goal=None, info=None):
-		''' This function takes in observations, actions and goals and outputs reward
+	def compute_reward(self):
+		''' This function takes in observations and goals and outputs reward
 		'''
 		# Calculate the goal vector relative to the position of the balance-bot
 		rel_pos_dist = np.linalg.norm([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10]])
