@@ -36,9 +36,8 @@ class BalanceBotVrepEnvBalance(BalanceBotVrepEnvNoise):
 
 	def compute_action(self, action):
 		''' Transform the action vector 
-
-		The predicted action can be a rotation and translation vector,
-		these need to be transformed into power of the motors.
+.
+		This version of thefunction translate the predicted action into translation.
 		
 		:param action: predicted action
 		:returns: Action in the form of ratio of motor power -1 to 1
@@ -54,4 +53,4 @@ class BalanceBotVrepEnvBalance(BalanceBotVrepEnvNoise):
 		:returns: numpy float array 
 		'''
 		goal = self.goal_space.sample()
-		return np.hstack([0.0,goal[0]])
+		return np.hstack([0.0, goal[1]])

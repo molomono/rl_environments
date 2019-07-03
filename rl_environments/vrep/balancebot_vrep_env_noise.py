@@ -109,7 +109,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 				
 	def _make_observation(self):
 		"""Query V-rep to make observation.
-		   The observation is stored in self.observation
+
+		The observation is stored in self.observation
 		"""
 		#Retrieve the pose from world frame to robot base
 		pos = self.obj_get_position(self.oh_shape[0])
@@ -197,12 +198,11 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		#Gyro
 		self.observation[3:6] = remap(self.observation[3:6], -8.727, 8.727, -1, 1)
 
-
-		#self.observation[6] 	#Absolute pitch
-		#self.observation[7:9]   #Continuous theta
-		#self.observation[9:11]	#Absolute Position
-		#self.observation[11:13] #Wheel Velocity * 1/self.sample_rate
-		#self.observation[13] #linear velocity
+		#self.observation[6] 		#Absolute pitch
+		#self.observation[7:9]   	#Continuous theta
+		#self.observation[9:11]		#Absolute Position
+		#self.observation[11:13] 	#Wheel Velocity * 1/self.sample_rate
+		#self.observation[13] 		#linear velocity
 
 
 	def add_sensor_noise(self):
@@ -225,6 +225,14 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 			#vrep.simxSetJointForce(self.cID, i_oh, i_a, vrep.simx_opmode_continuous)
 	
 	def compute_action(self, action):
+		''' Transform the action vector 
+
+		The predicted action can be a rotation and translation vector,
+		these need to be transformed into power of the motors.
+		
+		:param action: predicted action
+		:returns: Action in the form of ratio of motor power -1 to 1
+		'''
 		kinematics = np.matrix([[-1., 1.], [1., 1.]]) 
 		return np.asarray(np.matrix(action) * kinematics).reshape(-1)
 
@@ -296,36 +304,47 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 
 	def reset(self):
 		"""Gym environment 'reset'
+
+		Stops the simulation if it is still running. Subsequently the 
+		environment is started anew. 
+
+		:returns: observation vector
 		"""
 		if self.sim_running:
 			self.stop_simulation()
 		self.start_simulation()
 		
+		#reset the number of steps run in this rollout
 		self.steps = 0
 		#Unifrom pitch randomization, changing initial starting position 
 		start_pitch = np.random.uniform(-np.pi/18, np.pi/18)
 		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, 0.0]))
-		
-		self.pitch_offset = np.random.uniform(0,0.05)
-
+	
+		#Sample an initial goal
 		self.goal = self.sample_goal()
 		print("Goal: ", self.goal)
+
+		#Make an initial observation - used to take the first action
 		self._make_observation()
 		return self.observation
 
 	def sample_goal(self):
+		''' Samples the goal space for an XY coordinates
+
+		:returns: numpy float array 
+		'''
 		goal = self.goal_space.sample()
 		return goal
 	
-	def render(self, mode='human', close=False):
-		"""Gym environment 'render'
-		"""
-		pass
+	#def render(self, mode='human', close=False):
+	#	"""Gym environment 'render'
+	#	"""
+	#	pass
 	
-	def seed(self, seed=None):
-		"""Gym environment 'seed'
-		"""
-		return []
+	#def seed(self, seed=None):
+	#	"""Gym environment 'seed'
+	#	"""
+	#	return []
 	
 def main(args):
 	"""main function used as test and example.
