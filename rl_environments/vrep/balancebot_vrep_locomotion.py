@@ -63,7 +63,7 @@ class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
 		sparse_reward = 0.0
 		if self.validate_goal():
 			sparse_reward = 100.0
-			self.sample_goal()
+			self.goal = self.sample_goal()
 
 		return dense_reward + sparse_reward
 
