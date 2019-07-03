@@ -240,7 +240,6 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		"""Gym environment 'step'
 		
 		"""
-		self.steps += 1
         # transform the action from vector (lin and rot action) to motor control
 		if self.vector_action:
 			action = self.compute_action(action)
