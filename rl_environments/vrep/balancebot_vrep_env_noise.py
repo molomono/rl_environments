@@ -14,8 +14,6 @@ The goal tasks will be defined by wrappers that build upon this script.
 The goal conditions are defiend by self._compute_reward() and self._sample_goal()
 '''
 
-VECTOR_ACTION = False
-
 from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
 
@@ -60,6 +58,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.goal_mode_on = True
 		self.goal_in_robot_frame = False
 		self.sample_rate = 20
+		self.vector_action = False
 
 		vrep_env.VrepEnv.__init__(self,server_addr,server_port,scene_path)
 		# List of joint names, which match with the joints in the V-REP scene
@@ -235,7 +234,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		"""
 		self.steps += 1
         # transform the action from vector (lin and rot action) to motor control
-		if VECTOR_ACTION:
+		if self.vector_action:
 			action = self.compute_action(action)
 			
 		#clip the action to the correct range	
