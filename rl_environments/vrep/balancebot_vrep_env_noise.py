@@ -14,7 +14,7 @@ The goal tasks will be defined by wrappers that build upon this script.
 The goal conditions are defiend by self._compute_reward() and self._sample_goal()
 '''
 
-VECTOR_ACTION = True
+VECTOR_ACTION = False
 
 from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
