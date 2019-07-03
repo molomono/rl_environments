@@ -15,7 +15,6 @@ class BalanceBotVrepEnvBalance(BalanceBotVrepEnvNoise):
 
 		:returns: reward value
 		'''
-        #TODO: edit this reward function
 
         # Calculate the goal vector relative to the position of the balance-bot
 		rel_pos_dist = np.linalg.norm([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10]])

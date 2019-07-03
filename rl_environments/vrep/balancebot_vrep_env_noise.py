@@ -231,6 +231,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 
 	def step(self, action):
 		"""Gym environment 'step'
+		
 		"""
 		self.steps += 1
         # transform the action from vector (lin and rot action) to motor control
@@ -249,7 +250,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		
 		# Reward
 		reward = self.compute_reward()
-		if self.verbose:
+
+		if self.verbose: # Print the reward and action if verbosity is turned on
 			print('Reward: {0:1.4f}'.format(reward))
 			print("clipped action: {}".format(action))
 		# Check if the balancebot fell over 
