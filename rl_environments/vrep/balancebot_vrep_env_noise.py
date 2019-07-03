@@ -58,7 +58,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.goal_mode_on = True
 		self.goal_in_robot_frame = False
 		self.sample_rate = 20
-		self.vector_action = False
+		self.vector_action = True
 
 		vrep_env.VrepEnv.__init__(self,server_addr,server_port,scene_path)
 		# List of joint names, which match with the joints in the V-REP scene
@@ -297,7 +297,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		# w_x is the weight for each attribute this provides the priority to different learned attributes
 		# The sum of weights at the end is used to ensure that the max reward that can be recieved is 1.0
 		r_alive = 1.0
-		w = [10., 0., 0.]
+		w = [10., 4., 0.]
 		scale_factor = 1./sum(w)
 		return (w[0] * r_alive + w[1] * (1. - norm_pos_dist) + w[2] * r_regul )* scale_factor
 

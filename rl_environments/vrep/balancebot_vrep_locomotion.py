@@ -1,5 +1,7 @@
 #TODO: This environment locks the pitch and roll of the robot allowing differential 
-# drive to be used to maneuver to goal positions
+# drive to be used to maneuver to goal positions.
+# NOTE: It doesn't look like V-REP has a good way to do this, would require a planar joint in the scene.
+# 
 # A reward is provided proportional to the distance the robot is from the goal.
 # Once a goal position has been reached the robot must stay close before recieving an additional
 # sparse reward.
@@ -70,8 +72,8 @@ class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
 		:returns: boolean, based on wether the goal has been achieved or not.=
 		'''
 		
-		time_till_goal_achieved = 0.5 # 0.5 Seconds  
-		goal_threshold = 0.1 # distance in meters
+		time_till_goal_achieved = 0.5 # Seconds  
+		goal_threshold = 0.1 # dist. in meters
 
 		if self.observation[-1] < goal_threshold:
 			self.steps += 1
@@ -80,9 +82,8 @@ class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
 
 		if self.steps > (time_till_goal_achieved * self.sample_rate):
 			self.steps = 0
+			print("--------------- Goal achieved --------------")
 			return True
 		else:
 			return False 
 	
-	def compute_action(self, action):
-		pass
