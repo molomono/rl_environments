@@ -44,7 +44,7 @@ register(
 )
 register(
     id='VrepBalanceBotLocomotion-v0', 
-    entry_point='rl_environments.vrep.balancebot_vrep_balance:BalanceBotVrepEnvBalance',  
+    entry_point='rl_environments.vrep.balancebot_vrep_balance:BalanceBotVrepEnvLocomotion',  
     reward_threshold=1000.0
 )
 
