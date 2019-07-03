@@ -42,6 +42,11 @@ register(
     max_episode_steps=600, 
     reward_threshold=550.0
 )
+register(
+    id='VrepBalanceBotLocomotion-v0', 
+    entry_point='rl_environments.vrep.balancebot_vrep_balance:BalanceBotVrepEnvBalance',  
+    reward_threshold=1000.0
+)
 
 
 # PyBullet
