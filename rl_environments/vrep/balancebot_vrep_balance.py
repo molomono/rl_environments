@@ -48,4 +48,11 @@ class BalanceBotVrepEnvBalance(BalanceBotVrepEnvNoise):
 		return np.asarray(np.matrix(action) * kinematics).reshape(-1)
 
 	def sample_goal(self):
-		return np.array([0.,0.])
+		''' Samples the goal space for an XY coordinate but returns only the Y as a goal
+
+		The goal generated is only for learning to balance and translate, not including rotation.
+		
+		:returns: numpy float array 
+		'''
+		goal = self.goal_space.sample()
+		return np.hstack([0.0,goal[0]])

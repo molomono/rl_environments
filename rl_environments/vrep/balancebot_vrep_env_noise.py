@@ -262,7 +262,14 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		return self.observation, reward, done, {}
 	
 	def compute_reward(self):
-		''' This function takes in observations and goals and outputs reward
+		''' This function calculates the reward based on the observation list.
+
+		Reward := (w_1 * a + w_2 * b + w_3 * c + ....) / (sum(w_1, w_2, w_3, ....)
+		In this function a, b, c are different values calculated from the observation list these 
+		values are the quantificaiton of desired behavior. The values have a maximum of 1.
+		w_x is the weight for each value and is used to indicate the priority of the different values
+
+		:returns: reward value
 		'''
 		# Calculate the goal vector relative to the position of the balance-bot
 		rel_pos_dist = np.linalg.norm([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10]])
