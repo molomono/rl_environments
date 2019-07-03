@@ -21,9 +21,6 @@ from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
 
 class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
-	
-	time_till_goal_achieved = 2  
-
 	def reset(self):
 		"""Locomotion Reset function
 		"""
@@ -72,13 +69,16 @@ class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
 
 		:returns: boolean, based on wether the goal has been achieved or not.=
 		'''
+		
+		time_till_goal_achieved = 0.5 # 0.5 Seconds  
 		goal_threshold = 0.1 # distance in meters
+
 		if self.observation[-1] < goal_threshold:
 			self.steps += 1
 		else: 
 			self.steps = 0
 
-		if self.steps > (self.time_till_goal_achieved * self.sample_rate):
+		if self.steps > (time_till_goal_achieved * self.sample_rate):
 			self.steps = 0
 			return True
 		else:
