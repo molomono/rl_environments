@@ -78,7 +78,7 @@ class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
 		else: 
 			self.steps = 0
 
-		if self.steps > (self.time_till_goal_achieved / self.sample_rate):
+		if self.steps > (self.time_till_goal_achieved * self.sample_rate):
 			self.steps = 0
 			return True
 		else:
