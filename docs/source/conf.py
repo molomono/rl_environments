@@ -14,7 +14,9 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath('../..'))
-sys.path.insert(0, os.path.abspath('../../../rl_agents'))
+sys.path.insert(0, os.path.abspath('../../rl_agents'))
+#sys.path.insert(0, os.path.abspath('../../../rl_agents/agents'))
+#sys.path.append(os.path.join(os.path.dirname(__name__), '../../../rl_agents'))
 sys.setrecursionlimit(1500)
 
 

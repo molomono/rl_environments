@@ -85,7 +85,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		
 		# Define minimum and maximum forces that actuators can apply
 		self.min_torque = 0.0
-		self.max_torque = 0.75
+		self.max_torque = 0.75 * 1.25
 		# Define action and observation space
 		self.joints_max_velocity = 1 #25 #max torque set in vrep
 		act = np.array( [self.joints_max_velocity] * num_act )
@@ -206,7 +206,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 
 
 	def add_sensor_noise(self):
-		for index in range(len(self.observation)):
+		for index in range(6):
 			self.observation[index] += np.random.normal(0,0.05)
 		
 	
