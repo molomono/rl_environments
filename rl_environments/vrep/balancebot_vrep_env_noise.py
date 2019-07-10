@@ -66,9 +66,6 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		# List of object names, which match with the jonits in the V-REP scene
 		shape_names = ['base', 'l_wheel', 'r_wheel']
 
-		# TODO: Remove
-		#self.camera = self.get_object_handle('camera')
-		
 		# Get object handle IDs
 		# Actuators
 		self.oh_joint = list(map(self.get_object_handle, joint_names))
