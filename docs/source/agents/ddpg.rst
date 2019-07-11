@@ -2,5 +2,5 @@
 Deep Deterministic Policy Gradients
 ###################################
 
-.. automodule:: agents.ddpg_vrep_opt
+.. automodule:: agents.ddpg_agent
     :members:
