@@ -74,7 +74,6 @@ class BalanceBotVrepEnvBalance(BalanceBotVrepEnvNoise):
 
 	def compute_action(self, action):
 		''' Transform the action vector 
-.
 		This version of thefunction translate the predicted action into translation.
 		
 		:param action: predicted action
