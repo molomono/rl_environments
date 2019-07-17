@@ -168,8 +168,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 									 self.r_wheel_delta, self.l_wheel_delta,
 									 lin_vel])
 
-		self.add_sensor_noise()
 		self.remap_observations()
+		self.add_sensor_noise()
 
 		if self.goal_mode_on:
 			#Calculate the relative position vector
@@ -203,9 +203,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 
 
 	def add_sensor_noise(self):
-		for index in range(6):
-			self.observation[index] += np.random.normal(0,0.05)
-		
+		self.observation[0:3] = np.random.normal(self.observation[0:3], np.array([0.00675]*3))
+		self.observation[0:3] = np.random.normal(self.observation[0:3], np.array([0.00250]*3))	
 	
 	def _make_action(self, a):
 		"""Query V-rep to make action.
