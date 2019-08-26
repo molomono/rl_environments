@@ -137,7 +137,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 			self.lin_vel_old = lin_vel
 		except:
 			self.lin_vel_old = np.array([0., 0., 0.])
-		#print('Acceleration: {} Gyroscope: {}'.format(accel, gyro))
+
 		# roll. yaw. 				: observation
 		self.lin_vel, ang_vel = self.obj_get_velocity(self.oh_shape[0])
 		#Rotate the velocity vectors to be represented in the robot base frame
@@ -203,8 +203,9 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 
 
 	def add_sensor_noise(self):
+		#adding normal noise to the accelerometer 
 		self.observation[0:3] = np.random.normal(self.observation[0:3], np.array([0.00675]*3))
-		self.observation[0:3] = np.random.normal(self.observation[0:3], np.array([0.00250]*3))	
+		self.observation[3:6] = np.random.normal(self.observation[3:6], np.array([0.00250]*3))	
 	
 	def _make_action(self, a):
 		"""Query V-rep to make action.
@@ -285,15 +286,15 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		
 		# Regulatory factor for wheel velocities
 		delta_pos = np.asarray([self.l_wheel_delta, self.r_wheel_delta])
-		r_regul = np.sum(gaussian(delta_pos, sigma=2.0)) * 1/float(len(delta_pos))
-		
+		r_regul = np.sum(gaussian(delta_pos, sigma=2.0))
+		print("R_regul: ",r_regul)
 		# The actual reward function is below, a standard format is being used to ensure the size of the reward remains predictable:
-		# y_reward := (w_1 * a + w_2 * b + w_3 * c + ....) / (sum(w_1, w_2, w_3 ....)
+		# y_reward := (w_1 * a + w_2 * b + w_3 * c + ....) / (sum(w_1, w_2, w_3 ....))
 		# a, b, c are different attributes that provide a reward, they do this on a scale no larger than 1
 		# w_x is the weight for each attribute this provides the priority to different learned attributes
 		# The sum of weights at the end is used to ensure that the max reward that can be recieved is 1.0
 		r_alive = 1.0
-		w = [10., 4., 0.]
+		w = [1., 4., 0.1]
 		scale_factor = 1./sum(w)
 		return (w[0] * r_alive + w[1] * (1. - norm_pos_dist) + w[2] * r_regul )* scale_factor
 
