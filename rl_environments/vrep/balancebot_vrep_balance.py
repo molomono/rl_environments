@@ -45,7 +45,7 @@ class BalanceBotVrepEnvBalance(BalanceBotVrepEnvNoise):
 
 		sparse_reward = 0.0
 		if self.validate_goal():
-			sparse_reward = 100.0
+			sparse_reward = 3.0
 			self.goal = self.sample_goal()
 
 		return dense_reward + sparse_reward
@@ -56,7 +56,7 @@ class BalanceBotVrepEnvBalance(BalanceBotVrepEnvNoise):
 		:returns: boolean, based on wether the goal has been achieved or not.=
 		'''
 		
-		time_till_goal_achieved = 0.5 # Seconds  
+		time_till_goal_achieved = 1 # Seconds  
 		goal_threshold = 0.1 # dist. in meters
 
 		if self.observation[-1] < goal_threshold:

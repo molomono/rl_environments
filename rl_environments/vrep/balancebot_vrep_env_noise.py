@@ -92,7 +92,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		#TODO: Change the observation space to reflect the actual boundaries of observation
 		self.action_space	  = spaces.Box(-1.0*act,act)
 		self.observation_space = spaces.Box(-1.0*obs,obs)
-		self.goal_max = 2
+		self.goal_max = 4
 		self.goal_space = spaces.Box(np.array([-self.goal_max,-self.goal_max]), np.array([self.goal_max,self.goal_max]))
 		
 		#the placeholders for the delta position of the wheel encoders
@@ -294,7 +294,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		# w_x is the weight for each attribute this provides the priority to different learned attributes
 		# The sum of weights at the end is used to ensure that the max reward that can be recieved is 1.0
 		r_alive = 1.0
-		w = [1., 4., 0.1]
+		w = [0., 4., 0.1]
 		scale_factor = 1./sum(w)
 		return (w[0] * r_alive + w[1] * (1. - norm_pos_dist) + w[2] * r_regul )* scale_factor
 
