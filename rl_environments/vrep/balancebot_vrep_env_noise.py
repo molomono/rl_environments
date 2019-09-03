@@ -1,18 +1,6 @@
-# TODO: Sparse goal rewards with goal thresholding and new goal definition
-# The new goal environment is defined in more detail in Note-book. page 6,7
-# TODO: Change the environment success condition
 # TODO: Add a function that constructs the goal disc in v-rep so the behavior can be visually followed.
-# TODO: Get a V-REP dongle so you can change the environment.
-# TODO: Make the robot force controlled instead of velocity controlled
 
-
-'''NOTES:
-Because it makes more sense to create different goal conditions for the AI, this environment
-will be modified to contain the robot implementation + sensor-noise and the domain-dynamics 
-randomization. 
-The goal tasks will be defined by wrappers that build upon this script.
-The goal conditions are defiend by self._compute_reward() and self._sample_goal()
-'''
+# TODO: Add domain and dynamics randomization
 
 from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
@@ -119,10 +107,9 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		world_to_robot_rotation = transform_matrix(orient, pos)[0:3,0:3]
 
 		#Add IMU data, Accel 3dof and Gyros 3dof
-		# Observation dict keys: ['observation', 'achieved_goal', 'desired_goal']
 		# IMU:
 		# X.. Y.. Z.. 				: observation
-		#TODO: Set the variables in the correct scripts in V-REP. I need a dongle to save these changes.
+
 		#ax = self.get_float_signal('accelX')
 		#ay = self.get_float_signal('accelY')
 		#az = self.get_float_signal('accelZ')		
@@ -329,18 +316,9 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 
 		:returns: numpy float array 
 		'''
-		goal = self.goal_space.sample()
+		goal = self.goal_space.sample() * 0.0
 		return goal
-	
-	#def render(self, mode='human', close=False):
-	#	"""Gym environment 'render'
-	#	"""
-	#	pass
-	
-	#def seed(self, seed=None):
-	#	"""Gym environment 'seed'
-	#	"""
-	#	return []
+
 	
 def main(args):
 	"""main function used as test and example.

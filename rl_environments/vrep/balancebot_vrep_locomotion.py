@@ -39,15 +39,7 @@ class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
 		self.goal = self.sample_goal()
 		print("Goal: ", self.goal)
 		self._make_observation()
-		#self.fix_orientation()
 		return self.observation
-
-	#def fix_orientation(self, eulerAngles):
-	#	'''This function locks the pitch/roll of the balance bot making it impossible 
-	#	for the robot to fall over.
-	#	'''
-	#	#def obj_set_orientation(self, handle, eulerAngles, relative_to=None):
-	#	vrep.simxSetObjectOrientation( self.cID, self.oh_shape[0], -1, eulerAngles, vrep.simx_opmode_continuous)
 
 	def compute_reward(self):
 		'''Calculates the dense reward for the environment and adds a sparse reward for achieving the goal
@@ -58,7 +50,6 @@ class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
 		'''
 		dense_reward = super().compute_reward()
 
-		#
 		sparse_reward = 0.0
 		if self.validate_goal():
 			sparse_reward = 100.0
@@ -87,3 +78,10 @@ class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
 		else:
 			return False 
 	
+	def sample_goal(self):
+		''' Samples the goal space for an XY coordinates
+
+		:returns: numpy float array 
+		'''
+		goal = self.goal_space.sample()
+		return goal
