@@ -43,35 +43,36 @@ class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
 		rel_pos_dist = np.array([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10]])
 		# Calculate the Angle of the goal with respect to the Y axis of the robot.
 		# First calculate the angle of the goal with respect to the inertial Y axis
-		goal_angle = np.array(	[np.cos(np.arctan2(rel_pos_dist[1],rel_pos_dist[0])), \
-								np.sin(np.arctan2(rel_pos_dist[1],rel_pos_dist[0]))] )
+		goal_angle = np.array(	[np.sin(np.arctan2(rel_pos_dist[1],rel_pos_dist[0])), \
+								np.cos(np.arctan2(rel_pos_dist[1],rel_pos_dist[0]))] )
 		# Retrieve the angle between the robot and the inertial X axis
 		robot_angle = np.array([self.observation[7], self.observation[8]])
 
 		# Absolute Dot product, ranges from 0 to 1 rewarding alligning the Y axis of the robot with the goal.
 		dense_reward = np.linalg.norm(np.dot(goal_angle, robot_angle))
-		
+
 		print("AngleRobot", np.arctan2(rel_pos_dist[1],rel_pos_dist[0]))
 		print("AngleGoal", np.arctan2(robot_angle[1], robot_angle[0]))
 		print("DENSE REWARD: ", dense_reward)
 
 		sparse_reward = 0.0
-		if self.validate_goal():
+		if self.validate_goal(dense_reward):
 			sparse_reward = 50.0
 			self.goal = self.sample_goal()
 
 		return dense_reward + sparse_reward
 
-	def validate_goal(self):
+	def validate_goal(self,dense_reward):
 		''' Check if the goal has been reached and maintained for X amount of time.
 
 		:returns: boolean, based on wether the goal has been achieved or not.=
 		'''
 		
 		time_till_goal_achieved = 1 # Seconds  
-		goal_threshold = 0.1 # dist. in meters
+		goal_threshold = 0.075 # dist. in meters
 
-		if self.observation[-1] < goal_threshold:
+		#check if the abs distance to the goal is smaller than the theshold
+		if dense_reward < goal_threshold:
 			self.steps += 1
 		else: 
 			self.steps = 0
