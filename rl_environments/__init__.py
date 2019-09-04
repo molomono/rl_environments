@@ -52,6 +52,11 @@ register(
     entry_point='rl_environments.vrep.balancebot_vrep_disturbance:BalanceBotVrepEnvDisturbance',  
     reward_threshold=1000.0
 )
+register(
+    id='VrepBalanceBotRotation-v0', 
+    entry_point='rl_environments.vrep.balancebot_vrep_rotation:BalanceBotVrepEnvRotation',  
+    reward_threshold=1000.0
+)
 
 # PyBullet
 # ----------------------------------------
