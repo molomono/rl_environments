@@ -328,7 +328,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		#	pos,
 		#	self.opM_set))
 		goal_position = np.hstack([goal, 0.01]) # x, y, 0.01 in [m]
-		self.obj_set_position(self.oh_goal, goal_position)
+		self.obj_set_position(self.oh_goal[0], goal_position)
 
 	
 def main(args):
