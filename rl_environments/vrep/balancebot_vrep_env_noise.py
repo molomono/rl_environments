@@ -59,6 +59,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.oh_joint = list(map(self.get_object_handle, joint_names))
 		# Shapes
 		self.oh_shape = list(map(self.get_object_handle, shape_names))
+		# Goal
+		self.oh_goal = list(map(self.get_object_handle, ['goal_object'])
 		
 		# The number of actions is equal to the number of joints, Left and right wheel
 		num_act = len(self.oh_joint)
@@ -250,7 +252,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		tolerable_threshold = 0.707  #rads
 		done = (np.abs(angle_base[0]) > tolerable_threshold or np.abs(angle_base[1]) > tolerable_threshold)
 		# done = False
-		
+		visualize_goal_position(self.goal)
 		return self.observation, reward, done, {}
 	
 	def compute_reward(self):
@@ -318,6 +320,15 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		'''
 		goal = self.goal_space.sample() * 0.0
 		return goal
+
+	def visualize_goal_position(self, goal):
+		#def obj_set_position(self, handle, pos, relative_to=None):
+		#return self.RAPI_rc(vrep.simxSetObjectPosition( self.cID,handle,
+		#	-1 if relative_to is None else relative_to,
+		#	pos,
+		#	self.opM_set))
+		goal_position = np.hstack([goal, 0.01]) # x, y, 0.01 in [m]
+		self.obj_set_position(self.oh_goal, goal_position)
 
 	
 def main(args):
