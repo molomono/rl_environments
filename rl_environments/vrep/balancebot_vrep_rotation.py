@@ -40,7 +40,7 @@ class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
 		:returns: reward (sparse) + reward (goal_achievement)
 		'''
 		# Calculate the goal vector relative to the position of the balance-bot
-		rel_pos_dist = np.linalg.norm([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10]])
+		rel_pos_dist = np.array([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10]])
 		# Calculate the Angle of the goal with respect to the Y axis of the robot.
 		# First calculate the angle of the goal with respect to the inertial X axis
 		goal_angle = np.array(	np.cos(np.arctan2(rel_pos_dist[1],rel_pos_dist[0])), \
