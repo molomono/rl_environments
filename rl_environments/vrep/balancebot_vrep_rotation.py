@@ -43,8 +43,8 @@ class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
 		rel_pos_dist = np.array([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10]])
 		# Calculate the Angle of the goal with respect to the Y axis of the robot.
 		# First calculate the angle of the goal with respect to the inertial Y axis
-		goal_angle = np.array(	[np.sin(np.arctan(rel_pos_dist[1],rel_pos_dist[0])), \
-								np.cos(np.arctan(rel_pos_dist[1],rel_pos_dist[0]))] )
+		goal_angle = np.array(	[np.sin(np.arctan(rel_pos_dist[1]/rel_pos_dist[0])), \
+								np.cos(np.arctan(rel_pos_dist[1]/rel_pos_dist[0]))] )
 		# Retrieve the angle between the robot and the inertial X axis
 		robot_angle = np.array([self.observation[7], self.observation[8]])
 
