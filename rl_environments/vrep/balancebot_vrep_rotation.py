@@ -45,12 +45,13 @@ class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
 		goal_angle = np.array(	np.cos(np.arctan2(rel_pos_dist[1],rel_pos_dist[0])), \
 								np.sin(np.arctan2(rel_pos_dist[1],rel_pos_dist[0])))
 		print ("Goal angle: ", goal_angle)
+		
 		sparse_reward = 0.0
 		if self.validate_goal():
 			sparse_reward = 50.0
 			self.goal = self.sample_goal()
 
-		return dense_reward + sparse_reward
+		return sparse_reward
 
 	def validate_goal(self):
 		''' Check if the goal has been reached and maintained for X amount of time.
