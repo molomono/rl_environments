@@ -252,7 +252,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		tolerable_threshold = 0.707  #rads
 		done = (np.abs(angle_base[0]) > tolerable_threshold or np.abs(angle_base[1]) > tolerable_threshold)
 		# done = False
-		visualize_goal_position(self.goal)
+		self.visualize_goal_position(self.goal)
 		return self.observation, reward, done, {}
 	
 	def compute_reward(self):
