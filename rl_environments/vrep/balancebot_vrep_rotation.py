@@ -77,7 +77,7 @@ class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
 		else: 
 			self.steps = 0
 
-		if self.steps < (time_till_goal_achieved * self.sample_rate):
+		if self.steps > (time_till_goal_achieved * self.sample_rate):
 			self.steps = 0
 			print("--------------- Goal achieved --------------")
 			return True
