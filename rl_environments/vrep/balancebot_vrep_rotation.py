@@ -43,13 +43,13 @@ class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
 		rel_pos_dist = np.array([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10]])
 		# Calculate the Angle of the goal with respect to the Y axis of the robot.
 		# First calculate the angle of the goal with respect to the inertial Y axis
-		goal_angle = np.array(	[np.sin(np.arctan2(rel_pos_dist[1],rel_pos_dist[0])), \
-								np.cos(np.arctan2(rel_pos_dist[1],rel_pos_dist[0]))] )
+		goal_angle = np.array(	[np.cos(np.arctan2(rel_pos_dist[1],rel_pos_dist[0])), \
+								np.sin(np.arctan2(rel_pos_dist[1],rel_pos_dist[0]))] )
 		# Retrieve the angle between the robot and the inertial X axis
 		robot_angle = np.array([self.observation[7], self.observation[8]])
 
 		# Absolute Dot product, ranges from 0 to 1 rewarding alligning the Y axis of the robot with the goal.
-		dense_reward = np.dot(goal_angle, robot_angle)
+		dense_reward = np.linalg.norm(np.dot(goal_angle, robot_angle))
 
 		print("AngleRobot", goal_angle[1], goal_angle[0] )
 		print("AngleGoal", robot_angle[1], robot_angle[0] )
@@ -72,7 +72,7 @@ class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
 		goal_threshold = 0.075 # dist. in meters
 
 		#check if the abs distance to the goal is smaller than the theshold
-		if dense_reward < goal_threshold:
+		if dense_reward < (1.-goal_threshold):
 			self.steps += 1
 		else: 
 			self.steps = 0
