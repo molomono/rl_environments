@@ -60,7 +60,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		# Shapes
 		self.oh_shape = list(map(self.get_object_handle, shape_names))
 		# Goal
-		self.oh_goal = list(map(self.get_object_handle, ['goal_object'])
+		self.oh_goal = list(map(self.get_object_handle, ['goal_object']))
 		
 		# The number of actions is equal to the number of joints, Left and right wheel
 		num_act = len(self.oh_joint)
