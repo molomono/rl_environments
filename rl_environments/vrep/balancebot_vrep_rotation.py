@@ -48,7 +48,7 @@ class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
 		robot_angle = np.arctan2(self.observation[8], self.observation[7])
 
 		# Absolute Dot product, ranges from 0 to 1 rewarding alligning the Y axis of the robot with the goal.
-		dense_reward = (np.cos(goal_angle*2) * np.cos(robot_angle*2))
+		dense_reward = np.abs((np.cos(goal_angle*2) * np.cos(robot_angle*2)))
 
 		print("AngleRobot", goal_angle )
 		print("AngleGoal", robot_angle )
