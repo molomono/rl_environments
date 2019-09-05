@@ -68,7 +68,7 @@ class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
 		'''
 		
 		time_till_goal_achieved = 1 # Seconds  
-		goal_threshold = 0.075 # dist. in meters
+		goal_threshold = 0.025 # threshold accuracy, sin( pi/128 [rads])
 
 		#check if the abs distance to the goal is smaller than the theshold
 		if dense_reward > (1.-goal_threshold):

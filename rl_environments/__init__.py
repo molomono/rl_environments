@@ -45,6 +45,7 @@ register(
 register(
     id='VrepBalanceBotLocomotion-v0', 
     entry_point='rl_environments.vrep.balancebot_vrep_locomotion:BalanceBotVrepEnvLocomotion',  
+    max_episode_steps=600,
     reward_threshold=1000.0
 )
 register(
@@ -55,6 +56,7 @@ register(
 register(
     id='VrepBalanceBotRotation-v0', 
     entry_point='rl_environments.vrep.balancebot_vrep_rotation:BalanceBotVrepEnvRotation',  
+    max_episode_steps=600,
     reward_threshold=1000.0
 )
 
