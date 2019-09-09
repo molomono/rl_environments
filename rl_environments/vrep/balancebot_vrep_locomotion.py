@@ -54,7 +54,7 @@ class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
 		'''
 		
 		time_till_goal_achieved = 0.5 # Seconds  
-		goal_threshold = 0.1 # dist. in meters
+		goal_threshold = 0.25 # dist. in meters
 
 		if self.observation[-1] < goal_threshold:
 			self.steps += 1
