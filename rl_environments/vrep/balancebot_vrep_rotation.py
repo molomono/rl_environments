@@ -48,7 +48,7 @@ class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
 		dense_reward = np.abs(goal_position_robot.imag / np.linalg.norm(self.observation[-1]))
 		sparse_reward = 0.0
 		if self.validate_goal(dense_reward):
-			sparse_reward = 25.0
+			sparse_reward = 100.
 			self.goal = self.sample_goal()
 
 		return dense_reward + sparse_reward
