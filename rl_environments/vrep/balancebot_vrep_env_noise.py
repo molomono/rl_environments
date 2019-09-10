@@ -285,7 +285,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		r_alive = 1.0
 		w = [0., 4., 0.]
 		scale_factor = 1./sum(w)
-		return (w[0] * r_alive + w[1] * (1. - norm_pos_dist) + w[2] * r_regul )* scale_factor
+		return (w[0] * r_alive + w[1] * (1. - norm_pos_dist) + w[2] * r_regul )* scale_factor		
+		#return (w[0] * r_alive + w[1] * (norm_pos_dist/norm_pos_dist * np.power((1. - norm_pos_dist),2) + w[2] * r_regul )* scale_factor
 		
 	def reset(self):
 		"""Gym environment 'reset'

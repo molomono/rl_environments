@@ -39,15 +39,16 @@ class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
 
 		:returns: reward (sparse) + reward (goal_achievement)
 		'''
-		# Calculate the goal vector relative to the position of the balance-bot
-		rel_pos_dist = np.array([self.goal[0]-self.observation[9], self.goal[1]-self.observation[10]])
+		# goal_position in robot frame
+		goal_position_robot =  np.complex(self.observation[7], self.observation[8]) * np.complex([self.observation[-3], self.observation[-2]])
+		
 		
 		# Dense reward is abs(Y_relative / || goal_relative ||)
 		# In other words, the alignment of the Y-axis of the robot with the goal
-		dense_reward = np.abs(rel_pos_dist[1]/np.linalg.norm(rel_pos_dist))
+		dense_reward = np.abs(goal_position_robot.real / np.linalg.norm(self.observation[-1]))
 		sparse_reward = 0.0
 		if self.validate_goal(dense_reward):
-			sparse_reward = 50.0
+			sparse_reward = 25.0
 			self.goal = self.sample_goal()
 
 		return dense_reward + sparse_reward
