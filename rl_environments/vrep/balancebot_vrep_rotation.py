@@ -40,7 +40,7 @@ class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
 		:returns: reward (sparse) + reward (goal_achievement)
 		'''
 		# goal_position in robot frame
-		goal_position_robot =  np.complex(self.observation[7], self.observation[8]) * np.complex([self.observation[-3], self.observation[-2]])
+		goal_position_robot =  np.complex(self.observation[7], self.observation[8]) * np.complex(self.observation[-3], self.observation[-2])
 		
 		
 		# Dense reward is abs(Y_relative / || goal_relative ||)
