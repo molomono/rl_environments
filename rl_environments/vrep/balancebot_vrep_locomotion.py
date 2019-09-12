@@ -45,7 +45,10 @@ class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
 		goal_position_robot =  np.complex(self.observation[7], self.observation[8]).conjugate() * np.complex(self.observation[-3], self.observation[-2])
 		# Dense reward in principle is abs(Y_relative / || goal_relative ||)
 		# In other words, the alignment of the Y-axis of the robot with the goal
-		rotation_reward = 2.*np.abs(goal_position_robot.imag / np.linalg.norm(self.observation[-1])) -1
+		rotation_reward = np.abs(goal_position_robot.imag / np.linalg.norm(self.observation[-1]))
+		
+		if self.observation[-1] < 0.5:
+			rotation_reward = 0.5*rotation_reward + 0.5
 
 		#Sparse reward for achieving a goal pose
 		sparse_reward = 0.0
