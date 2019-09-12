@@ -310,7 +310,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		start_y = np.random.uniform(-3., 3.) * 0.0
 
 		self.obj_set_position(handle=self.oh_shape[0], pos=np.array([start_x, start_y, 0.15]))
-		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, start_theta]))
+		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, -start_theta]))
 	
 		#Sample an initial goal
 		self.goal = self.sample_goal()
