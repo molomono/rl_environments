@@ -38,14 +38,22 @@ class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
 
 		:returns: reward (sparse) + reward (goal_achievement)
 		'''
+		#Dense reward for distance from goal
 		dense_reward = super().compute_reward()
 
+		#Dense reward for angle with respect to goal
+		goal_position_robot =  np.complex(self.observation[7], self.observation[8]).conjugate() * np.complex(self.observation[-3], self.observation[-2])
+		# Dense reward in principle is abs(Y_relative / || goal_relative ||)
+		# In other words, the alignment of the Y-axis of the robot with the goal
+		rotation_reward = 2.*np.abs(goal_position_robot.imag / np.linalg.norm(self.observation[-1])) -1
+
+		#Sparse reward for achieving a goal pose
 		sparse_reward = 0.0
 		if self.validate_goal():
 			sparse_reward = 100.0
 			self.goal = self.sample_goal()
 
-		return dense_reward + sparse_reward
+		return dense_reward + 0.5 * rotation_reward + sparse_reward
 
 	def validate_goal(self):
 		''' Check if the goal has been reached and maintained for X amount of time.
