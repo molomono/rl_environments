@@ -304,7 +304,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.steps = 0
 		#Unifrom pitch randomization, changing initial starting position 
 		start_pitch = np.random.uniform(-np.pi/18, np.pi/18)
-		start_theta = np.random.uniform(-np.pi/18, np.pi/18)
+		start_theta = np.random.uniform(-np.pi, np.pi)
 
 		start_x = np.random.uniform(-3., 3.)
 		start_y = np.random.uniform(-3., 3.)
