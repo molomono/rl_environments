@@ -304,10 +304,17 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.steps = 0
 		#Unifrom pitch randomization, changing initial starting position 
 		start_pitch = np.random.uniform(-np.pi/18, np.pi/18)
-		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, 0.0]))
+		start_theta = np.random.uniform(-np.pi/18, np.pi/18)
+
+		start_x = np.random.uniform(-3., 3.)
+		start_y = np.random.uniform(-3., 3.)
+
+		self.obj_set_position(handle=self.oh_shape[0], pos=np.array([start_x, start_y, 0.15]))
+		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, start_theta]))
 	
 		#Sample an initial goal
 		self.goal = self.sample_goal()
+		self.goal = np.array([self.goal[0] * np.sin(start_theta) + start_x, self.goal[1] * np.cos(start_theta) + start_y])
 		print("Goal: ", self.goal)
 
 		#Make an initial observation - used to take the first action

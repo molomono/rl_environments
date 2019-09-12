@@ -41,8 +41,6 @@ class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
 		'''
 		# goal_position in robot frame
 		goal_position_robot =  np.complex(self.observation[7], self.observation[8]).conjugate() * np.complex(self.observation[-3], self.observation[-2])
-		
-		print('Goal position in the robot frame: ', goal_position_robot)
 		# Dense reward in principle is abs(Y_relative / || goal_relative ||)
 		# In other words, the alignment of the Y-axis of the robot with the goal
 		dense_reward = 2.*np.abs(goal_position_robot.imag / np.linalg.norm(self.observation[-1])) -1
