@@ -314,7 +314,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 	
 		#Sample an initial goal
 		self.goal = self.sample_goal()
-		self.goal = np.array([self.goal[0] * np.sin(start_theta) + start_x, self.goal[1] * np.cos(start_theta) + start_y])
+		self.goal = np.array([self.goal[1] * np.sin(start_theta) + self.goal[0] * np.cos(start_theta) + start_x, self.goal[1] * np.cos(start_theta) + self.goal[0] * np.sin(start_theta) + start_y])
 		print("Goal: ", self.goal)
 
 		#Make an initial observation - used to take the first action
