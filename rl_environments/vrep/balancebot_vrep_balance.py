@@ -59,4 +59,5 @@ class BalanceBotVrepEnvBalance(BalanceBotVrepEnvNoise):
 		
 		:returns: numpy float array 
 		'''
-		return self.goal_space.sample()
+		goal = self.goal_space.sample()
+		return np.hstack([0.0, goal[1]])
