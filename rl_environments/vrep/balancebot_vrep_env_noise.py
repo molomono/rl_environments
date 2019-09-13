@@ -302,7 +302,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		
 		#reset the number of steps run in this rollout
 		self.steps = 0
-		#Unifrom pitch randomization, changing initial starting position 
+		#Unifrom pitch, yaw, x and y randomization, changing initial starting position to promote learning in 'all' orientation/positions
 		start_pitch = np.random.uniform(-np.pi/18, np.pi/18)
 		start_theta = np.random.uniform(-np.pi, np.pi)
 
