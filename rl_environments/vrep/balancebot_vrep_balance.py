@@ -20,8 +20,8 @@ class BalanceBotVrepEnvBalance(BalanceBotVrepEnvNoise):
 			self.goal = self.sample_goal()
 			theta_continuous = self.observation[7:9]
 			current_position = self.observation[9:11]	
-			self.goal = np.array([	self.goal[1] * theta_continuous[1] + self.goal[0] * theta_continuous[0] + current_position[0], \
-									self.goal[1] * theta_continuous[0] + self.goal[0] * theta_continuous[1] + current_position[1]])
+			self.goal = np.array([	self.goal[1] * theta_continuous[0] + self.goal[0] * theta_continuous[1] + current_position[0], \
+									self.goal[1] * theta_continuous[1] + self.goal[0] * theta_continuous[0] + current_position[1]])
 
 		return dense_reward + sparse_reward
 
