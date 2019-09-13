@@ -14,7 +14,7 @@ from vrep_env import vrep # vrep.sim_handle_parent
 
 
 class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
-	def reset(self):
+	'''def reset(self):
 		"""Rotation Reset function
 		"""
 		if self.sim_running:
@@ -30,7 +30,7 @@ class BalanceBotVrepEnvRotation(BalanceBotVrepEnvNoise):
 		self.goal = self.sample_goal()
 		print("Goal: ", self.goal)
 		self._make_observation()
-		return self.observation
+		return self.observation'''
 
 	def compute_reward(self):
 		'''Calculates the dense reward for the environment and adds a sparse reward for achieving the goal

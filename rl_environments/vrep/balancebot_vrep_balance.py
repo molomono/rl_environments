@@ -16,7 +16,7 @@ class BalanceBotVrepEnvBalance(BalanceBotVrepEnvNoise):
 
 		sparse_reward = 0.0
 		if self.validate_goal():
-			sparse_reward = 3.0
+			sparse_reward = 5.0
 			self.goal = self.sample_goal()
 			theta_continuous = self.observation[7:9]
 			current_position = self.observation[9:11]	
