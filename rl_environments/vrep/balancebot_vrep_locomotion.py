@@ -16,20 +16,8 @@ class BalanceBotVrepEnvLocomotion(BalanceBotVrepEnvNoise):
 	def reset(self):
 		"""Locomotion Reset function
 		"""
-		if self.sim_running:
-			self.stop_simulation()
-		self.start_simulation()
-		
 		self.steps = 0
-		#Unifrom pitch randomization, changing initial starting position 
-		start_pitch = np.random.uniform(-np.pi/18, np.pi/18)
-		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, 0.0]))
-		
-
-		self.goal = self.sample_goal()
-		print("Goal: ", self.goal)
-		self._make_observation()
-		return self.observation
+		return super().reset()
 
 	def compute_reward(self):
 		'''Calculates the dense reward for the environment and adds a sparse reward for achieving the goal
