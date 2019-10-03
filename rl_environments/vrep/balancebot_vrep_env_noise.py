@@ -302,13 +302,9 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		start_x = np.random.uniform(-3., 3.) 
 		start_y = np.random.uniform(-3., 3.) 
 
-		#TODO: The set orientation is not correct, it causes a undesireable twist 
-		# #( i could try making the rotations relative to the robot itself and perform the rotations 1 by 1.)
-		#self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, -start_theta]))
-		#TODO: Try this fix:
-		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, -start_theta]), relative_to=self.oh_shape[0])
-		#self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([start_pitch, 0.0, 0.0]), relative_to=self.oh_shape[0])
-		
+		#Rotate
+		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([0.0, start_pitch, -start_theta]), relative_to=self.oh_shape[0])
+		#Translate
 		self.obj_set_position(handle=self.oh_shape[0], pos=np.array([start_x, start_y, 0.15]))
 
 		#Sample an initial goal
