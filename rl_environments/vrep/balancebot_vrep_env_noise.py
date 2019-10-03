@@ -1,7 +1,3 @@
-# TODO: Add a function that constructs the goal disc in v-rep so the behavior can be visually followed.
-
-# TODO: Add domain and dynamics randomization
-
 from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
 
