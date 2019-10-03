@@ -1,0 +1,1 @@
+vrep_scenes_path = 'C:/Program Files/V-REP3/V-REP_PRO/scenes'

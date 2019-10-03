@@ -2,7 +2,7 @@ from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
 
 import os
-from misc import vrep_scenes_path
+from misc import *
 #if os.name == 'nt':
 	#print('If you are running this code on windows you need to manually define the vrep scene path in each respective environment.')
 #	vrep_scenes_path = 'C:/Program Files/V-REP3/V-REP_PRO/scenes'
