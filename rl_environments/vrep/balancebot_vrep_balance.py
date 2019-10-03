@@ -1,5 +1,3 @@
-#TODO: This environment provides rewards the AI for balancing the robot
-
 from .balancebot_vrep_env_noise import BalanceBotVrepEnvNoise
 from scripts.util import *
 import numpy as np

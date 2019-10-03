@@ -1,9 +1,4 @@
 import os
-#if os.name == 'nt':
-	#print('If you are running this code on windows you need to manually define the vrep scene path in each respective environment.')
-#	vrep_scenes_path = 'C:/Program Files/V-REP3/V-REP_PRO/scenes'
-#else:
-#	vrep_scenes_path = os.environ['VREP_SCENES_PATH']
 
 from .balancebot_vrep_env_noise import BalanceBotVrepEnvNoise
 from scripts.util import *
