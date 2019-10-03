@@ -314,8 +314,8 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.goal = self.sample_goal()
 		theta = self.obj_get_orientation(handle=self.oh_shape[0])[2]
 		
-		self.goal = np.array([	self.goal[1] * np.sin(-theta) + self.goal[0] * np.cos(theta) + start_x, \
-								self.goal[1] * np.cos(theta) + self.goal[0] * np.sin(theta) + start_y])
+		self.goal = np.array([	self.goal[1] * np.sin(theta) + self.goal[0] * np.cos(theta) + start_x, \
+								self.goal[1] * np.cos(theta) + self.goal[0] * np.sin(-theta) + start_y])
 		print("Goal: ", self.goal)
 
 		#Make an initial observation - used to take the first action
