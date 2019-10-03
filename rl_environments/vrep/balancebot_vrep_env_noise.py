@@ -303,7 +303,10 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		start_y = np.random.uniform(-3., 3.) 
 
 		#Rotate
-		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([0.0, 0.0, -start_theta]), relative_to=self.oh_shape[0])
+		#Describe the pitch of the robot in x and y rotations in the inertial frame
+		pitch_x = start_pitch * np.cos(-start_theta)
+		pitch_y = start_pitch * np.sin(-start_theta)
+		self.obj_set_orientation(handle=self.oh_shape[0], eulerAngles=np.array([pitch_x, pitch_y, -start_theta]), relative_to=self.oh_shape[0])
 		#Translate
 		self.obj_set_position(handle=self.oh_shape[0], pos=np.array([start_x, start_y, 0.15]))
 
