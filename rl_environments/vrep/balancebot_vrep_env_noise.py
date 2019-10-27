@@ -6,6 +6,7 @@ from scripts.scene_path import vrep_scenes_path
 
 import gym
 from gym import spaces
+import pandas as pd
 
 import numpy as np
 
@@ -235,10 +236,11 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		action = np.clip(action, self.action_space.low, self.action_space.high)
 		
 		if self.SAVE_STATES:
-			with open('systemstatesfile.csv', 'a') as f:
-				f.write(np.array_str(action)[1:-1].replace(' ', ',') + ',' + np.array_str(self.observation)[1:-1].replace(' ', ','))
-				f.close()
-		
+			s_a = np.hstack([action,self.observation])
+			s_a = np.matrix(s_a)
+			df = pd.DataFrame(s_a)
+			df.to_csv('systemstatesfile.csv', mode='a', header=False)
+			
 		# Actuate
 		self._make_action(action)
 		# Step
