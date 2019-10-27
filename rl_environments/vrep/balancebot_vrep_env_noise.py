@@ -1,4 +1,3 @@
-
 from vrep_env import vrep_env
 from vrep_env import vrep # vrep.sim_handle_parent
 
@@ -11,6 +10,9 @@ from gym import spaces
 import numpy as np
 
 from scripts.util import *
+
+SAVE_STATES = True
+states_array = np.array([])
 
 class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 	metadata = {
@@ -226,13 +228,20 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		#clip the action to the correct range	
 		action = np.clip(action, self.action_space.low, self.action_space.high)
 
+		#save the system states:
+		if SAVE_STATES:
+			state_action = np.hstack([self.observation, action])
+			states_array = np.vstack([states_array, state_action])
+			np.savetxt("1_training_states.csv", states_array, delimiter=",")
+
+
 		# Actuate
 		self._make_action(action)
 		# Step
 		self.step_simulation()
 		# Observe
 		self._make_observation()
-		
+
 		# Reward
 		reward = self.compute_reward()
 
