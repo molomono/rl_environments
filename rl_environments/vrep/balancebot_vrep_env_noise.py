@@ -235,9 +235,9 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		action = np.clip(action, self.action_space.low, self.action_space.high)
 		
 		if self.SAVE_STATES:
-			self.f = open('systemstatesfile.csv', 'a')
-			self.f.write(np.array_str(action)[1:-1].replace(' ', ',') + ',' + np.array_str(self.observation)[1:-1].replace(' ', ','))
-			self.f.close()
+			with open('systemstatesfile.csv', 'a') as f:
+				f.write(np.array_str(action)[1:-1].replace(' ', ',') + ',' + np.array_str(self.observation)[1:-1].replace(' ', ','))
+				f.close()
 		
 		# Actuate
 		self._make_action(action)
