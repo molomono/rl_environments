@@ -233,10 +233,10 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 			action = self.compute_action(action)
 			
 		#clip the action to the correct range	
-		action = np.clip(goal, action, self.action_space.low, self.action_space.high)
+		action = np.clip(action, self.action_space.low, self.action_space.high)
 		
 		if self.SAVE_STATES:
-			s_a = np.hstack([action,self.observation])
+			s_a = np.hstack([goal, action,self.observation])
 			s_a = np.matrix(s_a)
 			df = pd.DataFrame(s_a)
 			df.to_csv('systemstatesfile.csv', mode='a', header=False)
