@@ -11,8 +11,13 @@ import numpy as np
 
 from scripts.util import *
 
-SAVE_STATES = True
-states_array = np.array([])
+#TODO
+#SAVE_STATES = True
+#save the system states:
+#		if SAVE_STATES:
+#			state_action = np.hstack([self.observation, action])
+#			states_array = np.vstack([states_array, state_action])
+#			np.savetxt("1_training_states.csv", states_array, delimiter=",")
 
 class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 	metadata = {
@@ -88,6 +93,7 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 		self.r_wheel_old = 0.0
 		# #modify: optional message
 		print('BalanceBot Environment: initialized')
+		self.SAVE_STATES = True
 				
 	def _make_observation(self):
 		"""Query V-rep to make observation.
@@ -227,14 +233,12 @@ class BalanceBotVrepEnvNoise(vrep_env.VrepEnv):
 			
 		#clip the action to the correct range	
 		action = np.clip(action, self.action_space.low, self.action_space.high)
-
-		#save the system states:
-		if SAVE_STATES:
-			state_action = np.hstack([self.observation, action])
-			states_array = np.vstack([states_array, state_action])
-			np.savetxt("1_training_states.csv", states_array, delimiter=",")
-
-
+		
+		if self.SAVE_STATES:
+			self.f = open('systemstatesfile.csv', 'w+')
+			self.f.write(np.array_str(action)[1:-1].replace(' ', ',') + ',' + np.array_str(self.observation)[1:-1].replace(' ', ','))
+			self.f.close()
+		
 		# Actuate
 		self._make_action(action)
 		# Step
